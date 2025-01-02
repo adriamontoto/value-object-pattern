@@ -1,0 +1,12 @@
+# Remember to add the package, its single version and the documentation page
+
+# Install packages from requirements.txt
+-r requirements.txt
+
+pytest>=8.0.0,<9.0.0  # https://docs.pytest.org
+pytest-randomly>=3.0.0,<4.0.0  # https://github.com/pytest-dev/pytest-randomly
+coverage[toml]>=7.0.0,<8.0.0  # https://coverage.readthedocs.io
+ruff>=0.0.0,<1.0.0  # https://docs.astral.sh/ruff
+mypy[reports]>=1.0.0,<2.0.0  # https://mypy.readthedocs.io
+pre-commit>=3.0.0,<5.0.0  # https://pre-commit.com
+object-mother-pattern>=2025.01.02  # https://github.com/adriamontoto/object-mother-pattern
