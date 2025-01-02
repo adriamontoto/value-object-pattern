@@ -1,0 +1,174 @@
+[build-system]
+requires = ['hatchling']
+build-backend = 'hatchling.build'
+
+
+[tool.hatch.version]
+path = 'value_object_pattern/__init__.py'
+
+[tool.hatch.build.targets.sdist]
+include = ['value_object_pattern/', 'tests/', 'requirements*.txt']
+
+
+[project]
+name = 'value-object-pattern'
+description = 'The Value Object Pattern is a Python package that streamlines the creation and management of value objects in your projects.'
+readme = './README.md'
+authors = [{ name = 'Adria Montoto' }]
+license = 'MIT'
+classifiers = [
+    'License :: OSI Approved :: MIT License',
+    'Intended Audience :: Developers',
+    'Operating System :: OS Independent',
+    'Typing :: Typed',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+]
+keywords = [
+    'python',
+    'development',
+    'tools',
+    'utilities',
+    'value-object',
+    'encapsulation',
+    'pattern',
+    'validation',
+    'domain-driven-design',
+]
+requires-python = '>=3.11'
+dynamic = ['version']
+
+[project.optional-dependencies]
+tests = [
+    'pytest>=8.0.0,<9.0.0',
+    'pytest-randomly>=3.0.0,<4.0.0',
+    'coverage[toml]>=7.0.0,<8.0.0',
+    'ruff>=0.0.0,<1.0.0',
+    'mypy[reports]>=1.0.0,<2.0.0',
+    'pre-commit>=3.0.0,<5.0.0',
+    'object-mother-pattern>=2025.01.02',
+]
+
+
+[project.urls]
+Homepage = 'https://github.com/adriamontoto/value-object-pattern'
+Repository = 'https://github.com/adriamontoto/value-object-pattern'
+Issues = 'https://github.com/adriamontoto/value-object-pattern/issues'
+
+
+[tool.pytest.ini_options]
+pythonpath = '.'
+addopts = [
+    '--strict-config',  # fail if an unregistered option is used
+    '--strict-markers', # fail if an unregistered marker is used
+    '--color=yes',      # color the output
+]
+markers = ['unit_testing: Check a unique functionality']
+xfail_strict = true
+
+
+[tool.coverage.run]
+source = ['value_object_pattern']
+parallel = true
+branch = true
+relative_files = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+precision = 2
+exclude_lines = [
+    'pragma: no cover',
+    'raise NotImplementedError',
+    'if TYPE_CHECKING:',
+    'if typing.TYPE_CHECKING:',
+    '@overload',
+    '@typing.overload',
+    'typing.assert_never',
+    'assert_never',
+]
+
+[tool.coverage.paths]
+source = ['value_object_pattern']
+
+
+[tool.ruff]
+fix = true
+indent-width = 4
+line-length = 120
+target-version = 'py313'
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 120
+indent-style = 'space'
+quote-style = 'single'
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+select = [
+    'F',   # pyflakes
+    'E',   # pycodestyle
+    'W',   # pycodestyle
+    'D',   # pydocstyle
+    'C90', # mccabe
+    'I',   # isort
+    'N',   # pep8-naming
+    'UP',  # pyupgrade
+    'B',   # flake8-bugbear
+    'C4',  # flake8-comprehensions
+    'DTZ', # flake8-datetimez
+    'SIM', # flake8-simplify
+    'RUF', # ruff
+]
+ignore = [
+    'UP035', # Checks for uses of deprecated imports based on the minimum supported Python version.
+    'UP036', # Checks for conditional blocks gated on sys.version_info comparisons that are outdated for the minimum supported Python version.
+    'E111',  # Checks for indentation with a non-multiple of 4 spaces.
+    'E114',  # Checks for indentation of comments with a non-multiple of 4 spaces.
+    'E117',  # Checks for over-indented code.
+    'W191',  # Checks for indentation that uses tabs.
+    'D200',  # Checks for single-line docstrings that are broken across multiple lines.
+    'D205',  # 1 blank line required between summary line and description.
+    'D206',  # Checks for docstrings that are indented with tabs.
+    'D212',  # Checks for docstring summary lines that are not positioned on the first physical line of the docstring.
+    'D401',  # First line of docstring should be in imperative mood.
+    'D300',  # Checks for docstrings that use '''triple single quotes''' instead of 'triple double quotes'.
+]
+
+[tool.ruff.lint.per-file-ignores]
+'__init__.py' = [
+    'F401', # Checks for unused imports.
+    'D104', # Checks for undocumented public package definitions.
+]
+'database.py' = [
+    'F401', # Checks for unused imports.
+]
+'**test**.py' = [
+    'S101', # Use of `assert` detected.
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pydocstyle]
+convention = 'pep257'
+
+[tool.ruff.lint.isort]
+case-sensitive = true
+known-first-party = ['value_object_pattern']
+combine-as-imports = true
+
+
+[tool.mypy]
+strict = true
+warn_unreachable = true
+enable_error_code = [
+    'redundant-expr',
+    'possibly-undefined',
+    'truthy-bool',
+    'explicit-override',
+]

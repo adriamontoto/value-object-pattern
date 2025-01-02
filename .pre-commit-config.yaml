@@ -1,0 +1,55 @@
+# Documentation: https://pre-commit.com
+
+# General flags
+fail_fast: true # If there is an error it will fail the test
+
+default_language_version:
+  python: python3.13
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: no-commit-to-branch
+        name: 🛡️ Protected Branches Checker
+        args:
+          - --branch=master
+        pass_filenames: false
+        stages:
+          - pre-commit
+          - pre-push
+
+      - id: check-added-large-files
+        name: 📦 Large Files Checker
+        args:
+          - --maxkb=100
+        stages:
+          - pre-commit
+
+      - id: check-case-conflict
+        name: 🔠 Case Conflict Checker
+        stages:
+          - pre-commit
+
+      - id: check-toml
+        name: 📄 TOML Files Checker
+        files: '.*\.toml'
+        stages:
+          - pre-commit
+
+      - id: check-yaml
+        name: 📄 YAML Files Checker
+        files: '.*\.ya?ml'
+        args:
+          - --unsafe
+        stages:
+          - pre-commit
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.20.1
+    hooks:
+      - id: gitleaks
+        name: 🔍 Secrets Checker
+        stages:
+          - pre-commit
+          - pre-push
