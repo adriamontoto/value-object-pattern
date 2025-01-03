@@ -1,4 +1,4 @@
-__version__ = '2025.01.02'
+__version__ = '2025.01.03'
 
 from .models import ValueObject
 
