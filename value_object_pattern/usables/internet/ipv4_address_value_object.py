@@ -17,7 +17,7 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
     """
 
     @process(order=0)
-    def ensure_value_is_normalized(self, value: str) -> str:
+    def _ensure_value_is_normalized(self, value: str) -> str:
         """
         Ensures the value object value is normalized IPv4 address.
 
@@ -33,7 +33,7 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         return str(object=IPv4Address(address=value))
 
     @validation(order=0)
-    def ensure_value_is_valid_ipv4_address(self, value: str) -> None:
+    def _ensure_value_is_valid_ipv4_address(self, value: str) -> None:
         """
         Ensures the value object value is a valid IPv4 address.
 

@@ -18,7 +18,7 @@ class PortValueObject(IntegerValueObject):
     __PORT_VALUE_OBJECT_MAX_PORT: int = 65535
 
     @validation(order=0)
-    def ensure_value_is_valid_port(self, value: int) -> None:
+    def _ensure_value_is_valid_port(self, value: int) -> None:
         """
         Ensures the value object value is a valid port.
 

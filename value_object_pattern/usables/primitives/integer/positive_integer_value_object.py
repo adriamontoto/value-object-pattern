@@ -13,7 +13,7 @@ class PositiveIntegerValueObject(IntegerValueObject):
     """
 
     @validation(order=0)
-    def ensure_value_is_positive_integer(self, value: int) -> None:
+    def _ensure_value_is_positive_integer(self, value: int) -> None:
         """
         Ensures the value object value is a positive integer.
 

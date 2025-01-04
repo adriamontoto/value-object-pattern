@@ -12,7 +12,7 @@ class IntegerValueObject(ValueObject[int]):
     """
 
     @validation(order=0)
-    def ensure_value_is_integer(self, value: int) -> None:
+    def _ensure_value_is_integer(self, value: int) -> None:
         """
         Ensures the value object value is an integer.
 

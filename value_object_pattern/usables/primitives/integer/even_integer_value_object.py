@@ -13,7 +13,7 @@ class EvenIntegerValueObject(IntegerValueObject):
     """
 
     @validation(order=0)
-    def ensure_value_is_even_number(self, value: int) -> None:
+    def _ensure_value_is_even_number(self, value: int) -> None:
         """
         Ensures the value object value is an even number.
 

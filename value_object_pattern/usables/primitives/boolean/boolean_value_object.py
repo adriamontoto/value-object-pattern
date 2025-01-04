@@ -12,7 +12,7 @@ class BooleanValueObject(ValueObject[bool]):
     """
 
     @validation(order=0)
-    def ensure_value_is_boolean(self, value: bool) -> None:
+    def _ensure_value_is_boolean(self, value: bool) -> None:
         """
         Ensures the value object value is a boolean.
 

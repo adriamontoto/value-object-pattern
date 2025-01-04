@@ -13,7 +13,7 @@ class NotEmptyStringValueObject(StringValueObject):
     """
 
     @validation(order=0)
-    def ensure_value_is_not_empty_string(self, value: str) -> None:
+    def _ensure_value_is_not_empty_string(self, value: str) -> None:
         """
         Ensures the value object value is not an empty string.
 
