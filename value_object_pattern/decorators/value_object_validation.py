@@ -6,12 +6,17 @@ from functools import wraps
 from typing import Any, Callable
 
 
-def validation(function: Callable[..., Any]) -> Callable[..., None]:
+def validation(order: int | None = None) -> Callable[..., None]:
     """
-    Decorator for validation.
+    Decorator for validation the value before the value is created.
 
     Args:
-        function (Callable[..., Any]): Function to be execution when the value object is created.
+        order (int | None, optional): The order of the validation that will be executed, if None the functions will be
+        executed alphabetically. Defaults to None.
+
+    Raises:
+        TypeError: If the order is not an integer.
+        ValueError: If the order is not equal or greater than 0.
 
     Returns:
         Callable[..., None]: Wrapper function for the validation.
@@ -22,7 +27,7 @@ def validation(function: Callable[..., Any]) -> Callable[..., None]:
 
 
     class IntegerValueObject(ValueObject[int]):
-        @validation
+        @validation()
         def ensure_value_is_integer(self, value: int) -> None:
             if type(value) is not int:
                 raise TypeError(f'IntegerValueObject value <<<{value}>>> must be an integer. Got <<<{type(value).__name__}>>> type.')
@@ -32,17 +37,42 @@ def validation(function: Callable[..., Any]) -> Callable[..., None]:
     # >>> TypeError: IntegerValueObject value <<<invalid>>> must be an integer. Got <<<str>>> type.
     ```
     """  # noqa: E501 # fmt: skip
-    function._is_validation = True  # type: ignore[attr-defined]
 
-    @wraps(wrapped=function)
-    def wrapper(*args: tuple[Any, ...], **kwargs: dict[str, Any]) -> None:
+    def decorator(function: Callable[..., Any]) -> Callable[..., None]:
         """
-        Wrapper for validation.
+        Decorator for validation the value before the value is created.
 
         Args:
-            *args (tuple[Any, ...]): The arguments for the function.
-            **kwargs (dict[str, Any]): The keyword arguments for the function.
-        """
-        function(*args, **kwargs)
+            function (Callable[..., Any]): Function to be execution before the value object is created.
 
-    return wrapper
+        Raises:
+            TypeError: If the order is not an integer.
+            ValueError: If the order is not equal or greater than 0.
+
+        Returns:
+            Callable[..., None]: Wrapper function for the validation.
+        """
+        if order is not None:
+            if type(order) is not int:
+                raise TypeError(f'Validation order <<<{order}>>> must be an integer. Got <<<{type(order).__name__}>>> type.')  # noqa: E501  # fmt: skip
+
+            if order < 0:
+                raise ValueError(f'Validation order <<<{order}>>> must be equal or greater than 0.')
+
+        function._is_validation = True  # type: ignore[attr-defined]
+        function._order = function.__name__ if order is None else str(order)
+
+        @wraps(wrapped=function)
+        def wrapper(*args: tuple[Any, ...], **kwargs: dict[str, Any]) -> None:
+            """
+            Wrapper for validation.
+
+            Args:
+                *args (tuple[Any, ...]): The arguments for the function.
+                **kwargs (dict[str, Any]): The keyword arguments for the function.
+            """
+            function(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
