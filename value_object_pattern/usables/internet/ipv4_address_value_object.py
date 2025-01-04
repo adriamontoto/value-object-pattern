@@ -27,9 +27,7 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         Returns:
             str: Value with the normalized IPv4 address.
         """
-        if '/' in value:
-            value, _ = value.split(sep='/')
-
+        value = self._ipv4_normalize(value=value)
         return str(object=IPv4Address(address=value))
 
     @validation(order=0)
@@ -43,17 +41,28 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         Raises:
             ValueError: If the value is not a valid IPv4 address.
         """
-        if '/' in value:
-            old_value = value
-            value, mask = value.split(sep='/')
-
-            if mask != '32':
-                raise ValueError(f'Ipv4AddressValueObject value <<<{old_value}>>> is not a valid IPv4 address.')
+        value = self._ipv4_normalize(value=value)
 
         try:
             IPv4Address(address=value)
         except AddressValueError as error:
             raise ValueError(f'Ipv4AddressValueObject value <<<{value}>>> is not a valid IPv4 address.') from error
+
+    @classmethod
+    def _ipv4_normalize(cls, value: str) -> str:
+        """
+        Normalizes the given IPv4 address.
+
+        Args:
+            value (str): IPv4 address.
+
+        Returns:
+            str: Normalized IPv4 address.
+        """
+        if '/' in value and value.endswith('/32'):
+            value = value[:-3]
+
+        return value
 
     @classmethod
     def is_reserved(cls, *, value: str) -> bool:
@@ -67,6 +76,7 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
             bool: True if the given IPv4 address is reserved, False otherwise.
         """
         try:
+            value = cls._ipv4_normalize(value=value)
             return IPv4Address(address=value).is_reserved
         except AddressValueError:
             return False
@@ -83,6 +93,7 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
             bool: True if the given IPv4 address is private, False otherwise.
         """
         try:
+            value = cls._ipv4_normalize(value=value)
             return IPv4Address(address=value).is_private
         except AddressValueError:
             return False
@@ -99,6 +110,7 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
             bool: True if the given IPv4 address is global, False otherwise.
         """
         try:
+            value = cls._ipv4_normalize(value=value)
             return IPv4Address(address=value).is_global
         except AddressValueError:
             return False
@@ -115,6 +127,7 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
             bool: True if the given IPv4 address is multicast, False otherwise.
         """
         try:
+            value = cls._ipv4_normalize(value=value)
             return IPv4Address(address=value).is_multicast
         except AddressValueError:
             return False
@@ -131,6 +144,7 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
             bool: True if the given IPv4 address is unspecified, False otherwise.
         """
         try:
+            value = cls._ipv4_normalize(value=value)
             return IPv4Address(address=value).is_unspecified
         except AddressValueError:
             return False
@@ -147,6 +161,7 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
             bool: True if the given IPv4 address is loopback, False otherwise.
         """
         try:
+            value = cls._ipv4_normalize(value=value)
             return IPv4Address(address=value).is_loopback
         except AddressValueError:
             return False
@@ -163,6 +178,7 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
             bool: True if the given IPv4 address is link-local, False otherwise.
         """
         try:
+            value = cls._ipv4_normalize(value=value)
             return IPv4Address(address=value).is_link_local
         except AddressValueError:
             return False
