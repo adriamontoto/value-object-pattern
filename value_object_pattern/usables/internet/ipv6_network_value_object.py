@@ -131,7 +131,8 @@ class Ipv6NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         """
         try:
             return cls._ipv6_network_validate(value=value).is_reserved
-        except AddressValueError:
+
+        except ValueError:
             return False
 
     @classmethod
@@ -147,6 +148,7 @@ class Ipv6NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         """
         try:
             return cls._ipv6_network_validate(value=value).is_private
+
         except ValueError:
             return False
 
@@ -179,6 +181,7 @@ class Ipv6NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         """
         try:
             return cls._ipv6_network_validate(value=value).is_multicast
+
         except ValueError:
             return False
 
@@ -195,6 +198,7 @@ class Ipv6NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         """
         try:
             return cls._ipv6_network_validate(value=value).is_unspecified
+
         except ValueError:
             return False
 
@@ -211,6 +215,7 @@ class Ipv6NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         """
         try:
             return cls._ipv6_network_validate(value=value).is_loopback
+
         except ValueError:
             return False
 
@@ -227,6 +232,7 @@ class Ipv6NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         """
         try:
             return cls._ipv6_network_validate(value=value).is_link_local
+
         except ValueError:
             return False
 
