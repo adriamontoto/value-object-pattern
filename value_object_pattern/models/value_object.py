@@ -2,8 +2,8 @@
 Value object generic type.
 """
 
-import inspect
 from abc import ABC
+from inspect import getmembers, ismethod
 from sys import version_info
 from typing import Generic, NoReturn, TypeVar
 
@@ -61,7 +61,7 @@ class ValueObject(ABC, Generic[T]):
         ```
         """
         self._validate(value=value)
-        value = self._post_validation_process(value=value)
+        value = self._process(value=value)
 
         object.__setattr__(self, '_value', value)
 
@@ -192,7 +192,7 @@ class ValueObject(ABC, Generic[T]):
 
         raise AttributeError(f'{self.__class__.__name__} object has no attribute "{key}".')
 
-    def _post_validation_process(self, value: T) -> T:
+    def _process(self, value: T) -> T:
         """
         This method processes the value object value after validation.
 
@@ -202,6 +202,15 @@ class ValueObject(ABC, Generic[T]):
         Returns:
             T: The processed value object value.
         """
+        methods = []
+        for _, method in getmembers(object=self, predicate=ismethod):
+            if getattr(method, '_is_process', False):
+                methods.append(method)
+
+        methods = sorted(methods, key=lambda method: getattr(method, '_order', method.__name__))
+        for method in methods:
+            value = method(value=value)
+
         return value
 
     def _validate(self, value: T) -> None:
@@ -212,7 +221,7 @@ class ValueObject(ABC, Generic[T]):
         Args:
             value (T): The value object value.
         """
-        for _, method in inspect.getmembers(object=self, predicate=inspect.ismethod):
+        for _, method in getmembers(object=self, predicate=ismethod):
             if getattr(method, '_is_validation', False):
                 method(value=value)
 
