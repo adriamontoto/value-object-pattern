@@ -43,15 +43,14 @@ def process(order: int | None = None) -> Callable[..., Any]:
         Decorator for process the value after the value is validated.
 
         Args:
-            order (int | None, optional): The order of the process that will be executed, if None the functions will be
-            executed alphabetically. Defaults to None.
+            function (Callable[..., Any]): Function to be execution after the value object is validated.
 
         Raises:
             TypeError: If the order is not an integer.
+            ValueError: If the order is not equal or greater than 0.
 
         Returns:
             Callable[..., Any]: Wrapper function for the process.
-
         """
         if order is not None:
             if type(order) is not int:

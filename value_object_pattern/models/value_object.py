@@ -221,9 +221,14 @@ class ValueObject(ABC, Generic[T]):
         Args:
             value (T): The value object value.
         """
+        methods = []
         for _, method in getmembers(object=self, predicate=ismethod):
             if getattr(method, '_is_validation', False):
-                method(value=value)
+                methods.append(method)
+
+        methods = sorted(methods, key=lambda method: getattr(method, '_order', method.__name__))
+        for method in methods:
+            method(value=value)
 
     @property
     def value(self) -> T:
