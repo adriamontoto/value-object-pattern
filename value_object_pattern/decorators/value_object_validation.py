@@ -6,7 +6,7 @@ from functools import wraps
 from typing import Any, Callable
 
 
-def validation(function: Callable[..., Any]) -> Callable[..., Any]:
+def validation(function: Callable[..., Any]) -> Callable[..., None]:
     """
     Decorator for validation.
 
@@ -14,7 +14,7 @@ def validation(function: Callable[..., Any]) -> Callable[..., Any]:
         function (Callable[..., Any]): Function to be execution when the value object is created.
 
     Returns:
-        Callable[..., Any]: Wrapper function for the validation.
+        Callable[..., None]: Wrapper function for the validation.
 
     Example:
     ```python
