@@ -13,7 +13,7 @@ class PositiveFloatValueObject(FloatValueObject):
     """
 
     @validation(order=0)
-    def ensure_value_is_positive_float(self, value: float) -> None:
+    def _ensure_value_is_positive_float(self, value: float) -> None:
         """
         Ensures the value object value is a positive float.
 

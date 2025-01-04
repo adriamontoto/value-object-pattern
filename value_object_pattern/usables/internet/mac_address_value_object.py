@@ -28,7 +28,7 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
     __MAC_ADDRESS_VALUE_OBJECT_SPACE_REGEX: str = r'^([0-9A-F]{2} ){5}[0-9A-F]{2}$'
 
     @process(order=0)
-    def ensure_value_is_uppercase(self, value: str) -> str:
+    def _ensure_value_is_uppercase(self, value: str) -> str:
         """
         Ensures the value object value is uppercase.
 
@@ -41,7 +41,7 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         return value.upper()
 
     @process(order=1)
-    def ensure_value_is_normalized(self, value: str) -> str:
+    def _ensure_value_is_normalized(self, value: str) -> str:
         """
         Ensures the value object value is normalized (universally formatted).
 
@@ -73,7 +73,7 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         return value
 
     @validation(order=0)
-    def ensure_value_is_valid_mac_address(self, value: str) -> None:
+    def _ensure_value_is_valid_mac_address(self, value: str) -> None:
         """
         Ensures the value object value is a valid MAC address.
 

@@ -12,7 +12,7 @@ class BytesValueObject(ValueObject[bytes]):
     """
 
     @validation(order=0)
-    def ensure_value_is_bytes(self, value: bytes) -> None:
+    def _ensure_value_is_bytes(self, value: bytes) -> None:
         """
         Ensures the value object value is bytes.
 

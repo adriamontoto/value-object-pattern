@@ -13,7 +13,7 @@ class UppercaseStringValueObject(StringValueObject):
     """
 
     @validation(order=0)
-    def ensure_value_is_uppercase(self, value: str) -> None:
+    def _ensure_value_is_uppercase(self, value: str) -> None:
         """
         Ensures the value object value is uppercase.
 

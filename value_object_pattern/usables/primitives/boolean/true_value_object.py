@@ -13,7 +13,7 @@ class TrueValueObject(BooleanValueObject):
     """
 
     @validation(order=0)
-    def ensure_value_is_true(self, value: bool) -> None:
+    def _ensure_value_is_true(self, value: bool) -> None:
         """
         Ensures the value object value is true.
 

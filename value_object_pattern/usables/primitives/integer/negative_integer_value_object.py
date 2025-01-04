@@ -13,7 +13,7 @@ class NegativeIntegerValueObject(IntegerValueObject):
     """
 
     @validation(order=0)
-    def ensure_value_is_negative_integer(self, value: int) -> None:
+    def _ensure_value_is_negative_integer(self, value: int) -> None:
         """
         Ensures the value object value is a negative integer.
 

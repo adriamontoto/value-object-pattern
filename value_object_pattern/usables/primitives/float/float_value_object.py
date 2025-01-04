@@ -12,7 +12,7 @@ class FloatValueObject(ValueObject[float]):
     """
 
     @validation(order=0)
-    def ensure_value_is_float(self, value: float) -> None:
+    def _ensure_value_is_float(self, value: float) -> None:
         """
         Ensures the value object value is a float.
 
