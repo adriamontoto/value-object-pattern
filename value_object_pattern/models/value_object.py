@@ -32,6 +32,7 @@ class ValueObject(ABC, Generic[T]):
             value (T): Value.
         """
         self._validate(value=value)
+        value = self._post_validation_process(value=value)
 
         object.__setattr__(self, '_value', value)
 
@@ -105,9 +106,9 @@ class ValueObject(ABC, Generic[T]):
 
         raise AttributeError(f'{self.__class__.__name__} object has no attribute "{key}".')
 
-    def _process(self, value: T) -> T:
+    def _post_validation_process(self, value: T) -> T:
         """
-        This method processes the value object value before storage.
+        This method processes the value object value after validation.
 
         Args:
             value (T): The value object value.
