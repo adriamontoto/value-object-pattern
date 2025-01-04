@@ -6,7 +6,7 @@ from functools import wraps
 from typing import Any, Callable
 
 
-def validation(order: int | None = None) -> Callable[..., None]:
+def validation(order: int | None = None) -> Callable[[Callable[..., None]], Callable[..., None]]:
     """
     Decorator for validation the value before the value is created.
 
@@ -19,7 +19,7 @@ def validation(order: int | None = None) -> Callable[..., None]:
         ValueError: If the order is not equal or greater than 0.
 
     Returns:
-        Callable[..., None]: Wrapper function for the validation.
+        Callable[[Callable[..., None]], Callable[..., None]]: Wrapper function for the validation.
 
     Example:
     ```python
@@ -38,12 +38,12 @@ def validation(order: int | None = None) -> Callable[..., None]:
     ```
     """  # noqa: E501 # fmt: skip
 
-    def decorator(function: Callable[..., Any]) -> Callable[..., None]:
+    def decorator(function: Callable[..., None]) -> Callable[..., None]:
         """
         Decorator for validation the value before the value is created.
 
         Args:
-            function (Callable[..., Any]): Function to be execution before the value object is created.
+            function (Callable[..., None]): Function to be execution before the value object is created.
 
         Raises:
             TypeError: If the order is not an integer.
@@ -60,7 +60,7 @@ def validation(order: int | None = None) -> Callable[..., None]:
                 raise ValueError(f'Validation order <<<{order}>>> must be equal or greater than 0.')
 
         function._is_validation = True  # type: ignore[attr-defined]
-        function._order = function.__name__ if order is None else str(order)
+        function._order = function.__name__ if order is None else str(order)  # type: ignore[attr-defined]
 
         @wraps(wrapped=function)
         def wrapper(*args: tuple[Any, ...], **kwargs: dict[str, Any]) -> None:
