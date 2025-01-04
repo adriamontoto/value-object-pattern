@@ -2,9 +2,12 @@
 Value object generic type.
 """
 
+import inspect
 from abc import ABC
+from datetime import date, datetime
 from sys import version_info
 from typing import Generic, NoReturn, TypeVar
+from uuid import UUID
 
 if version_info >= (3, 12):
     from typing import override  # pragma: no cover
@@ -120,12 +123,15 @@ class ValueObject(ABC, Generic[T]):
 
     def _validate(self, value: T) -> None:
         """
-        This method validates that the value follows the domain rules.
+        This method validates that the value follows the domain rules, by executing all methods with the `@validation`
+        decorator.
 
         Args:
             value (T): The value object value.
         """
-        pass
+        for _, method in inspect.getmembers(object=self, predicate=inspect.ismethod):
+            if getattr(method, '_is_validation', False):
+                method(value=value)
 
     @property
     def value(self) -> T:

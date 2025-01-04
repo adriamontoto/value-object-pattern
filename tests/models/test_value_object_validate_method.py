@@ -2,17 +2,10 @@
 Test value object validate method.
 """
 
-from sys import version_info
-
 from object_mother_pattern.mothers import IntegerMother
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern import ValueObject
-
-if version_info >= (3, 12):
-    from typing import override  # pragma: no cover
-else:
-    from typing_extensions import override  # pragma: no cover
+from value_object_pattern import ValueObject, validation
 
 
 class NaturalValueObject(ValueObject[int]):
@@ -20,21 +13,31 @@ class NaturalValueObject(ValueObject[int]):
     NaturalValueObject value object class.
     """
 
-    @override
-    def _validate(self, value: int) -> None:
+    @validation
+    def ensure_value_is_integer(self, value: int) -> None:
         """
-        Validate the value object.
+        Ensures the value object is an integer.
 
         Args:
-            value (int): Value object value.
+            value (int): Value object.
 
         Raises:
             TypeError: If the value object is not an integer.
-            ValueError: If the value object is not a natural number.
         """
         if type(value) is not int:
             raise TypeError(f'Value object must be an integer, not {type(value).__name__}.')
 
+    @validation
+    def ensure_value_is_natural(self, value: int) -> None:
+        """
+        Ensures the value object is a natural number.
+
+        Args:
+            value (int): Value object.
+
+        Raises:
+            ValueError: If the value object is not a natural number.
+        """
         if value <= 0:
             raise ValueError('Value object must be a natural number.')
 
