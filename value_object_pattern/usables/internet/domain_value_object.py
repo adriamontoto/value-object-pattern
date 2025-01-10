@@ -1,0 +1,136 @@
+"""
+DomainValueObject value object.
+"""
+
+from functools import lru_cache
+from re import match
+from urllib.request import urlopen
+
+from value_object_pattern import process, validation
+from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
+
+
+class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
+    """
+    DomainValueObject value object.
+    """
+
+    __DOMAIN_VALUE_OBJECT_IANA_TOP_LEVEL_DOMAINS: str = 'https://data.iana.org/TLD/tlds-alpha-by-domain.txt'
+    __DOMAIN_VALUE_OBJECT_MIN_LABEL_LENGTH: int = 1
+    __DOMAIN_VALUE_OBJECT_MAX_LABEL_LENGTH: int = 63
+    __DOMAIN_VALUE_OBJECT_MAX_DOMAIN_LENGTH: int = 253
+    __DOMAIN_VALUE_OBJECT_REGEX: str = r'^[a-zA-Z0-9-]+$'
+
+    @process(order=0)
+    def _ensure_domain_is_in_lowercase(self, value: str) -> str:
+        """
+        Ensure domain is in lowercase.
+
+        Args:
+            value (str): The domain value.
+
+        Returns:
+            str: The domain value in lowercase.
+        """
+        return value.lower()
+
+    @process(order=1)
+    def _ensure_domain_has_not_trailing_dot(self, value: str) -> str:
+        """
+        Ensure domain has not trailing dot.
+
+        Args:
+            value (str): The domain value.
+
+        Returns:
+            str: The domain value without trailing dot.
+        """
+        return value.rstrip('.')
+
+    @validation(order=0)
+    def _validate_top_level_domain(self, value: str) -> None:
+        """
+        Validate top level domain.
+
+        Args:
+            value (str): The domain value.
+
+        Raises:
+            ValueError: If domain value has not a valid top level domain.
+        """
+        if '.' not in value:
+            raise ValueError(f'DomainValueObject value <<<{value}>>> has not a valid top level domain.')
+
+        tdl = value.lower().rstrip('.').split(sep='.')[-1]
+        if tdl not in self.__get_top_level_domains():
+            raise ValueError(f'DomainValueObject value <<<{value}>>> has not a valid top level domain <<<{tdl}>>>.')
+
+    @validation(order=1)
+    def _validate_domain_length(self, value: str) -> None:
+        """
+        Validate domain length.
+
+        Args:
+            value (str): The domain value.
+
+        Raises:
+            ValueError: If value length is longer than the maximum domain length.
+        """
+        if len(value) > self.__DOMAIN_VALUE_OBJECT_MAX_DOMAIN_LENGTH:
+            raise ValueError(f'DomainValueObject value <<<{value}>>> length is longer than <<<{self.__DOMAIN_VALUE_OBJECT_MAX_DOMAIN_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
+
+    @validation(order=2)
+    def _validate_domain_labels(self, value: str) -> None:
+        """
+        Validate each label (label) according to standard DNS rules.
+         - Label must be between 1 and 63 characters long.
+         - Label must only contain letters, digits, or hyphens.
+         - Label must not start or end with a hyphen.
+
+        Args:
+            value (str): The domain value.
+
+        Raises:
+            ValueError: If value has a label shorter than the minimum length.
+            ValueError: If value has a label longer than the maximum length.
+            ValueError: If value has a label starting with a hyphen.
+            ValueError: If value has a label ending with a hyphen.
+            ValueError: If value has a label containing invalid characters.
+        """
+        labels = value.lower().rstrip('.').split(sep='.')
+        labels = labels[:-1] if len(labels) > 1 else labels  # remove top level domain
+        for label in labels:
+            if len(label) < self.__DOMAIN_VALUE_OBJECT_MIN_LABEL_LENGTH:
+                raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> shorter than <<<{self.__DOMAIN_VALUE_OBJECT_MIN_LABEL_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
+
+            if len(label) > self.__DOMAIN_VALUE_OBJECT_MAX_LABEL_LENGTH:
+                raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> longer than <<<{self.__DOMAIN_VALUE_OBJECT_MAX_LABEL_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
+
+            if label[0] == '-':
+                raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> that starts with a hyphen.')  # noqa: E501  # fmt: skip
+
+            if label[-1] == '-':
+                raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> that ends with a hyphen.')  # noqa: E501  # fmt: skip
+
+            if not match(
+                pattern=self.__DOMAIN_VALUE_OBJECT_REGEX,
+                string=label.encode(encoding='idna').decode(encoding='utf-8'),  # allow internationalized domain names
+            ):
+                raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> containing invalid characters. Only letters, digits, and hyphens are allowed.')  # noqa: E501  # fmt: skip
+
+    @classmethod
+    @lru_cache(maxsize=1)
+    def __get_top_level_domains(cls) -> set[str]:
+        """
+        Get top level domains from IANA.
+
+        Returns:
+            set[str]: The top level domains in lower case.
+
+        References:
+            https://data.iana.org/TLD/tlds-alpha-by-domain.txt
+        """
+        with urlopen(url=cls.__DOMAIN_VALUE_OBJECT_IANA_TOP_LEVEL_DOMAINS) as response:
+            content = response.read().decode('utf-8')
+
+        return {line.strip().lower() for line in content.splitlines() if line and not line.startswith('#')}

@@ -5,6 +5,7 @@ from .api_keys import (
     OpenaiApiKeyValueObject,
     ResendApiKeyValueObject,
 )
+from .domain_value_object import DomainValueObject
 from .ipv4_address_value_object import Ipv4AddressValueObject
 from .ipv4_network_value_object import Ipv4NetworkValueObject
 from .ipv6_address_value_object import Ipv6AddressValueObject
@@ -15,6 +16,7 @@ from .port_value_object import PortValueObject
 __all__ = (
     'AwsAccessKeyValueObject',
     'AwsSecretAccessKeyValueObject',
+    'DomainValueObject',
     'GitHubPersonalAccessTokenValueObject',
     'Ipv4AddressValueObject',
     'Ipv4NetworkValueObject',
