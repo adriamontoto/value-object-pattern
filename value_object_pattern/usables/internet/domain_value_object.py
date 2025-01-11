@@ -10,12 +10,32 @@ from value_object_pattern import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
 
+@lru_cache(maxsize=1)
+def get_top_level_domains() -> set[str]:
+    """
+    Get top level domains from IANA.
+
+    Args:
+        url (str): The URL to get the top level domains.
+
+    Returns:
+        set[str]: The top level domains in lower case.
+
+    References:
+        https://data.iana.org/TLD/tlds-alpha-by-domain.txt
+    """
+    url = 'https://data.iana.org/TLD/tlds-alpha-by-domain.txt'
+    with urlopen(url=url) as response:
+        content = response.read().decode('utf-8')
+
+    return {line.strip().lower() for line in content.splitlines() if line and not line.startswith('#')}
+
+
 class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     DomainValueObject value object.
     """
 
-    __DOMAIN_VALUE_OBJECT_IANA_TOP_LEVEL_DOMAINS: str = 'https://data.iana.org/TLD/tlds-alpha-by-domain.txt'
     __DOMAIN_VALUE_OBJECT_MIN_LABEL_LENGTH: int = 1
     __DOMAIN_VALUE_OBJECT_MAX_LABEL_LENGTH: int = 63
     __DOMAIN_VALUE_OBJECT_MAX_DOMAIN_LENGTH: int = 253
@@ -62,7 +82,7 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             raise ValueError(f'DomainValueObject value <<<{value}>>> has not a valid top level domain.')
 
         tdl = value.lower().rstrip('.').split(sep='.')[-1]
-        if tdl not in self.__get_top_level_domains():
+        if tdl not in get_top_level_domains():
             raise ValueError(f'DomainValueObject value <<<{value}>>> has not a valid top level domain <<<{tdl}>>>.')
 
     @validation(order=1)
@@ -117,20 +137,3 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
                 string=label.encode(encoding='idna').decode(encoding='utf-8'),  # allow internationalized domain names
             ):
                 raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> containing invalid characters. Only letters, digits, and hyphens are allowed.')  # noqa: E501  # fmt: skip
-
-    @classmethod
-    @lru_cache(maxsize=1)
-    def __get_top_level_domains(cls) -> set[str]:
-        """
-        Get top level domains from IANA.
-
-        Returns:
-            set[str]: The top level domains in lower case.
-
-        References:
-            https://data.iana.org/TLD/tlds-alpha-by-domain.txt
-        """
-        with urlopen(url=cls.__DOMAIN_VALUE_OBJECT_IANA_TOP_LEVEL_DOMAINS) as response:
-            content = response.read().decode('utf-8')
-
-        return {line.strip().lower() for line in content.splitlines() if line and not line.startswith('#')}
