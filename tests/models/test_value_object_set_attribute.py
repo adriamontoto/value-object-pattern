@@ -5,13 +5,7 @@ Test value object module.
 from object_mother_pattern.mothers import IntegerMother
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern import ValueObject
-
-
-class IntegerValueObject(ValueObject[int]):
-    """
-    IntegerValueObject value object class.
-    """
+from value_object_pattern.usables import IntegerValueObject
 
 
 @mark.unit_testing
