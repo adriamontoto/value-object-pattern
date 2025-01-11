@@ -28,7 +28,7 @@ def get_aws_cloud_regions() -> set[str]:
     pattern = r'<tr>\s*<td[^>]*tabindex="-1">(.*?)</td>\s*<td[^>]*tabindex="-1">.*?</td>\s*<td[^>]*tabindex="-1">.*?</td>\s*</tr>'  # noqa: E501
     region_codes = findall(pattern=pattern, string=content, flags=DOTALL)
 
-    return set(region_codes)
+    return {region_code.lower() for region_code in region_codes}
 
 
 class AwsCloudRegionValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
@@ -60,5 +60,5 @@ class AwsCloudRegionValueObject(NotEmptyStringValueObject, TrimmedStringValueObj
         Raises:
             ValueError: If the region does not exist.
         """
-        if value not in get_aws_cloud_regions():
+        if value.lower() not in get_aws_cloud_regions():
             raise ValueError(f'AwsCloudRegionValueObject value <<<{value}>>> does not exist.')
