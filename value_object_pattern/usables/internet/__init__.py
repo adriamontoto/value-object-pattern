@@ -14,6 +14,7 @@ from .ipv6_address_value_object import Ipv6AddressValueObject
 from .ipv6_network_value_object import Ipv6NetworkValueObject
 from .mac_address_value_object import MacAddressValueObject
 from .port_value_object import PortValueObject
+from .uri import UrlValueObject
 
 __all__ = (
     'AwsAccessKeyValueObject',
@@ -30,4 +31,5 @@ __all__ = (
     'OpenaiApiKeyValueObject',
     'PortValueObject',
     'ResendApiKeyValueObject',
+    'UrlValueObject',
 )
