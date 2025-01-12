@@ -58,6 +58,9 @@ class Ipv6AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         if '/' in value and value.endswith('/128'):
             value = value[:-4]
 
+        if value.startswith('[') and value.endswith(']'):
+            value = value[1:-1]
+
         return value
 
     @classmethod
