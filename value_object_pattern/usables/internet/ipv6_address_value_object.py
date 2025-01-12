@@ -28,7 +28,7 @@ class Ipv6AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
             str: Value with the normalized IPv6 address.
         """
         value = self._ipv6_address_normalize(value=value)
-        return str(object=cls._ipv6_address_validate(value=value))
+        return str(object=self._ipv6_address_validate(value=value))
 
     @validation(order=0)
     def _ensure_value_is_valid_ipv6_address(self, value: str) -> None:
