@@ -9,5 +9,5 @@ coverage[toml]>=7.0.0,<8.0.0  # https://coverage.readthedocs.io
 ruff>=0.0.0,<1.0.0  # https://docs.astral.sh/ruff
 mypy[reports]>=1.0.0,<2.0.0  # https://mypy.readthedocs.io
 pre-commit>=3.0.0,<5.0.0  # https://pre-commit.com
-object-mother-pattern>=2025.01.05  # https://github.com/adriamontoto/object-mother-pattern
+object-mother-pattern>=2025.1.12  # https://github.com/adriamontoto/object-mother-pattern
 types-python-dateutil>=2.9.0.20241206,<3.0.0  # https://github.com/python/typeshed
