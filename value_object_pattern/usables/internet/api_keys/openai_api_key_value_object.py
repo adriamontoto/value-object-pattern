@@ -2,7 +2,7 @@
 OpenaiApiKeyValueObject value object.
 """
 
-from re import fullmatch
+from re import Pattern, compile as re_compile
 
 from value_object_pattern.decorators import validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
@@ -13,7 +13,7 @@ class OpenaiApiKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObjec
     OpenaiApiKeyValueObject value object.
     """
 
-    __OPENAI_API_KEY_VALUE_OBJECT_REGEX: str = r'^sk-[A-Za-z0-9]{20}T3BlbkFJ[A-Za-z0-9]{20}$'
+    __OPENAI_API_KEY_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^sk-[A-Za-z0-9]{20}T3BlbkFJ[A-Za-z0-9]{20}$')  # noqa: E501  # fmt: skip
 
     @validation(order=0)
     def _ensure_value_is_valid_openai_api_key(self, value: str) -> None:
@@ -26,5 +26,5 @@ class OpenaiApiKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObjec
         Raises:
             ValueError: If the value is not a valid OpenAI API Key.
         """
-        if not fullmatch(pattern=self.__OPENAI_API_KEY_VALUE_OBJECT_REGEX, string=value):
+        if not self.__OPENAI_API_KEY_VALUE_OBJECT_REGEX.fullmatch(string=value):
             raise ValueError(f'OpenaiApiKeyValueObject value <<<{value}>>> is not a valid OpenAI API Key.')

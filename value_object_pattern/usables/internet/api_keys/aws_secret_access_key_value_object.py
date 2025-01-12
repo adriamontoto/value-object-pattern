@@ -2,7 +2,7 @@
 AwsSecretAccessKeyValueObject value object.
 """
 
-from re import fullmatch
+from re import Pattern, compile as re_compile
 
 from value_object_pattern.decorators import validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
@@ -13,7 +13,7 @@ class AwsSecretAccessKeyValueObject(NotEmptyStringValueObject, TrimmedStringValu
     AwsSecretAccessKeyValueObject value object.
     """
 
-    __AWS_SECRET_ACCESS_KEY_VALUE_OBJECT_REGEX: str = r'^[A-Za-z0-9/+=]{40}$'
+    __AWS_SECRET_ACCESS_KEY_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^[A-Za-z0-9/+=]{40}$')
 
     @validation(order=0)
     def _ensure_value_is_valid_aws_secret_access_key(self, value: str) -> None:
@@ -26,5 +26,5 @@ class AwsSecretAccessKeyValueObject(NotEmptyStringValueObject, TrimmedStringValu
         Raises:
             ValueError: If the value is not a valid AWS Secret Access Key.
         """
-        if not fullmatch(pattern=self.__AWS_SECRET_ACCESS_KEY_VALUE_OBJECT_REGEX, string=value):
+        if not self.__AWS_SECRET_ACCESS_KEY_VALUE_OBJECT_REGEX.fullmatch(string=value):
             raise ValueError(f'AwsSecretAccessKeyValueObject value <<<{value}>>> is not a valid AWS Secret Access Key.')

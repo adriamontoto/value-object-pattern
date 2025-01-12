@@ -3,7 +3,7 @@ DomainValueObject value object.
 """
 
 from functools import lru_cache
-from re import match
+from re import Pattern, compile as re_compile
 from urllib.request import urlopen
 
 from value_object_pattern import process, validation
@@ -39,7 +39,7 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     __DOMAIN_VALUE_OBJECT_MIN_LABEL_LENGTH: int = 1
     __DOMAIN_VALUE_OBJECT_MAX_LABEL_LENGTH: int = 63
     __DOMAIN_VALUE_OBJECT_MAX_DOMAIN_LENGTH: int = 253
-    __DOMAIN_VALUE_OBJECT_REGEX: str = r'^[a-zA-Z0-9-]+$'
+    __DOMAIN_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^[a-zA-Z0-9-]+$')
 
     @process(order=0)
     def _ensure_domain_is_in_lowercase(self, value: str) -> str:
@@ -132,8 +132,5 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             if label[-1] == '-':
                 raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> that ends with a hyphen.')  # noqa: E501  # fmt: skip
 
-            if not match(
-                pattern=self.__DOMAIN_VALUE_OBJECT_REGEX,
-                string=label.encode(encoding='idna').decode(encoding='utf-8'),  # allow internationalized domain names
-            ):
+            if not self.__DOMAIN_VALUE_OBJECT_REGEX.fullmatch(string=label.encode(encoding='idna').decode(encoding='utf-8')):  # noqa: E501  # fmt: skip
                 raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> containing invalid characters. Only letters, digits, and hyphens are allowed.')  # noqa: E501  # fmt: skip
