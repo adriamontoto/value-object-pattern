@@ -14,7 +14,7 @@ from .ipv6_address_value_object import Ipv6AddressValueObject
 from .ipv6_network_value_object import Ipv6NetworkValueObject
 from .mac_address_value_object import MacAddressValueObject
 from .port_value_object import PortValueObject
-from .uri import UrlValueObject
+from .uri import HttpHttpsUrlValueObject, HttpUrlValueObject, HttpsUrlValueObject, UrlValueObject
 
 __all__ = (
     'AwsAccessKeyValueObject',
@@ -23,6 +23,9 @@ __all__ = (
     'DomainValueObject',
     'GitHubPersonalAccessTokenValueObject',
     'HostValueObject',
+    'HttpHttpsUrlValueObject',
+    'HttpUrlValueObject',
+    'HttpsUrlValueObject',
     'Ipv4AddressValueObject',
     'Ipv4NetworkValueObject',
     'Ipv6AddressValueObject',
