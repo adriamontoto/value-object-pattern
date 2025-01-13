@@ -8,9 +8,8 @@ from urllib.parse import parse_qs, urlsplit
 
 from value_object_pattern import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
-
-from ..host_value_object import HostValueObject
-from ..port_value_object import PortValueObject
+from value_object_pattern.usables.internet.host_value_object import HostValueObject
+from value_object_pattern.usables.internet.port_value_object import PortValueObject
 
 
 def join_url(
@@ -100,6 +99,19 @@ def split_netloc(value: str) -> tuple[str | None, str, int | None]:
 class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     UrlValueObject value object.
+
+    References:
+        https://www.rfc-editor.org/rfc/rfc3986
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet import UrlValueObject
+
+    url = UrlValueObject(value='https://github.com/adriamontoto/value-object-pattern?tab=readme-ov-file#table-of-contents')
+
+    print(repr(url))
+    # >>> UrlValueObject(value=https://github.com/adriamontoto/value-object-pattern?tab=readme-ov-file#table-of-contents)
+    ```
     """
 
     __URL_VALUE_OBJECT_SCHEME_REGEX: Pattern[str] = re_compile(pattern=r'^[A-Za-z][A-Za-z0-9\+\-\.]+$')
@@ -284,6 +296,16 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
 
         Returns:
             str: The URL scheme.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import UrlValueObject
+
+        url = UrlValueObject(value='https://github.com/adriamontoto/value-object-pattern?tab=readme-ov-file#table-of-contents')
+
+        print(url.scheme)
+        # >>> https
+        ```
         """
         scheme, *_ = split_url(value=self.value)
         return scheme
@@ -295,6 +317,16 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
 
         Returns:
             str: The URL netloc.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import UrlValueObject
+
+        url = UrlValueObject(value='https://github.com/adriamontoto/value-object-pattern?tab=readme-ov-file#table-of-contents')
+
+        print(url.netloc)
+        # >>> github.com
+        ```
         """
         _, netloc, *_ = split_url(value=self.value)
         return netloc
@@ -306,6 +338,16 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
 
         Returns:
             str | None: The URL path if exists, otherwise None.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import UrlValueObject
+
+        url = UrlValueObject(value='https://github.com/adriamontoto/value-object-pattern?tab=readme-ov-file#table-of-contents')
+
+        print(url.path)
+        # >>> /adriamontoto/value-object-pattern
+        ```
         """
         _, _, path, *_ = split_url(value=self.value)
         return path if path else None
@@ -317,6 +359,16 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
 
         Returns:
             str | None: The URL query if exists, otherwise None.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import UrlValueObject
+
+        url = UrlValueObject(value='https://github.com/adriamontoto/value-object-pattern?tab=readme-ov-file#table-of-contents')
+
+        print(url.query)
+        # >>> tab=readme-ov-file
+        ```
         """
         _, _, _, query, *_ = split_url(value=self.value)
         return query if query else None
@@ -328,6 +380,16 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
 
         Returns:
             str | None: The URL fragment if exists, otherwise None.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import UrlValueObject
+
+        url = UrlValueObject(value='https://github.com/adriamontoto/value-object-pattern?tab=readme-ov-file#table-of-contents')
+
+        print(url.fragment)
+        # >>> table-of-contents
+        ```
         """
         _, _, _, _, fragment = split_url(value=self.value)
         return fragment if fragment else None

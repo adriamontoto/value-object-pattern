@@ -10,6 +10,16 @@ from .string_value_object import StringValueObject
 class PrintableStringValueObject(StringValueObject):
     """
     PrintableStringValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import PrintableStringValueObject
+
+    string = PrintableStringValueObject(value='abcd1234')
+
+    print(repr(string))
+    # >>> PrintableStringValueObject(value='abcd1234')
+    ```
     """
 
     @validation(order=0)

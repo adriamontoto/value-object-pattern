@@ -10,6 +10,16 @@ from .string_value_object import StringValueObject
 class DigitStringValueObject(StringValueObject):
     """
     DigitStringValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import DigitStringValueObject
+
+    string = DigitStringValueObject(value='1234')
+
+    print(repr(string))
+    # >>> DigitStringValueObject(value='1234')
+    ```
     """
 
     @validation(order=0)

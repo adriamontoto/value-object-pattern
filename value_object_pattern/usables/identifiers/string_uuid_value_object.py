@@ -13,6 +13,16 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 class StringUuidValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     StringUuidValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables.identifiers import StringUuidValueObject
+
+    uuid = StringUuidValueObject(value='9908bb2d-54b4-426f-bef0-b09aa978ed21')
+
+    print(repr(uuid))
+    # >>> StringUuidValueObject(value=9908bb2d-54b4-426f-bef0-b09aa978ed21)
+    ```
     """
 
     @process(order=0)

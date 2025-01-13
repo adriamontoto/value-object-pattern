@@ -10,6 +10,16 @@ from .float_value_object import FloatValueObject
 class NegativeFloatValueObject(FloatValueObject):
     """
     NegativeFloatValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import FloatValueObject
+
+    float_ = FloatValueObject(value=-0.5)
+
+    print(repr(float_))
+    # >>> FloatValueObject(value=-0.5)
+    ```
     """
 
     @validation(order=0)

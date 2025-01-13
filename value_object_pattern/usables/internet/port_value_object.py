@@ -12,6 +12,16 @@ from value_object_pattern.usables import IntegerValueObject
 class PortValueObject(IntegerValueObject):
     """
     PortValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet import PortValueObject
+
+    port = PortValueObject(value=443)
+
+    print(repr(port))
+    # >>> PortValueObject(value=443)
+    ```
     """
 
     __PORT_VALUE_OBJECT_MIN_PORT: int = 0
@@ -38,6 +48,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: FTP data port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.FTP_DATA()
+
+        print(repr(port))
+        # >>> PortValueObject(value=20)
+        ```
         """
         return cls(value=20)
 
@@ -48,6 +68,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: FTP control port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.FTP_DATA()
+
+        print(repr(port))
+        # >>> PortValueObject(value=21)
+        ```
         """
         return cls(value=21)
 
@@ -58,6 +88,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: SSH port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.SSH()
+
+        print(repr(port))
+        # >>> PortValueObject(value=22)
+        ```
         """
         return cls(value=22)
 
@@ -68,6 +108,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: Telnet port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.TELNET()
+
+        print(repr(port))
+        # >>> PortValueObject(value=23)
+        ```
         """
         return cls(value=23)
 
@@ -78,6 +128,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: SMTP port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.SMTP()
+
+        print(repr(port))
+        # >>> PortValueObject(value=25)
+        ```
         """
         return cls(value=25)
 
@@ -88,6 +148,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: DNS port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.DNS()
+
+        print(repr(port))
+        # >>> PortValueObject(value=53)
+        ```
         """
         return cls(value=53)
 
@@ -98,6 +168,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: DHCP server port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.DHCP_SERVER()
+
+        print(repr(port))
+        # >>> PortValueObject(value=67)
+        ```
         """
         return cls(value=67)
 
@@ -108,6 +188,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: DHCP client port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.DHCP_CLIENT()
+
+        print(repr(port))
+        # >>> PortValueObject(value=68)
+        ```
         """
         return cls(value=68)
 
@@ -118,6 +208,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: HTTP port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.HTTP()
+
+        print(repr(port))
+        # >>> PortValueObject(value=80)
+        ```
         """
         return cls(value=80)
 
@@ -128,6 +228,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: POP3 port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.POP3()
+
+        print(repr(port))
+        # >>> PortValueObject(value=110)
+        ```
         """
         return cls(value=110)
 
@@ -138,6 +248,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: NTP port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.NTP()
+
+        print(repr(port))
+        # >>> PortValueObject(value=123)
+        ```
         """
         return cls(value=123)
 
@@ -148,6 +268,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: IMAP port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.IMAP()
+
+        print(repr(port))
+        # >>> PortValueObject(value=143)
+        ```
         """
         return cls(value=143)
 
@@ -158,6 +288,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: SNMP monitor port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.SNMP_MONITOR()
+
+        print(repr(port))
+        # >>> PortValueObject(value=161)
+        ```
         """
         return cls(value=161)
 
@@ -168,6 +308,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: SNMP trap port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.SNMP_TRAP()
+
+        print(repr(port))
+        # >>> PortValueObject(value=162)
+        ```
         """
         return cls(value=162)
 
@@ -178,6 +328,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: LDAP port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.LDAP()
+
+        print(repr(port))
+        # >>> PortValueObject(value=389)
+        ```
         """
         return cls(value=389)
 
@@ -188,6 +348,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: HTTPS port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.HTTPS()
+
+        print(repr(port))
+        # >>> PortValueObject(value=443)
+        ```
         """
         return cls(value=443)
 
@@ -198,6 +368,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: DoH port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.DoH()
+
+        print(repr(port))
+        # >>> PortValueObject(value=443)
+        ```
         """
         return cls(value=443)
 
@@ -208,6 +388,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: SMTPS port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.SMTPS()
+
+        print(repr(port))
+        # >>> PortValueObject(value=465)
+        ```
         """
         return cls(value=465)
 
@@ -218,6 +408,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: DoT port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.DoT()
+
+        print(repr(port))
+        # >>> PortValueObject(value=853)
+        ```
         """
         return cls(value=853)
 
@@ -228,6 +428,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: IMAPS port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.IMAPS()
+
+        print(repr(port))
+        # >>> PortValueObject(value=993)
+        ```
         """
         return cls(value=993)
 
@@ -238,6 +448,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: POP3S port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.POP3S()
+
+        print(repr(port))
+        # >>> PortValueObject(value=995)
+        ```
         """
         return cls(value=995)
 
@@ -248,6 +468,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: OpenVPN port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.OPENVPN()
+
+        print(repr(port))
+        # >>> PortValueObject(value=1194)
+        ```
         """
         return cls(value=1194)
 
@@ -258,6 +488,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: Microsoft SQL Server port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.MICROSOFT_SQL_SERVER()
+
+        print(repr(port))
+        # >>> PortValueObject(value=1433)
+        ```
         """
         return cls(value=1433)
 
@@ -268,6 +508,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: Oracle port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.ORACLE()
+
+        print(repr(port))
+        # >>> PortValueObject(value=1521)
+        ```
         """
         return cls(value=1521)
 
@@ -278,6 +528,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: MySQL port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.MYSQL()
+
+        print(repr(port))
+        # >>> PortValueObject(value=3306)
+        ```
         """
         return cls(value=3306)
 
@@ -288,6 +548,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: MariaDB port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.MARIADB()
+
+        print(repr(port))
+        # >>> PortValueObject(value=3306)
+        ```
         """
         return cls(value=3306)
 
@@ -298,6 +568,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: RDP port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.RDP()
+
+        print(repr(port))
+        # >>> PortValueObject(value=3389)
+        ```
         """
         return cls(value=3389)
 
@@ -308,6 +588,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: PostgreSQL port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.POSTGRESQL()
+
+        print(repr(port))
+        # >>> PortValueObject(value=5432)
+        ```
         """
         return cls(value=5432)
 
@@ -318,6 +608,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: Redis port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.REDIS()
+
+        print(repr(port))
+        # >>> PortValueObject(value=6379)
+        ```
         """
         return cls(value=6379)
 
@@ -328,6 +628,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: Minecraft port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.MINECRAFT()
+
+        print(repr(port))
+        # >>> PortValueObject(value=25565)
+        ```
         """
         return cls(value=25565)
 
@@ -338,6 +648,16 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: MongoDB port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.MONGODB()
+
+        print(repr(port))
+        # >>> PortValueObject(value=27017)
+        ```
         """
         return cls(value=27017)
 
@@ -348,5 +668,15 @@ class PortValueObject(IntegerValueObject):
 
         Returns:
             PortValueObject: WireGuard port value object.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import PortValueObject
+
+        port = PortValueObject.WIREGUARD()
+
+        print(repr(port))
+        # >>> PortValueObject(value=51820)
+        ```
         """
         return cls(value=51820)
