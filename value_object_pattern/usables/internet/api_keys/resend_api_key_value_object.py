@@ -11,6 +11,16 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 class ResendApiKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     ResendApiKeyValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet import ResendApiKeyValueObject
+
+    key = ResendApiKeyValueObject(value='re_c1tpEyD8_NKFusih9vKVQknRAQfmFcWCv')
+
+    print(repr(key))
+    # >>> ResendApiKeyValueObject(value=re_c1tpEyD8_NKFusih9vKVQknRAQfmFcWCv)
+    ```
     """
 
     __RESEND_API_KEY_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^re_[0-9A-Za-z-_]{30,}$')

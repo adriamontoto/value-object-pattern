@@ -9,6 +9,16 @@ from value_object_pattern.models import ValueObject
 class StringValueObject(ValueObject[str]):
     """
     StringValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import StringValueObject
+
+    string = StringValueObject(value='abcd1234')
+
+    print(repr(string))
+    # >>> StringValueObject(value='abcd1234')
+    ```
     """
 
     @validation(order=0)

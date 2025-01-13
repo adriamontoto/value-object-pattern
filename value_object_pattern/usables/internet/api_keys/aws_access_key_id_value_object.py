@@ -11,6 +11,16 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 class AwsAccessKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     AwsAccessKeyValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet import AwsAccessKeyValueObject
+
+    key = AwsAccessKeyValueObject(value='AKIAIOSFODNN7EXAMPLE')
+
+    print(repr(key))
+    # >>> AwsAccessKeyValueObject(value=AKIAIOSFODNN7EXAMPLE)
+    ```
     """
 
     __AWS_ACCESS_KEY_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^(AKIA|ASIA)[A-Z0-9]{16}$')

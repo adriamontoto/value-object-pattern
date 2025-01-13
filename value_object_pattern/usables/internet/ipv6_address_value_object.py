@@ -14,6 +14,16 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 class Ipv6AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     Ipv6AddressValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet import Ipv6AddressValueObject
+
+    ip = Ipv6AddressValueObject(value='e8f5:bbcf:f16d:8fc1:ab49:a3ae:36eb:b254')
+
+    print(repr(ip))
+    # >>> Ipv6AddressValueObject(value=e8f5:bbcf:f16d:8fc1:ab49:a3ae:36eb:b254)
+    ```
     """
 
     @process(order=0)
@@ -83,8 +93,7 @@ class Ipv6AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         except AddressValueError as error:
             raise ValueError(f'Ipv6AddressValueObject value <<<{value}>>> is not a valid IPv6 address.') from error
 
-    @classmethod
-    def is_reserved(cls, *, value: str) -> bool:
+    def is_reserved(self) -> bool:
         """
         Checks if the given IPv6 address is reserved.
 
@@ -93,16 +102,20 @@ class Ipv6AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
 
         Returns:
             bool: True if the given IPv6 address is reserved, False otherwise.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import Ipv6AddressValueObject
+
+        is_reserved = Ipv6AddressValueObject(value='800::').is_reserved()
+
+        print(is_reserved)
+        # >>> True
+        ```
         """
-        try:
-            value = cls._ipv6_address_normalize(value=value)
-            return cls._ipv6_address_validate(value=value).is_reserved
+        return self._ipv6_address_validate(value=self.value).is_reserved
 
-        except ValueError:
-            return False
-
-    @classmethod
-    def is_private(cls, *, value: str) -> bool:
+    def is_private(self) -> bool:
         """
         Checks if the given IPv6 address is private.
 
@@ -111,16 +124,20 @@ class Ipv6AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
 
         Returns:
             bool: True if the given IPv6 address is private, False otherwise.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import Ipv6AddressValueObject
+
+        is_private = Ipv6AddressValueObject(value='fd00::1').is_private()
+
+        print(is_private)
+        # >>> True
+        ```
         """
-        try:
-            value = cls._ipv6_address_normalize(value=value)
-            return cls._ipv6_address_validate(value=value).is_private
+        return self._ipv6_address_validate(value=self.value).is_private
 
-        except ValueError:
-            return False
-
-    @classmethod
-    def is_global(cls, *, value: str) -> bool:
+    def is_global(self) -> bool:
         """
         Checks if the given IPv6 address is global.
 
@@ -129,16 +146,20 @@ class Ipv6AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
 
         Returns:
             bool: True if the given IPv6 address is global, False otherwise.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import Ipv6AddressValueObject
+
+        is_global = Ipv6AddressValueObject(value='e8f5:bbcf:f16d:8fc1:ab49:a3ae:36eb:b254').is_global()
+
+        print(is_global)
+        # >>> True
+        ```
         """
-        try:
-            value = cls._ipv6_address_normalize(value=value)
-            return cls._ipv6_address_validate(value=value).is_global
+        return self._ipv6_address_validate(value=self.value).is_global
 
-        except ValueError:
-            return False
-
-    @classmethod
-    def is_multicast(cls, *, value: str) -> bool:
+    def is_multicast(self) -> bool:
         """
         Checks if the given IPv6 address is multicast.
 
@@ -147,16 +168,20 @@ class Ipv6AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
 
         Returns:
             bool: True if the given IPv6 address is multicast, False otherwise.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import Ipv6AddressValueObject
+
+        is_multicast = Ipv6AddressValueObject(value='ff02::1').is_multicast()
+
+        print(is_multicast)
+        # >>> True
+        ```
         """
-        try:
-            value = cls._ipv6_address_normalize(value=value)
-            return cls._ipv6_address_validate(value=value).is_multicast
+        return self._ipv6_address_validate(value=self.value).is_multicast
 
-        except ValueError:
-            return False
-
-    @classmethod
-    def is_unspecified(cls, *, value: str) -> bool:
+    def is_unspecified(self) -> bool:
         """
         Checks if the given IPv6 address is unspecified.
 
@@ -165,16 +190,20 @@ class Ipv6AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
 
         Returns:
             bool: True if the given IPv6 address is unspecified, False otherwise.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import Ipv6AddressValueObject
+
+        is_unspecified = Ipv6AddressValueObject(value='::').is_unspecified()
+
+        print(is_unspecified)
+        # >>> True
+        ```
         """
-        try:
-            value = cls._ipv6_address_normalize(value=value)
-            return cls._ipv6_address_validate(value=value).is_unspecified
+        return self._ipv6_address_validate(value=self.value).is_unspecified
 
-        except ValueError:
-            return False
-
-    @classmethod
-    def is_loopback(cls, *, value: str) -> bool:
+    def is_loopback(self) -> bool:
         """
         Checks if the given IPv6 address is loopback.
 
@@ -183,16 +212,20 @@ class Ipv6AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
 
         Returns:
             bool: True if the given IPv6 address is loopback, False otherwise.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import Ipv6AddressValueObject
+
+        is_loopback = Ipv6AddressValueObject(value='::1').is_loopback()
+
+        print(is_loopback)
+        # >>> True
+        ```
         """
-        try:
-            value = cls._ipv6_address_normalize(value=value)
-            return cls._ipv6_address_validate(value=value).is_loopback
+        return self._ipv6_address_validate(value=self.value).is_loopback
 
-        except ValueError:
-            return False
-
-    @classmethod
-    def is_link_local(cls, *, value: str) -> bool:
+    def is_link_local(self) -> bool:
         """
         Checks if the given IPv6 address is link-local.
 
@@ -201,30 +234,55 @@ class Ipv6AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
 
         Returns:
             bool: True if the given IPv6 address is link-local, False otherwise.
-        """
-        try:
-            value = cls._ipv6_address_normalize(value=value)
-            return cls._ipv6_address_validate(value=value).is_link_local
 
-        except ValueError:
-            return False
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import Ipv6AddressValueObject
+
+        is_link_local = Ipv6AddressValueObject(value='fe80::1').is_link_local()
+
+        print(is_link_local)
+        # >>> True
+        ```
+        """
+        return self._ipv6_address_validate(value=self.value).is_link_local
 
     @classmethod
-    def NULL(cls) -> Ipv6AddressValueObject:
+    def UNSPECIFIED(cls) -> Ipv6AddressValueObject:
         """
-        Returns the null IPv6 address.
+        Returns the unspecified IPv6 address (::).
 
         Returns:
-            Ipv6AddressValueObject: Null IPv6 address.
+            Ipv6AddressValueObject: Unspecified IPv6 address.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import Ipv6AddressValueObject
+
+        ip = Ipv6AddressValueObject.UNSPECIFIED()
+
+        print(repr(ip))
+        # >>> Ipv6AddressValueObject(value=::)
+        ```
         """
         return cls(value='::')
 
     @classmethod
     def LOOPBACK(cls) -> Ipv6AddressValueObject:
         """
-        Returns the loopback IPv6 address.
+        Returns the loopback IPv6 address (::1).
 
         Returns:
             Ipv6AddressValueObject: Loopback IPv6 address.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import Ipv6AddressValueObject
+
+        ip = Ipv6AddressValueObject.LOOPBACK()
+
+        print(repr(ip))
+        # >>> Ipv6AddressValueObject(value=::1)
+        ```
         """
         return cls(value='::1')

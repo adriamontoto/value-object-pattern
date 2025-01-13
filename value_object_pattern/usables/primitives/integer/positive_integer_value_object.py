@@ -10,6 +10,16 @@ from .integer_value_object import IntegerValueObject
 class PositiveIntegerValueObject(IntegerValueObject):
     """
     PositiveIntegerValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import PositiveIntegerValueObject
+
+    integer = PositiveIntegerValueObject(value=1)
+
+    print(repr(integer))
+    # >>> PositiveIntegerValueObject(value=1)
+    ```
     """
 
     @validation(order=0)

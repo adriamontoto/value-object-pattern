@@ -9,6 +9,16 @@ from value_object_pattern.models import ValueObject
 class IntegerValueObject(ValueObject[int]):
     """
     IntegerValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import IntegerValueObject
+
+    integer = IntegerValueObject(value=1)
+
+    print(repr(integer))
+    # >>> IntegerValueObject(value=1)
+    ```
     """
 
     @validation(order=0)

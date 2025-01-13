@@ -11,6 +11,18 @@ from value_object_pattern.models import ValueObject
 class UuidValueObject(ValueObject[UUID]):
     """
     UuidValueObject value object.
+
+    Example:
+    ```python
+    from uuid import uuid4
+
+    from value_object_pattern.usables.identifiers import UuidValueObject
+
+    uuid = UuidValueObject(value=uuid4())
+
+    print(repr(uuid))
+    # >>> UuidValueObject(value=9908bb2d-54b4-426f-bef0-b09aa978ed21)
+    ```
     """
 
     @validation(order=0)

@@ -11,6 +11,16 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 class GitHubPersonalAccessTokenValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     GitHubPersonalAccessTokenValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet import GitHubPersonalAccessTokenValueObject
+
+    key = GitHubPersonalAccessTokenValueObject(value='ghp_cgq4ZrHmFu0lLPl7ajKAwgMPnT5zhF000000')
+
+    print(repr(key))
+    # >>> GitHubPersonalAccessTokenValueObject(value=ghp_cgq4ZrHmFu0lLPl7ajKAwgMPnT5zhF000000)
+    ```
     """
 
     __GITHUB_PERSONAL_ACCESS_TOKEN_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^ghp_[0-9A-Za-z]{36}$')

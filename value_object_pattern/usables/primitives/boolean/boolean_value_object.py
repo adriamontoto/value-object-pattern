@@ -9,6 +9,16 @@ from value_object_pattern.models import ValueObject
 class BooleanValueObject(ValueObject[bool]):
     """
     BooleanValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import BooleanValueObject
+
+    boolean = BooleanValueObject(value=True)
+
+    print(repr(boolean))
+    # >>> BooleanValueObject(value=True)
+    ```
     """
 
     @validation(order=0)

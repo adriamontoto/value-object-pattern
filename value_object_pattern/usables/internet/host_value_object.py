@@ -13,6 +13,16 @@ from .ipv6_address_value_object import Ipv6AddressValueObject
 class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     HostValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet import HostValueObject
+
+    key = HostValueObject(value='github.com')
+
+    print(repr(key))
+    # >>> HostValueObject(value=github.com)
+    ```
     """
 
     @process(order=0)
@@ -58,6 +68,16 @@ class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
 
         Returns:
             bool: True if the value is a host, False otherwise.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import HostValueObject
+
+        is_domain = HostValueObject.is_domain(value='github.com')
+
+        print(is_domain)
+        # >>> True
+        ```
         """
         try:
             DomainValueObject(value=value)
@@ -76,6 +96,16 @@ class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
 
         Returns:
             bool: True if the value is an IPv4 host, False otherwise.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import HostValueObject
+
+        is_ipv4 = HostValueObject.is_ipv4_address(value='1.1.1.1')
+
+        print(is_ipv4)
+        # >>> True
+        ```
         """
         try:
             Ipv4AddressValueObject(value=value)
@@ -94,6 +124,16 @@ class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
 
         Returns:
             bool: True if the value is an IPv6 host, False otherwise.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import HostValueObject
+
+        is_ipv6 = HostValueObject.is_ipv6_address(value='a1c4:c052:a98e:8da4:301a:bd2a:3b36:36b4')
+
+        print(is_ipv6)
+        # >>> True
+        ```
         """
         try:
             Ipv6AddressValueObject(value=value)

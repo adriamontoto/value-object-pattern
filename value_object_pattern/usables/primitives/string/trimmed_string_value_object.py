@@ -10,6 +10,16 @@ from .string_value_object import StringValueObject
 class TrimmedStringValueObject(StringValueObject):
     """
     TrimmedStringValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import TrimmedStringValueObject
+
+    string = TrimmedStringValueObject(value='abcd1234')
+
+    print(repr(string))
+    # >>> TrimmedStringValueObject(value='abcd1234')
+    ```
     """
 
     @validation(order=0)
