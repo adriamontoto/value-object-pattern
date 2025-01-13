@@ -82,8 +82,8 @@ class DatetimeValueObject(ValueObject[datetime]):
         Determines whether the stored datetime value is today's datetime.
 
         Args:
-            reference_datetime (datetime | None, optional): The datetime to compare against. If None, the current datetime
-            (UTC) is used.
+            reference_datetime (datetime | None, optional): The datetime to compare against. If None, the current
+            datetime (UTC) is used.
 
         Raises:
             TypeError: If the reference_datetime is not a datetime.
