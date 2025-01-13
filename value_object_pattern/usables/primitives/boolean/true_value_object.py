@@ -10,6 +10,16 @@ from .boolean_value_object import BooleanValueObject
 class TrueValueObject(BooleanValueObject):
     """
     TrueValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import BooleanValueObject
+
+    boolean = BooleanValueObject(value=True)
+
+    print(repr(boolean))
+    # >>> BooleanValueObject(value=True)
+    ```
     """
 
     @validation(order=0)

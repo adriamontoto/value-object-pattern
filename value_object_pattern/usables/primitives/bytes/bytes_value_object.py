@@ -9,6 +9,16 @@ from value_object_pattern.models import ValueObject
 class BytesValueObject(ValueObject[bytes]):
     """
     BytesValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import BytesValueObject
+
+    bytes_ = BytesValueObject(value=b'aad30be7ce99fb0fe411')
+
+    print(repr(bytes_))
+    # >>> BytesValueObject(value=b'aad30be7ce99fb0fe411')
+    ```
     """
 
     @validation(order=0)

@@ -10,6 +10,16 @@ from .url_value_object import UrlValueObject, split_url
 class HttpUrlValueObject(UrlValueObject):
     """
     HttpUrlValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet import HttpUrlValueObject
+
+    url = HttpUrlValueObject(value='http://github.com/adriamontoto/value-object-pattern')
+
+    print(repr(url))
+    # >>> HttpUrlValueObject(value=http://github.com/adriamontoto/value-object-pattern)
+    ```
     """
 
     @validation(order=0)

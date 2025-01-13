@@ -34,6 +34,19 @@ def get_top_level_domains() -> set[str]:
 class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     DomainValueObject value object.
+
+    References:
+        https://data.iana.org/TLD/tlds-alpha-by-domain.txt
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet import DomainValueObject
+
+    key = DomainValueObject(value='github.com')
+
+    print(repr(key))
+    # >>> DomainValueObject(value=github.com)
+    ```
     """
 
     __DOMAIN_VALUE_OBJECT_MIN_LABEL_LENGTH: int = 1

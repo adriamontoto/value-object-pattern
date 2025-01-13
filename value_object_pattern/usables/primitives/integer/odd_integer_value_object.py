@@ -10,6 +10,16 @@ from .integer_value_object import IntegerValueObject
 class OddIntegerValueObject(IntegerValueObject):
     """
     OddIntegerValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import IntegerValueObject
+
+    integer = IntegerValueObject(value=1)
+
+    print(repr(integer))
+    # >>> IntegerValueObject(value=1)
+    ```
     """
 
     @validation(order=0)

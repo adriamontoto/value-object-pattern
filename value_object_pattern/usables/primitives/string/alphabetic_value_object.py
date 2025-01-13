@@ -10,6 +10,16 @@ from .string_value_object import StringValueObject
 class AlphabeticStringValueObject(StringValueObject):
     """
     AlphabeticStringValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import AlphabeticStringValueObject
+
+    string = AlphabeticStringValueObject(value='abcd')
+
+    print(repr(string))
+    # >>> AlphabeticStringValueObject(value='abcd')
+    ```
     """
 
     @validation(order=0)

@@ -3,8 +3,6 @@
 Ipv6NetworkValueObject value object.
 """
 
-from __future__ import annotations
-
 from ipaddress import AddressValueError, IPv6Network, NetmaskValueError
 
 from value_object_pattern.decorators import process, validation
@@ -16,6 +14,16 @@ from .ipv6_address_value_object import Ipv6AddressValueObject
 class Ipv6NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     Ipv6NetworkValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet import Ipv6NetworkValueObject
+
+    network = Ipv6NetworkValueObject(value='e8f5:bbcf:f16d:8fc1:ab49:a3ae:36eb:b254')
+
+    print(repr(network))
+    # >>> Ipv6NetworkValueObject(value=e8f5:bbcf:f16d:8fc1:ab49:a3ae:36eb:b254/128)
+    ```
     """
 
     @process(order=0)
@@ -64,194 +72,72 @@ class Ipv6NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
 
         except NetmaskValueError as error:
             raise ValueError(f'Ipv6NetworkValueObject value <<<{value}>>> has an invalid netmask.') from error
+
         except (AddressValueError, ValueError) as error:
             raise ValueError(f'Ipv6NetworkValueObject value <<<{value}>>> is not a valid IPv6 network.') from error
 
-    @classmethod
-    def get_network(cls, *, value: str) -> Ipv6AddressValueObject:
+    def get_network(self) -> Ipv6AddressValueObject:
         """
         Returns the network of the given IPv6 network.
 
         Args:
             value (str): IPv6 network.
 
-        Raises:
-            ValueError: If the value is not a valid IPv6 network.
-            ValueError: If the value has an invalid netmask.
-
         Returns:
             Ipv6AddressValueObject: The network IPv6 address.
-        """
-        return Ipv6AddressValueObject(value=str(object=cls._ipv6_network_validate(value=value).network_address))
 
-    @classmethod
-    def get_mask(cls, *, value: str) -> int:
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import Ipv6NetworkValueObject
+
+        ip = Ipv6NetworkValueObject(value='fd5b:207::/48').get_network()
+
+        print(repr(ip))
+        # >>> Ipv6AddressValueObject(value=fd5b:207::)
+        ```
+        """
+        return Ipv6AddressValueObject(value=str(object=self._ipv6_network_validate(value=self.value).network_address))
+
+    def get_mask(self) -> int:
         """
         Returns the mask of the given IPv6 network.
 
         Args:
             value (str): IPv6 network.
 
-        Raises:
-            ValueError: If the value is not a valid IPv6 network.
-            ValueError: If the value has an invalid netmask.
-
         Returns:
             int: The network mask.
-        """
-        return cls._ipv6_network_validate(value=value).prefixlen
 
-    @classmethod
-    def get_number_addresses(cls, *, value: str) -> int:
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import Ipv6NetworkValueObject
+
+        mask = Ipv6NetworkValueObject(value='fd5b:207::/48').get_mask()
+
+        print(mask)
+        # >>> 48
+        ```
+        """
+        return self._ipv6_network_validate(value=self.value).prefixlen
+
+    def get_number_addresses(self) -> int:
         """
         Returns the number of addresses of the given IPv6 network.
 
         Args:
             value (str): IPv6 network.
 
-        Raises:
-            ValueError: If the value is not a valid IPv6 network.
-            ValueError: If the value has an invalid netmask.
-
         Returns:
             int: The number of addresses.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import Ipv6NetworkValueObject
+
+        addresses = Ipv6NetworkValueObject(value='fd5b:207::/48').get_number_addresses()
+
+        print(addresses)
+        # >>> 1208925819614629174706176
+        ```
         """
-        return cls._ipv6_network_validate(value=value).num_addresses
-
-    @classmethod
-    def is_reserved(cls, *, value: str) -> bool:
-        """
-        Checks if the given IPv6 network is reserved.
-
-        Args:
-            value (str): IPv6 network.
-
-        Returns:
-            bool: True if the given IPv6 network is reserved, False otherwise.
-        """
-        try:
-            return cls._ipv6_network_validate(value=value).is_reserved
-
-        except ValueError:
-            return False
-
-    @classmethod
-    def is_private(cls, *, value: str) -> bool:
-        """
-        Checks if the given IPv6 network is private.
-
-        Args:
-            value (str): IPv6 network.
-
-        Returns:
-            bool: True if the given IPv6 network is private, False otherwise.
-        """
-        try:
-            return cls._ipv6_network_validate(value=value).is_private
-
-        except ValueError:
-            return False
-
-    @classmethod
-    def is_global(cls, *, value: str) -> bool:
-        """
-        Checks if the given IPv6 network is global.
-
-        Args:
-            value (str): IPv6 network.
-
-        Returns:
-            bool: True if the given IPv6 network is global, False otherwise.
-        """
-        try:
-            return cls._ipv6_network_validate(value=value).is_global
-        except ValueError:
-            return False
-
-    @classmethod
-    def is_multicast(cls, *, value: str) -> bool:
-        """
-        Checks if the given IPv6 network is multicast.
-
-        Args:
-            value (str): IPv6 network.
-
-        Returns:
-            bool: True if the given IPv6 network is multicast, False otherwise.
-        """
-        try:
-            return cls._ipv6_network_validate(value=value).is_multicast
-
-        except ValueError:
-            return False
-
-    @classmethod
-    def is_unspecified(cls, *, value: str) -> bool:
-        """
-        Checks if the given IPv6 network is unspecified.
-
-        Args:
-            value (str): IPv6 network.
-
-        Returns:
-            bool: True if the given IPv6 network is unspecified, False otherwise.
-        """
-        try:
-            return cls._ipv6_network_validate(value=value).is_unspecified
-
-        except ValueError:
-            return False
-
-    @classmethod
-    def is_loopback(cls, *, value: str) -> bool:
-        """
-        Checks if the given IPv6 network is loopback.
-
-        Args:
-            value (str): IPv6 network.
-
-        Returns:
-            bool: True if the given IPv6 network is loopback, False otherwise.
-        """
-        try:
-            return cls._ipv6_network_validate(value=value).is_loopback
-
-        except ValueError:
-            return False
-
-    @classmethod
-    def is_link_local(cls, *, value: str) -> bool:
-        """
-        Checks if the given IPv6 network is link-local.
-
-        Args:
-            value (str): IPv6 network.
-
-        Returns:
-            bool: True if the given IPv6 network is link-local, False otherwise.
-        """
-        try:
-            return cls._ipv6_network_validate(value=value).is_link_local
-
-        except ValueError:
-            return False
-
-    @classmethod
-    def UNSPECIFIED(cls) -> Ipv6NetworkValueObject:
-        """
-        Returns the unspecified IPv6 network.
-
-        Returns:
-            Ipv6NetworkValueObject: Unspecified IPv6 network.
-        """
-        return cls(value='::/128')
-
-    @classmethod
-    def LOOPBACK(cls) -> Ipv6NetworkValueObject:
-        """
-        Returns the loopback IPv6 network.
-
-        Returns:
-            Ipv6NetworkValueObject: Loopback IPv6 network.
-        """
-        return cls(value='::1/128')
+        return self._ipv6_network_validate(value=self.value).num_addresses

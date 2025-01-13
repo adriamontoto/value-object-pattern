@@ -10,6 +10,16 @@ from .string_value_object import StringValueObject
 class UppercaseStringValueObject(StringValueObject):
     """
     UppercaseStringValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import UppercaseStringValueObject
+
+    string = UppercaseStringValueObject(value='ABCD1234')
+
+    print(repr(string))
+    # >>> UppercaseStringValueObject(value='ABCD1234')
+    ```
     """
 
     @validation(order=0)

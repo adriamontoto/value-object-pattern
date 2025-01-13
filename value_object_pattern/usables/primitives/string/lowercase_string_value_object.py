@@ -10,6 +10,16 @@ from .string_value_object import StringValueObject
 class LowercaseStringValueObject(StringValueObject):
     """
     LowercaseStringValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import LowercaseStringValueObject
+
+    string = LowercaseStringValueObject(value='abcd1234')
+
+    print(repr(string))
+    # >>> LowercaseStringValueObject(value='abcd1234')
+    ```
     """
 
     @validation(order=0)

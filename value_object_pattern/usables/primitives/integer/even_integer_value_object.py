@@ -10,6 +10,16 @@ from .integer_value_object import IntegerValueObject
 class EvenIntegerValueObject(IntegerValueObject):
     """
     EvenIntegerValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import EvenIntegerValueObject
+
+    integer = EvenIntegerValueObject(value=2)
+
+    print(repr(integer))
+    # >>> EvenIntegerValueObject(value=2)
+    ```
     """
 
     @validation(order=0)

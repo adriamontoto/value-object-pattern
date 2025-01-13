@@ -11,6 +11,16 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 class OpenaiApiKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     OpenaiApiKeyValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet import OpenaiApiKeyValueObject
+
+    key = OpenaiApiKeyValueObject(value='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')
+
+    print(repr(key))
+    # >>> OpenaiApiKeyValueObject(value=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)
+    ```
     """
 
     __OPENAI_API_KEY_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^sk-[A-Za-z0-9]{20}T3BlbkFJ[A-Za-z0-9]{20}$')  # noqa: E501  # fmt: skip

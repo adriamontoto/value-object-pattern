@@ -34,6 +34,19 @@ def get_aws_cloud_regions() -> set[str]:
 class AwsCloudRegionValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     AwsCloudRegionValueObject value object.
+
+    References:
+        https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet import AwsCloudRegionValueObject
+
+    key = AwsCloudRegionValueObject(value='us-east-1')
+
+    print(repr(key))
+    # >>> AwsCloudRegionValueObject(value=us-east-1)
+    ```
     """
 
     @process(order=0)

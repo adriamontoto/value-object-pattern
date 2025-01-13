@@ -11,6 +11,16 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 class AwsSecretAccessKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     AwsSecretAccessKeyValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet import AwsSecretAccessKeyValueObject
+
+    key = AwsSecretAccessKeyValueObject(value='wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY')
+
+    print(repr(key))
+    # >>> AwsSecretAccessKeyValueObject(value=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY)
+    ```
     """
 
     __AWS_SECRET_ACCESS_KEY_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^[A-Za-z0-9/+=]{40}$')

@@ -10,6 +10,16 @@ from .string_value_object import StringValueObject
 class NotEmptyStringValueObject(StringValueObject):
     """
     NotEmptyStringValueObject value object.
+
+    Example:
+    ```python
+    from value_object_pattern.usables import NotEmptyStringValueObject
+
+    string = NotEmptyStringValueObject(value='abcd1234')
+
+    print(repr(string))
+    # >>> NotEmptyStringValueObject(value='abcd1234')
+    ```
     """
 
     @validation(order=0)
