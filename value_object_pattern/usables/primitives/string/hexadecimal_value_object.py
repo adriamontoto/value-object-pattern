@@ -17,14 +17,14 @@ class HexadecimalStringValueObject(StringValueObject):
     ```python
     from value_object_pattern.usables import HexadecimalStringValueObject
 
-    string = HexadecimalStringValueObject(value='abcd1234')
+    string = HexadecimalStringValueObject(value='64e9740a')
 
     print(repr(string))
-    # >>> HexadecimalStringValueObject(value='abcd1234')
+    # >>> HexadecimalStringValueObject(value='64e9740a')
     ```
     """
 
-    __HEXADECIMAL_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^[a-fA-F0-9]+$')
+    __HEXADECIMAL_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^(0x|0X)?[a-fA-F0-9]+$')
 
     @validation(order=0)
     def _ensure_value_is_hexadecimal(self, value: str) -> None:

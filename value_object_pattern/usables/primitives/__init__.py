@@ -11,6 +11,10 @@ from .integer import (
 from .string import (
     AlphabeticStringValueObject,
     AlphanumericStringValueObject,
+    Base32StringValueObject,
+    Base56StringValueObject,
+    Base58StringValueObject,
+    Base64StringValueObject,
     DigitStringValueObject,
     HexadecimalStringValueObject,
     LowercaseStringValueObject,
@@ -24,6 +28,10 @@ from .string import (
 __all__ = (
     'AlphabeticStringValueObject',
     'AlphanumericStringValueObject',
+    'Base32StringValueObject',
+    'Base56StringValueObject',
+    'Base58StringValueObject',
+    'Base64StringValueObject',
     'BooleanValueObject',
     'BytesValueObject',
     'DigitStringValueObject',
