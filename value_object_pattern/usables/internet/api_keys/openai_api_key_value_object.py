@@ -23,7 +23,7 @@ class OpenaiApiKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObjec
     ```
     """
 
-    __OPENAI_API_KEY_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^sk-[A-Za-z0-9]{20}T3BlbkFJ[A-Za-z0-9]{20}$')  # noqa: E501  # fmt: skip
+    __OPENAI_API_KEY_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^sk-[a-zA-Z0-9]{20}T3BlbkFJ[a-zA-Z0-9]{20}$')  # noqa: E501  # fmt: skip
 
     @validation(order=0)
     def _ensure_value_is_valid_openai_api_key(self, value: str) -> None:

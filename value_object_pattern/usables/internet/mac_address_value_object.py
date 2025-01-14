@@ -34,15 +34,15 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
     """
 
     __MAC_ADDRESS_VALUE_OBJECT_RAW_FORMAT_SEPARATOR: str = ''
-    __MAC_ADDRESS_VALUE_OBJECT_RAW_REGEX: Pattern[str] = re_compile(pattern=r'^[0-9A-F]{12}$')
+    __MAC_ADDRESS_VALUE_OBJECT_RAW_REGEX: Pattern[str] = re_compile(pattern=r'^[A-F0-9]{12}$')
     __MAC_ADDRESS_VALUE_OBJECT_UNIVERSAL_SEPARATOR: str = ':'
-    __MAC_ADDRESS_VALUE_OBJECT_UNIVERSAL_REGEX: Pattern[str] = re_compile(pattern=r'^([0-9A-F]{2}:){5}[0-9A-F]{2}$')
+    __MAC_ADDRESS_VALUE_OBJECT_UNIVERSAL_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{2}:){5}[A-F0-9]{2}$')
     __MAC_ADDRESS_VALUE_OBJECT_WINDOWS_FORMAT_SEPARATOR: str = '-'
-    __MAC_ADDRESS_VALUE_OBJECT_WINDOWS_REGEX: Pattern[str] = re_compile(pattern=r'^([0-9A-F]{2}-){5}[0-9A-F]{2}$')
+    __MAC_ADDRESS_VALUE_OBJECT_WINDOWS_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{2}-){5}[A-F0-9]{2}$')
     __MAC_ADDRESS_VALUE_OBJECT_CISCO_FORMAT_SEPARATOR: str = '.'
-    __MAC_ADDRESS_VALUE_OBJECT_CISCO_REGEX: Pattern[str] = re_compile(pattern=r'^([0-9A-F]{4}\.){2}[0-9A-F]{4}$')
+    __MAC_ADDRESS_VALUE_OBJECT_CISCO_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{4}\.){2}[0-9A-F]{4}$')
     __MAC_ADDRESS_VALUE_OBJECT_SPACE_FORMAT_SEPARATOR: str = ' '
-    __MAC_ADDRESS_VALUE_OBJECT_SPACE_REGEX: Pattern[str] = re_compile(pattern=r'^([0-9A-F]{2} ){5}[0-9A-F]{2}$')
+    __MAC_ADDRESS_VALUE_OBJECT_SPACE_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{2} ){5}[A-F0-9]{2}$')
 
     @process(order=0)
     def _ensure_value_is_uppercase(self, value: str) -> str:

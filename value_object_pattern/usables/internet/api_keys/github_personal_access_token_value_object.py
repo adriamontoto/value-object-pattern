@@ -23,7 +23,7 @@ class GitHubPersonalAccessTokenValueObject(NotEmptyStringValueObject, TrimmedStr
     ```
     """
 
-    __GITHUB_PERSONAL_ACCESS_TOKEN_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^ghp_[0-9A-Za-z]{36}$')
+    __GITHUB_PERSONAL_ACCESS_TOKEN_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^ghp_[a-zA-Z0-9]{36}$')
 
     @validation(order=0)
     def _ensure_value_is_valid_github_pat(self, value: str) -> None:
