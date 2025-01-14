@@ -1,5 +1,9 @@
 from .alphabetic_value_object import AlphabeticStringValueObject
 from .alphanumeric_value_object import AlphanumericStringValueObject
+from .base32_value_object import Base32StringValueObject
+from .base56_value_object import Base56StringValueObject
+from .base58_value_object import Base58StringValueObject
+from .base64_value_object import Base64StringValueObject
 from .digit_value_object import DigitStringValueObject
 from .hexadecimal_value_object import HexadecimalStringValueObject
 from .lowercase_string_value_object import LowercaseStringValueObject
@@ -12,6 +16,10 @@ from .uppercase_string_value_object import UppercaseStringValueObject
 __all__ = (
     'AlphabeticStringValueObject',
     'AlphanumericStringValueObject',
+    'Base32StringValueObject',
+    'Base56StringValueObject',
+    'Base58StringValueObject',
+    'Base64StringValueObject',
     'DigitStringValueObject',
     'HexadecimalStringValueObject',
     'LowercaseStringValueObject',
