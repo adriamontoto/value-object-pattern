@@ -114,11 +114,11 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
-    __URL_VALUE_OBJECT_SCHEME_REGEX: Pattern[str] = re_compile(pattern=r'^[A-Za-z][A-Za-z0-9\+\-\.]+$')
-    __URL_VALUE_OBJECT_USER_INFORMATION_REGEX: Pattern[str] = re_compile(pattern=r'^[A-Za-z0-9\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]+$')  # noqa: E501  # fmt: skip
-    __URL_VALUE_OBJECT_PATH_REGEX: Pattern[str] = re_compile(pattern=r'^\/(?:[A-Za-z0-9\/\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]|%[0-9A-Fa-f]{2})*$')  # noqa: E501  # fmt: skip
-    __URL_VALUE_OBJECT_QUERY_REGEX: Pattern[str] = re_compile(pattern=r'^(?:[A-Za-z0-9\/\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]|%[0-9A-Fa-f]{2})*$')  # noqa: E501  # fmt: skip
-    __URL_VALUE_OBJECT_FRAGMENT_REGEX: Pattern[str] = re_compile(pattern=r'^(?:[A-Za-z0-9\/\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]|%[0-9A-Fa-f]{2})*$')  # noqa: E501  # fmt: skip
+    __URL_VALUE_OBJECT_SCHEME_REGEX: Pattern[str] = re_compile(pattern=r'^[a-zA-Z][a-zA-Z0-9\+\-\.]+$')
+    __URL_VALUE_OBJECT_USER_INFORMATION_REGEX: Pattern[str] = re_compile(pattern=r'^[a-zA-Z0-9\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]+$')  # noqa: E501  # fmt: skip
+    __URL_VALUE_OBJECT_PATH_REGEX: Pattern[str] = re_compile(pattern=r'^\/(?:[a-zA-Z0-9\/\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]|%[a-fA-F0-9]{2})*$')  # noqa: E501  # fmt: skip
+    __URL_VALUE_OBJECT_QUERY_REGEX: Pattern[str] = re_compile(pattern=r'^(?:[a-zA-Z0-9\/\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]|%[a-fA-F0-9]{2})*$')  # noqa: E501  # fmt: skip
+    __URL_VALUE_OBJECT_FRAGMENT_REGEX: Pattern[str] = re_compile(pattern=r'^(?:[a-zA-Z0-9\/\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]|%[a-fA-F0-9]{2})*$')  # noqa: E501  # fmt: skip
 
     @process(order=0)
     def _ensure_url_is_lower(self, value: str) -> str:

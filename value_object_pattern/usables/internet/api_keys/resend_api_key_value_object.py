@@ -23,7 +23,7 @@ class ResendApiKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObjec
     ```
     """
 
-    __RESEND_API_KEY_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^re_[0-9A-Za-z-_]{30,}$')
+    __RESEND_API_KEY_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^re_[a-zA-Z0-9-_]{30,}$')
 
     @validation(order=0)
     def _ensure_value_is_valid_resend_api_key(self, value: str) -> None:

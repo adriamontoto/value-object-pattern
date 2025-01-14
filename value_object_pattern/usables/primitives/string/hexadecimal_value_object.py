@@ -11,20 +11,20 @@ from .string_value_object import StringValueObject
 
 class HexadecimalStringValueObject(StringValueObject):
     """
-    HexadecimalStringValueObject value object.
+    HexadecimalStringValueObject value object (Hexadecimal or Base16).
 
     Example:
     ```python
     from value_object_pattern.usables import HexadecimalStringValueObject
 
-    string = HexadecimalStringValueObject(value='1a2b3c')
+    string = HexadecimalStringValueObject(value='abcd1234')
 
     print(repr(string))
-    # >>> HexadecimalStringValueObject(value='1a2b3c')
+    # >>> HexadecimalStringValueObject(value='abcd1234')
     ```
     """
 
-    __HEXADECIMAL_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^[0-9a-fA-F]+$')
+    __HEXADECIMAL_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^[a-fA-F0-9]+$')
 
     @validation(order=0)
     def _ensure_value_is_hexadecimal(self, value: str) -> None:

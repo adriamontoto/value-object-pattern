@@ -23,7 +23,7 @@ class AwsSecretAccessKeyValueObject(NotEmptyStringValueObject, TrimmedStringValu
     ```
     """
 
-    __AWS_SECRET_ACCESS_KEY_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^[A-Za-z0-9/+=]{40}$')
+    __AWS_SECRET_ACCESS_KEY_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^[a-zA-Z0-9/+=]{40}$')
 
     @validation(order=0)
     def _ensure_value_is_valid_aws_secret_access_key(self, value: str) -> None:
