@@ -64,7 +64,7 @@ def process(order: int | None = None) -> Callable[[Callable[..., T]], Callable[.
         function._is_process = True  # type: ignore[attr-defined]
         function._order = function.__name__ if order is None else str(order)  # type: ignore[attr-defined]
 
-        @wraps(function)
+        @wraps(wrapped=function)
         def wrapper(*args: tuple[Any, ...], **kwargs: dict[str, Any]) -> T:
             """
             Wrapper for process.
