@@ -19,10 +19,10 @@ def get_aws_cloud_regions() -> set[str]:
         set[str]: The AWS cloud regions.
 
     References:
-        https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions
+        AWS Regions: https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html#available-regions
     """
-    url = 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions'
-    with urlopen(url=url) as response:
+    url = 'https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html#available-regions'
+    with urlopen(url=url) as response:  # noqa: S310
         content = response.read().decode('utf-8')
 
     pattern = r'<tr>\s*<td[^>]*tabindex="-1">(.*?)</td>\s*<td[^>]*tabindex="-1">.*?</td>\s*<td[^>]*tabindex="-1">.*?</td>\s*</tr>'  # noqa: E501
@@ -36,7 +36,7 @@ class AwsCloudRegionValueObject(NotEmptyStringValueObject, TrimmedStringValueObj
     AwsCloudRegionValueObject value object.
 
     References:
-        https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions
+        AWS Regions: https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html#available-regions
 
     Example:
     ```python
