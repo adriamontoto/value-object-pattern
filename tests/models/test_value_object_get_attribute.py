@@ -25,6 +25,16 @@ def test_value_object_get_attribute() -> None:
 
 
 @mark.unit_testing
+def test_value_object_get_title_attribute() -> None:
+    """
+    Test that a value object title can be accessed.
+    """
+    value_object = IntegerValueObject(value=IntegerMother.create())
+
+    value_object.title  # noqa: B018
+
+
+@mark.unit_testing
 def test_value_object_get_protected_attribute() -> None:
     """
     Test that a value object protected value can be accessed.

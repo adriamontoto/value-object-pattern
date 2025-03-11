@@ -34,17 +34,24 @@ class ValueObject(ABC, Generic[T]):
     ```
     """
 
-    __slots__ = ('_value',)
-    __match_args__ = ('_value',)
+    __slots__ = ('_title', '_value')
+    __match_args__ = ('_title', '_value')
 
     _value: T
+    _title: str
 
-    def __init__(self, *, value: T) -> None:
+    def __init__(self, *, value: T, title: str | None = None) -> None:
         """
         ValueObject value object constructor.
 
         Args:
-            value (T): Value.
+            value (T): The value to store in the value object.
+            title (str | None, optional): The title of the value object when raising exceptions, if title is None, the
+            class name is used instead. Defaults to None.
+
+        Raises:
+            TypeError: If the title is not a string.
+            ValueError: If the title contains leading or trailing whitespaces.
 
         Example:
         ```python
@@ -60,6 +67,17 @@ class ValueObject(ABC, Generic[T]):
         # >>> IntegerValueObject(value=10)
         ```
         """
+        if title is None:
+            title = self.__class__.__name__
+
+        if type(title) is not str:
+            raise TypeError(f'ValueObject value <<<{title}>>> must be a string. Got <<<{type(title).__name__}>>> instead.')  # noqa: E501  # fmt: skip
+
+        if title.strip() != title:
+            raise ValueError(f'ValueObject title <<<{title}>>> contains leading or trailing whitespaces. Only trimmed values are allowed.')  # noqa: E501  # fmt: skip
+
+        object.__setattr__(self, '_title', title)
+
         self._validate(value=value)
         value = self._process(value=value)
 
@@ -194,7 +212,8 @@ class ValueObject(ABC, Generic[T]):
 
     def _process(self, value: T) -> T:
         """
-        This method processes the value object value after validation.
+        This method processes the value object value after validation. It ensure that the value object is stored in the
+        correct format, by executing all methods with the `@process` decorator.
 
         Args:
             value (T): The value object value.
@@ -217,12 +236,54 @@ class ValueObject(ABC, Generic[T]):
         Args:
             value (T): The value object value.
         """
-        methods = self._gather_decorated_methods(instance=self, attribute_name='_is_validation')
-        while methods:
-            method: Callable[..., T] = methods.popleft().__get__(self, self.__class__)
-            method(value=value)
+        try:
+            methods = self._gather_decorated_methods(instance=self, attribute_name='_is_validation')
+            while methods:
+                method: Callable[..., T] = methods.popleft().__get__(self, self.__class__)
+                method(value=value)
 
-    def _gather_decorated_methods(self, instance: object, attribute_name: str) -> deque[Callable[..., Any]]:  # noqa: C901
+        except Exception as error:
+            classes = self._post_order_dfs_mro(cls=self.__class__, cut_off=ValueObject)
+            for class_name in {cls.__name__ for cls in classes}:
+                error.args = (str(object=error.args[0]).replace(class_name, self.title),)
+
+            raise error
+
+    def _post_order_dfs_mro(self, cls: type, visited: set[type] | None = None, cut_off: type = object) -> list[type]:
+        """
+        Computes the Post-Order Depth-First Search (DFS) Method Resolution Order (MRO) of a class.
+
+        Args:
+            cls (type): The class to process.
+            visited (set[type] | None, optional): A set of already visited classes (to prevent duplicates). Defaults
+            to None.
+            cut_off (type, optional): The class to stop the search. Defaults to object.
+
+        Returns:
+            list[type]: A list of classes type sorted by post-order DFS MRO.
+
+        References:
+            DFS: https://en.wikipedia.org/wiki/Depth-first_search
+            MRO: https://docs.python.org/3/howto/mro.html
+        """
+        if cls is cut_off:
+            return []
+
+        if visited is None:
+            visited = set()
+
+        result = []
+        for parent in cls.__bases__:
+            if parent not in visited and parent is not object:  # pragma: no cover
+                result.extend(self._post_order_dfs_mro(cls=parent, visited=visited, cut_off=cut_off))
+
+        if cls not in visited:  # pragma: no cover
+            visited.add(cls)
+            result.append(cls)
+
+        return result
+
+    def _gather_decorated_methods(self, instance: object, attribute_name: str) -> deque[Callable[..., Any]]:
         """
         Gathers decorated methods from instance.__class__ and its parent classes following the post-order DFS MRO,
         returning them in a deque with the methods sorted by class hierarchy, method order, and method name.
@@ -233,51 +294,11 @@ class ValueObject(ABC, Generic[T]):
 
         Returns
             deque[Callable[..., Any]]: A deque of methods sorted by class hierarchy, method order, and method name.
+
+        References:
+            DFS: https://en.wikipedia.org/wiki/Depth-first_search
+            MRO: https://docs.python.org/3/howto/mro.html
         """
-
-        def post_order_dfs_mro(cls: type, visited: set[type] | None = None, cut_off: type = object) -> list[type]:
-            """
-            Computes the Post-Order Depth-First Search (DFS) Method Resolution Order (MRO) of a class.
-
-            Args:
-                cls (type): The class to process.
-                visited (set[type] | None, optional): A set of already visited classes (to prevent duplicates). Defaults
-                to None.
-                cut_off (type, optional): The class to stop the search. Defaults to object.
-
-            Returns:
-                list[type]: A list of classes type sorted by post-order DFS MRO.
-            """
-            if cls is cut_off:
-                return []
-
-            if visited is None:
-                visited = set()
-
-            result = []
-            for parent in cls.__bases__:
-                if parent not in visited and parent is not object:  # pragma: no cover
-                    result.extend(post_order_dfs_mro(cls=parent, visited=visited, cut_off=cut_off))
-
-            if cls not in visited:  # pragma: no cover
-                visited.add(cls)
-                result.append(cls)
-
-            return result
-
-        classes = post_order_dfs_mro(cls=instance.__class__, cut_off=ValueObject)
-        classes_names = {cls.__name__: index for index, cls in enumerate(iterable=classes)}
-
-        classes_methods: deque[tuple[str, str, Callable[..., Any]]] = deque()
-        for cls in classes:
-            for method_name, method in cls.__dict__.items():
-                if not callable(method):
-                    continue
-
-                if not getattr(method, attribute_name, False):
-                    continue  # only methods with the attribute
-
-                classes_methods.append((method.__qualname__.split('.')[0], method_name, method))
 
         def sort_key(item: tuple[str, str, Callable[..., Any]]) -> tuple[int, str, str]:
             """
@@ -294,8 +315,21 @@ class ValueObject(ABC, Generic[T]):
             class_index = classes_names.get(class_name, 999)
             order = getattr(method, '_order', method_name)
 
-            # print(class_index, order, method_name)
             return int(class_index), order, method_name
+
+        classes = self._post_order_dfs_mro(cls=instance.__class__, cut_off=ValueObject)
+        classes_names = {cls.__name__: index for index, cls in enumerate(iterable=classes)}
+
+        classes_methods: deque[tuple[str, str, Callable[..., Any]]] = deque()
+        for cls in classes:
+            for method_name, method in cls.__dict__.items():
+                if not callable(method):
+                    continue
+
+                if not getattr(method, attribute_name, False):
+                    continue  # only methods with the attribute
+
+                classes_methods.append((method.__qualname__.split('.')[0], method_name, method))
 
         # sort by class hierarchy, method order attribute, and method name
         return deque([method for _, _, method in sorted(classes_methods, key=sort_key)])
@@ -323,3 +357,27 @@ class ValueObject(ABC, Generic[T]):
         ```
         """
         return self._value
+
+    @property
+    def title(self) -> str:
+        """
+        Returns the value object title.
+
+        Returns:
+            str: The value object title.
+
+        Example:
+        ```python
+        from value_object_pattern import ValueObject
+
+
+        class IntegerValueObject(ValueObject[int]):
+            pass
+
+
+        integer = IntegerValueObject(value=10)
+        print(integer.title)
+        # >>> IntegerValueObject
+        ```
+        """
+        return self._title
