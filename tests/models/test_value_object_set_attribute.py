@@ -2,7 +2,7 @@
 Test value object module.
 """
 
-from object_mother_pattern.mothers import IntegerMother
+from object_mother_pattern.mothers import IntegerMother, StringMother
 from pytest import mark, raises as assert_raises
 
 from value_object_pattern.usables import IntegerValueObject
@@ -20,6 +20,20 @@ def test_value_object_cannot_modify_value() -> None:
         match='Cannot modify attribute "value" of immutable instance',
     ):
         value_object.value = IntegerMother.create()  # type: ignore[misc]
+
+
+@mark.unit_testing
+def test_value_object_cannot_modify_title() -> None:
+    """
+    Test that a value object title cannot be modified after initialization.
+    """
+    value_object = IntegerValueObject(value=IntegerMother.create())
+
+    with assert_raises(
+        expected_exception=AttributeError,
+        match='Cannot modify attribute "title" of immutable instance',
+    ):
+        value_object.title = StringMother.create()  # type: ignore[misc]
 
 
 @mark.unit_testing
