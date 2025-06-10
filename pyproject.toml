@@ -7,7 +7,7 @@ build-backend = 'hatchling.build'
 path = 'value_object_pattern/__init__.py'
 
 [tool.hatch.build.targets.sdist]
-include = ['value_object_pattern/', 'tests/', 'requirements*.txt']
+include = ['value_object_pattern/']
 
 
 [project]
