@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+title: Value Object Pattern
+message: >
+  If you use this software, please cite it using the metadata below.
+type: software
+authors:
+  - given-names: Adrià
+    family-names: Montoto
+repository-code: https://github.com/adriamontoto/value-object-pattern
+url: https://pypi.org/project/value-object-pattern
+abstract: >
+  Value Object Pattern is a Python package that streamlines the
+  creation and management of value objects in your projects. Value
+  objects are immutable, self-validating objects that represent
+  descriptive aspects of the domain with no conceptual identity.
+keywords:
+  - python
+  - validation
+  - encapsulation
+  - value-object
+license: MIT
