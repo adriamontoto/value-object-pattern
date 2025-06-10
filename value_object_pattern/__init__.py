@@ -1,4 +1,4 @@
-__version__ = '2025.01.04'
+__version__ = '0.0.0'
 
 from .decorators import process, validation
 from .models import ValueObject
