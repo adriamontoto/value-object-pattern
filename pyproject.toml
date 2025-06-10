@@ -39,26 +39,44 @@ keywords = [
     'domain-driven-design',
 ]
 requires-python = '>=3.11'
-dependencies = ['python-dateutil>=2.9.0,<3.0.0']
+dependencies = ['python-dateutil>=2.9.0']
 dynamic = ['version']
-
-[project.optional-dependencies]
-tests = [
-    'pytest>=8.0.0,<9.0.0',
-    'pytest-randomly>=3.0.0,<4.0.0',
-    'coverage[toml]>=7.0.0,<8.0.0',
-    'ruff>=0.0.0,<1.0.0',
-    'mypy[reports]>=1.0.0,<2.0.0',
-    'pre-commit>=3.0.0,<5.0.0',
-    'object-mother-pattern>=2025.1.12',
-    'types-python-dateutil>=2.9.0.20241206,<3.0.0',
-]
-
 
 [project.urls]
 Homepage = 'https://github.com/adriamontoto/value-object-pattern'
 Repository = 'https://github.com/adriamontoto/value-object-pattern'
 Issues = 'https://github.com/adriamontoto/value-object-pattern/issues'
+
+
+[dependency-groups]
+audit = ['pip-audit>=2.9.0']
+coverage = ['coverage[toml]>=7.0.0', 'smokeshow>=0.5.0']
+develop = ['pre-commit>=3.0.0']
+format = ['ruff>=0.11.10']
+lint = [
+    'ruff>=0.11.10',
+    'mypy[reports]>=1.0.0',
+    { include-group = 'test' },
+    { include-group = 'types' },
+]
+release = ['build>=1.2.2', 'python-semantic-release>=10.0.2']
+test = [
+    'pytest>=8.0.0',
+    'pytest-randomly>=3.0.0',
+    'object-mother-pattern>=1.0.0',
+    { include-group = 'coverage' },
+]
+types = ['types-python-dateutil>=2.9.0.20241206 ']
+all = [
+    { include-group = 'audit' },
+    { include-group = 'coverage' },
+    { include-group = 'develop' },
+    { include-group = 'format' },
+    { include-group = 'lint' },
+    { include-group = 'release' },
+    { include-group = 'test' },
+    { include-group = 'types' },
+]
 
 
 [tool.pytest.ini_options]
