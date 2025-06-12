@@ -5,7 +5,7 @@ Test LowercaseStringValueObject value object.
 from object_mother_pattern.mothers import StringMother
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern.usables.primitives import LowercaseStringValueObject
+from value_object_pattern.usables import LowercaseStringValueObject
 
 
 @mark.unit_testing
@@ -13,7 +13,7 @@ def test_lowercase_string_value_object_happy_path() -> None:
     """
     Test LowercaseStringValueObject value object happy path.
     """
-    string_value = LowercaseStringValueObject(value=StringMother.create().lower())
+    string_value = LowercaseStringValueObject(value=StringMother.lowercase())
 
     assert type(string_value.value) is str
     assert string_value.value.islower()
@@ -28,7 +28,7 @@ def test_lowercase_string_value_object_invalid_value() -> None:
         expected_exception=ValueError,
         match=r'LowercaseStringValueObject value <<<.*>>> contains uppercase characters. Only lowercase characters are allowed.',  # noqa: E501
     ):
-        LowercaseStringValueObject(value=StringMother.create().upper())
+        LowercaseStringValueObject(value=StringMother.uppercase())
 
 
 @mark.unit_testing

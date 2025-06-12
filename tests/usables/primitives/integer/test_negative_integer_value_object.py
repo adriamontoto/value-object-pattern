@@ -5,7 +5,7 @@ Test NegativeIntegerValueObject value object.
 from object_mother_pattern.mothers import IntegerMother
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern.usables.primitives import NegativeIntegerValueObject
+from value_object_pattern.usables import NegativeIntegerValueObject
 
 
 @mark.unit_testing
@@ -20,15 +20,35 @@ def test_negative_integer_value_object_happy_path() -> None:
 
 
 @mark.unit_testing
-def test_negative_integer_value_object_invalid_value() -> None:
+def test_negative_integer_value_object_lower_bound() -> None:
     """
-    Test NegativeIntegerValueObject value object raises ValueError when value is not negative.
+    Test NegativeIntegerValueObject value object lower bound.
+    """
+    NegativeIntegerValueObject(value=IntegerMother.create(value=-1))
+
+
+@mark.unit_testing
+def test_negative_integer_value_object_lower_bound_error() -> None:
+    """
+    Test NegativeIntegerValueObject value object lower bound error.
     """
     with assert_raises(
         expected_exception=ValueError,
         match=r'NegativeIntegerValueObject value <<<.*>>> must be a negative integer.',
     ):
-        NegativeIntegerValueObject(value=IntegerMother.create(min=0))
+        NegativeIntegerValueObject(value=IntegerMother.create(value=0))
+
+
+@mark.unit_testing
+def test_negative_integer_value_object_random_lower_bound_error() -> None:
+    """
+    Test NegativeIntegerValueObject value object random lower bound error.
+    """
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'NegativeIntegerValueObject value <<<.*>>> must be a negative integer.',
+    ):
+        NegativeIntegerValueObject(value=IntegerMother.positive_or_zero())
 
 
 @mark.unit_testing

@@ -19,9 +19,21 @@ def test_uuid_value_object_happy_path() -> None:
 
 
 @mark.unit_testing
+def test_uuid_value_object_empty_value() -> None:
+    """
+    Test StringUuidValueObject value object raises ValueError when value is empty.
+    """
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'(?s)StringUuidValueObject value <<<.*>>> is an empty string. Only non-empty strings are allowed.',
+    ):
+        StringUuidValueObject(value=StringMother.empty())
+
+
+@mark.unit_testing
 def test_uuid_value_object_invalid_value() -> None:
     """
-    Test StringUuidValueObject value object raises ValueError when value is not an UUID.
+    Test StringUuidValueObject value object raises ValueError when value is not a valid UUID.
     """
     with assert_raises(
         expected_exception=ValueError,
@@ -33,10 +45,10 @@ def test_uuid_value_object_invalid_value() -> None:
 @mark.unit_testing
 def test_uuid_value_object_invalid_type() -> None:
     """
-    Test StringUuidValueObject value object raises TypeError when value is not an UUID.
+    Test StringUuidValueObject value object raises TypeError when value is not an string.
     """
     with assert_raises(
         expected_exception=TypeError,
-        match=r'StringValueObject value <<<.*>>> must be a string. Got <<<.*>>> type.',
+        match=r'StringUuidValueObject value <<<.*>>> must be a string. Got <<<.*>>> type.',
     ):
         StringUuidValueObject(value=StringUuidMother.invalid_type())

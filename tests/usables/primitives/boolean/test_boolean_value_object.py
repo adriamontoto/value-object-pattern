@@ -5,7 +5,7 @@ Test BooleanValueObject value object.
 from object_mother_pattern.mothers import BooleanMother
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern.usables.primitives import BooleanValueObject
+from value_object_pattern.usables import BooleanValueObject
 
 
 @mark.unit_testing
