@@ -13,8 +13,9 @@ def test_false_value_object_happy_path() -> None:
     """
     Test FalseValueObject value object happy path.
     """
-    boolean_value = FalseValueObject(value=BooleanMother.create(value=False))
+    boolean_value = FalseValueObject(value=BooleanMother.false())
 
+    assert type(boolean_value.value) is bool
     assert not boolean_value.value
 
 
@@ -27,7 +28,7 @@ def test_false_value_object_invalid_value() -> None:
         expected_exception=ValueError,
         match='FalseValueObject value <<<True>>> must be false.',
     ):
-        FalseValueObject(value=BooleanMother.create(value=True))
+        FalseValueObject(value=BooleanMother.true())
 
 
 @mark.unit_testing
@@ -37,6 +38,6 @@ def test_false_value_object_invalid_type() -> None:
     """
     with assert_raises(
         expected_exception=TypeError,
-        match=r'BooleanValueObject value <<<.*>>> must be a boolean. Got <<<.*>>> type.',
+        match=r'FalseValueObject value <<<.*>>> must be a boolean. Got <<<.*>>> type.',
     ):
         FalseValueObject(value=BooleanMother.invalid_type())
