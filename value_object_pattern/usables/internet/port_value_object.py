@@ -11,7 +11,7 @@ from value_object_pattern.usables import IntegerValueObject
 
 class PortValueObject(IntegerValueObject):
     """
-    PortValueObject value object.
+    PortValueObject value object ensures the provided value is a valid port.
 
     Example:
     ```python

@@ -10,7 +10,7 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 
 class OpenaiApiKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    OpenaiApiKeyValueObject value object.
+    OpenaiApiKeyValueObject value object ensures the provided value is a valid OpenAI API Key.
 
     Example:
     ```python

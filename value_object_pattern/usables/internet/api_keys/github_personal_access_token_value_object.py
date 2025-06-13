@@ -10,7 +10,8 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 
 class GitHubPersonalAccessTokenValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    GitHubPersonalAccessTokenValueObject value object.
+    GitHubPersonalAccessTokenValueObject value object ensures the provided value is a valid GitHub Personal Access
+    Token.
 
     Example:
     ```python

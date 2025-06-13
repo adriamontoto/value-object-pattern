@@ -9,7 +9,7 @@ from .string_value_object import StringValueObject
 
 class AlphaStringValueObject(StringValueObject):
     """
-    AlphaStringValueObject value object.
+    AlphaStringValueObject value object ensures the provided value is alpha.
 
     Example:
     ```python
@@ -25,13 +25,13 @@ class AlphaStringValueObject(StringValueObject):
     @validation(order=0)
     def _ensure_value_is_alpha(self, value: str) -> None:
         """
-        Ensures the value object value is alpha.
+        Ensures the value object `value` is alpha.
 
         Args:
-            value (str): Value.
+            value (str): The provided value.
 
         Raises:
-            ValueError: If the value is not alpha.
+            ValueError: If the `value` is not alpha.
         """
         if not value.isalpha():
             raise ValueError(f'AlphaStringValueObject value <<<{value}>>> contains invalid characters. Only alpha characters are allowed.')  # noqa: E501  # fmt: skip

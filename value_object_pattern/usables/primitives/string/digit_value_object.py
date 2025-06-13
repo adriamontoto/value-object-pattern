@@ -9,7 +9,7 @@ from .string_value_object import StringValueObject
 
 class DigitStringValueObject(StringValueObject):
     """
-    DigitStringValueObject value object.
+    DigitStringValueObject value object ensures the provided value is digit.
 
     Example:
     ```python
@@ -25,13 +25,13 @@ class DigitStringValueObject(StringValueObject):
     @validation(order=0)
     def _ensure_value_is_digit(self, value: str) -> None:
         """
-        Ensures the value object value is digit.
+        Ensures the value object `value` is digit.
 
         Args:
-            value (str): Value.
+            value (str): The provided value.
 
         Raises:
-            ValueError: If the value is not digit.
+            ValueError: If the `value` is not digit.
         """
         if not value.isdigit():
             raise ValueError(f'DigitStringValueObject value <<<{value}>>> contains invalid characters. Only digit characters are allowed.')  # noqa: E501  # fmt: skip

@@ -33,7 +33,7 @@ def get_top_level_domains() -> set[str]:
 
 class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    DomainValueObject value object.
+    DomainValueObject value object ensures the provided value is a valid domain.
 
     References:
         https://data.iana.org/TLD/tlds-alpha-by-domain.txt

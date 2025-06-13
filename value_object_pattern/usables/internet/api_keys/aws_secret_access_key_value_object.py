@@ -10,7 +10,7 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 
 class AwsSecretAccessKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    AwsSecretAccessKeyValueObject value object.
+    AwsSecretAccessKeyValueObject value object ensures the provided value is a valid AWS Secret Access Key.
 
     Example:
     ```python

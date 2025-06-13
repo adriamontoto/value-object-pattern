@@ -13,7 +13,7 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 
 class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    MacAddressValueObject value object.
+    MacAddressValueObject value object ensures the provided value is a valid MAC address.
 
     Formats:
         - Raw: D5B9EB4DC2CC
