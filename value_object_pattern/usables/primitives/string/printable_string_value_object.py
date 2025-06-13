@@ -9,7 +9,7 @@ from .string_value_object import StringValueObject
 
 class PrintableStringValueObject(StringValueObject):
     """
-    PrintableStringValueObject value object.
+    PrintableStringValueObject value object ensures the provided value is printable.
 
     Example:
     ```python
@@ -25,13 +25,13 @@ class PrintableStringValueObject(StringValueObject):
     @validation(order=0)
     def _ensure_value_is_printable(self, value: str) -> None:
         """
-        Ensures the value object value is printable.
+        Ensures the value object `value` is printable.
 
         Args:
-            value (str): Value.
+            value (str): The provided value.
 
         Raises:
-            ValueError: If the value is not printable.
+            ValueError: If the `value` is not printable.
         """
         if not value.isprintable():
             raise ValueError(f'PrintableStringValueObject value <<<{value}>>> contains invalid characters. Only printable characters are allowed.')  # noqa: E501  # fmt: skip

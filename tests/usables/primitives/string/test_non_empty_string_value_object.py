@@ -5,7 +5,7 @@ Test NotEmptyStringValueObject value object.
 from object_mother_pattern.mothers import StringMother
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern.usables.primitives import NotEmptyStringValueObject
+from value_object_pattern.usables import NotEmptyStringValueObject
 
 
 @mark.unit_testing
@@ -28,7 +28,7 @@ def test_not_empty_string_value_object_invalid_value() -> None:
         expected_exception=ValueError,
         match=r'NotEmptyStringValueObject value <<<.*>>> is an empty string. Only non-empty strings are allowed.',
     ):
-        NotEmptyStringValueObject(value='')
+        NotEmptyStringValueObject(value=StringMother.empty())
 
 
 @mark.unit_testing

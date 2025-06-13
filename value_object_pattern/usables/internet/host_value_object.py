@@ -12,7 +12,7 @@ from .ipv6_address_value_object import Ipv6AddressValueObject
 
 class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    HostValueObject value object.
+    HostValueObject value object ensures the provided value is a valid host.
 
     Example:
     ```python

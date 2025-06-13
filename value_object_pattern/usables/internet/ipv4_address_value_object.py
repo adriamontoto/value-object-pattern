@@ -13,7 +13,7 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 
 class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    Ipv4AddressValueObject value object.
+    Ipv4AddressValueObject value object ensures the provided value is a valid IPv4 address.
 
     Example:
     ```python
@@ -262,7 +262,7 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         # >>> Ipv4AddressValueObject(value=0.0.0.0)
         ```
         """
-        return cls(value='0.0.0.0')
+        return cls(value='0.0.0.0')  # noqa: S104
 
     @classmethod
     def LOOPBACK(cls) -> Ipv4AddressValueObject:

@@ -13,7 +13,7 @@ from .ipv6_address_value_object import Ipv6AddressValueObject
 
 class Ipv6NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    Ipv6NetworkValueObject value object.
+    Ipv6NetworkValueObject value object ensures the provided value is a valid IPv6 network.
 
     Example:
     ```python
@@ -141,3 +141,5 @@ class Ipv6NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         ```
         """
         return self._ipv6_network_validate(value=self.value).num_addresses
+
+    # TODO: def get_addresses(self) -> list[Ipv6AddressValueObject]:

@@ -8,7 +8,7 @@ from value_object_pattern.models import ValueObject
 
 class IntegerValueObject(ValueObject[int]):
     """
-    IntegerValueObject value object.
+    IntegerValueObject value object ensures the provided value is an integer.
 
     Example:
     ```python
@@ -24,13 +24,13 @@ class IntegerValueObject(ValueObject[int]):
     @validation(order=0)
     def _ensure_value_is_integer(self, value: int) -> None:
         """
-        Ensures the value object value is an integer.
+        Ensures the value object `value` is an integer.
 
         Args:
-            value (int): Value.
+            value (int): The provided value.
 
         Raises:
-            TypeError: If the value is not an integer.
+            TypeError: If the `value` is not an integer.
         """
         if type(value) is not int:
             raise TypeError(f'IntegerValueObject value <<<{value}>>> must be an integer. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip

@@ -10,16 +10,16 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 
 class AwsAccessKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    AwsAccessKeyValueObject value object.
+    AwsAccessKeyValueObject value object ensures the provided value is a valid AWS Access Key ID.
 
     Example:
     ```python
     from value_object_pattern.usables.internet import AwsAccessKeyValueObject
 
-    key = AwsAccessKeyValueObject(value='AKIAIOSFODNN7EXAMPLE')
+    key = AwsAccessKeyValueObject(value='AKIAIOSFODNN7EXAMPLE')  # gitleaks:allow
 
     print(repr(key))
-    # >>> AwsAccessKeyValueObject(value=AKIAIOSFODNN7EXAMPLE)
+    # >>> AwsAccessKeyValueObject(value=AKIAIOSFODNN7EXAMPLE)  # gitleaks:allow
     ```
     """
 
