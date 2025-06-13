@@ -25,7 +25,7 @@ def get_top_level_domains() -> set[str]:
         https://data.iana.org/TLD/tlds-alpha-by-domain.txt
     """
     url = 'https://data.iana.org/TLD/tlds-alpha-by-domain.txt'
-    with urlopen(url=url) as response:
+    with urlopen(url=url) as response:  # noqa: S310
         content = response.read().decode('utf-8')
 
     return {line.strip().lower() for line in content.splitlines() if line and not line.startswith('#')}

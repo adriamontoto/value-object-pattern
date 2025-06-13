@@ -262,7 +262,7 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         # >>> Ipv4AddressValueObject(value=0.0.0.0)
         ```
         """
-        return cls(value='0.0.0.0')
+        return cls(value='0.0.0.0')  # noqa: S104
 
     @classmethod
     def LOOPBACK(cls) -> Ipv4AddressValueObject:
