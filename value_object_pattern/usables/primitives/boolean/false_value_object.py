@@ -9,7 +9,7 @@ from .boolean_value_object import BooleanValueObject
 
 class FalseValueObject(BooleanValueObject):
     """
-    FalseValueObject value object.
+    FalseValueObject value object ensures the provided value is false.
 
     Example:
     ```python
@@ -25,13 +25,13 @@ class FalseValueObject(BooleanValueObject):
     @validation(order=0)
     def _ensure_value_is_false(self, value: bool) -> None:
         """
-        Ensures the value object value is false.
+        Ensures the value object `value` is false.
 
         Args:
-            value (bool): Value.
+            value (bool): The provided value.
 
         Raises:
-            ValueError: If the value is not false.
+            ValueError: If the `value` is not false.
         """
         if value:
             raise ValueError(f'FalseValueObject value <<<{value}>>> must be false.')

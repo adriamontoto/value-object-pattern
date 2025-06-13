@@ -10,7 +10,7 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 
 class DniValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    DniValueObject value object.
+    DniValueObject value object ensures the provided value is a valid Spanish DNI.
     A Spanish DNI is a string with 9 characters. The first 8 characters are numbers and the last character is a letter.
     The letter is calculated using the number modulo 23 and the result is compared with a predefined list of letters.
 
@@ -31,10 +31,10 @@ class DniValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
         """
-        Ensures the value object value is an upper string.
+        Ensures the value object `value` is an upper string.
 
         Args:
-            value (str): Value.
+            value (str): The provided value.
 
         Returns:
             str: Upper case value.
@@ -44,13 +44,13 @@ class DniValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     @validation(order=0)
     def _ensure_value_is_dni(self, value: str) -> None:
         """
-        Ensures the value object value is a Spanish DNI.
+        Ensures the value object `value` is a Spanish DNI.
 
         Args:
-            value (str): Value.
+            value (str): The provided value.
 
         Raises:
-            ValueError: If the value is not a Spanish DNI.
+            ValueError: If the `value` is not a Spanish DNI.
         """
         match = self.__DNI_VALUE_OBJECT_REGEX.fullmatch(string=value)
         if not match:

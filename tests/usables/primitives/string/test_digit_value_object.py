@@ -2,10 +2,10 @@
 Test DigitStringValueObject value object.
 """
 
-from object_mother_pattern.mothers import IntegerMother, StringMother
+from object_mother_pattern.mothers import StringMother
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern.usables.primitives import DigitStringValueObject
+from value_object_pattern.usables import DigitStringValueObject
 
 
 @mark.unit_testing
@@ -13,7 +13,7 @@ def test_digit_string_value_object_happy_path() -> None:
     """
     Test DigitStringValueObject value object happy path.
     """
-    string_value = DigitStringValueObject(value=str(object=IntegerMother.create()))
+    string_value = DigitStringValueObject(value=StringMother.numeric())
 
     assert type(string_value.value) is str
     assert string_value.value.isdigit()
@@ -28,7 +28,7 @@ def test_digit_string_value_object_invalid_value() -> None:
         expected_exception=ValueError,
         match=r'DigitStringValueObject value <<<.*>>> contains invalid characters. Only digit characters are allowed.',
     ):
-        DigitStringValueObject(value=str(object=IntegerMother.invalid_type()))
+        DigitStringValueObject(value=StringMother.alpha())
 
 
 @mark.unit_testing

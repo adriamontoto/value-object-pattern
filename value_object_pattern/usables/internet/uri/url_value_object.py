@@ -12,6 +12,7 @@ from value_object_pattern.usables.internet.host_value_object import HostValueObj
 from value_object_pattern.usables.internet.port_value_object import PortValueObject
 
 
+@lru_cache(maxsize=16)
 def join_url(
     scheme: str,
     host: str,
@@ -98,7 +99,7 @@ def split_netloc(value: str) -> tuple[str | None, str, int | None]:
 
 class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    UrlValueObject value object.
+    UrlValueObject value object ensures the provided value is a valid URL.
 
     References:
         https://www.rfc-editor.org/rfc/rfc3986

@@ -15,7 +15,7 @@ from .datetime_value_object import DatetimeValueObject
 
 class StringDatetimeValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    StringDatetimeValueObject value object.
+    StringDatetimeValueObject value object ensures the provided value is a valid datetime.
 
     Example:
     ```python

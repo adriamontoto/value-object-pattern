@@ -8,7 +8,7 @@ from value_object_pattern.models import ValueObject
 
 class FloatValueObject(ValueObject[float]):
     """
-    FloatValueObject value object.
+    FloatValueObject value object ensures the provided value is a float.
 
     Example:
     ```python
@@ -24,13 +24,13 @@ class FloatValueObject(ValueObject[float]):
     @validation(order=0)
     def _ensure_value_is_float(self, value: float) -> None:
         """
-        Ensures the value object value is a float.
+        Ensures the value object `value` is a float.
 
         Args:
-            value (float): Value.
+            value (float): The provided value.
 
         Raises:
-            TypeError: If the value is not a float.
+            TypeError: If the `value` is not a float.
         """
         if type(value) is not float:
             raise TypeError(f'FloatValueObject value <<<{value}>>> must be a float. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip

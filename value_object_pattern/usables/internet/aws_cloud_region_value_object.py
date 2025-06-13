@@ -33,7 +33,7 @@ def get_aws_cloud_regions() -> set[str]:
 
 class AwsCloudRegionValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    AwsCloudRegionValueObject value object.
+    AwsCloudRegionValueObject value object ensures the provided value is a valid AWS cloud region.
 
     References:
         AWS Regions: https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html#available-regions

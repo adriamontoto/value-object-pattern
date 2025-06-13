@@ -5,7 +5,7 @@ Test EvenIntegerValueObject value object.
 from object_mother_pattern.mothers import IntegerMother
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern.usables.primitives import EvenIntegerValueObject
+from value_object_pattern.usables import EvenIntegerValueObject
 
 
 @mark.unit_testing

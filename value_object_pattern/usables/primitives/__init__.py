@@ -9,14 +9,9 @@ from .integer import (
     PositiveIntegerValueObject,
 )
 from .string import (
-    AlphabeticStringValueObject,
+    AlphaStringValueObject,
     AlphanumericStringValueObject,
-    Base32StringValueObject,
-    Base56StringValueObject,
-    Base58StringValueObject,
-    Base64StringValueObject,
     DigitStringValueObject,
-    HexadecimalStringValueObject,
     LowercaseStringValueObject,
     NotEmptyStringValueObject,
     PrintableStringValueObject,
@@ -26,19 +21,14 @@ from .string import (
 )
 
 __all__ = (
-    'AlphabeticStringValueObject',
+    'AlphaStringValueObject',
     'AlphanumericStringValueObject',
-    'Base32StringValueObject',
-    'Base56StringValueObject',
-    'Base58StringValueObject',
-    'Base64StringValueObject',
     'BooleanValueObject',
     'BytesValueObject',
     'DigitStringValueObject',
     'EvenIntegerValueObject',
     'FalseValueObject',
     'FloatValueObject',
-    'HexadecimalStringValueObject',
     'IntegerValueObject',
     'LowercaseStringValueObject',
     'NegativeFloatValueObject',
