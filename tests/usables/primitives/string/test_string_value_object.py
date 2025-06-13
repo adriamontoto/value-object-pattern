@@ -5,7 +5,7 @@ Test StringValueObject value object.
 from object_mother_pattern.mothers import StringMother
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern.usables.primitives import StringValueObject
+from value_object_pattern.usables import StringValueObject
 
 
 @mark.unit_testing

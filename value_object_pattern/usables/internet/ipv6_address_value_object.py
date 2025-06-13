@@ -13,7 +13,7 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 
 class Ipv6AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    Ipv6AddressValueObject value object.
+    Ipv6AddressValueObject value object ensures the provided value is a valid IPv6 address.
 
     Example:
     ```python

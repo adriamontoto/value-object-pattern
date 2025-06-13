@@ -10,16 +10,16 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 
 class OpenaiApiKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    OpenaiApiKeyValueObject value object.
+    OpenaiApiKeyValueObject value object ensures the provided value is a valid OpenAI API Key.
 
     Example:
     ```python
     from value_object_pattern.usables.internet import OpenaiApiKeyValueObject
 
-    key = OpenaiApiKeyValueObject(value='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')
+    key = OpenaiApiKeyValueObject(value='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')  # gitleaks:allow
 
     print(repr(key))
-    # >>> OpenaiApiKeyValueObject(value=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)
+    # >>> OpenaiApiKeyValueObject(value=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)  # gitleaks:allow
     ```
     """
 

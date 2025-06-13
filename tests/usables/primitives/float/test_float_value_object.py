@@ -5,7 +5,7 @@ Test FloatValueObject value object.
 from object_mother_pattern.mothers import FloatMother
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern.usables.primitives import FloatValueObject
+from value_object_pattern.usables import FloatValueObject
 
 
 @mark.unit_testing

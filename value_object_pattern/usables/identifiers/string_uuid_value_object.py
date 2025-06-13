@@ -12,7 +12,7 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 
 class StringUuidValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    StringUuidValueObject value object.
+    StringUuidValueObject value object ensures the provided value is a valid UUID.
 
     Example:
     ```python
@@ -28,10 +28,10 @@ class StringUuidValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
     @process(order=0)
     def _ensure_value_is_lower(self, value: str) -> str:
         """
-        Ensures the value object value is lower UUID string.
+        Ensures the value object `value` is lower UUID string.
 
         Args:
-            value (str): Value.
+            value (str): The provided value.
 
         Returns:
             str: Value with the lower UUID string.
@@ -41,13 +41,13 @@ class StringUuidValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
     @validation(order=0)
     def _ensure_value_is_uuid(self, value: str) -> None:
         """
-        Ensures the value object value is a UUID.
+        Ensures the value object `value` is a UUID.
 
         Args:
-            value (str): Value.
+            value (str): The provided value.
 
         Raises:
-            ValueError: If the value is not a UUID.
+            ValueError: If the `value` is not a UUID.
         """
         try:
             UUID(hex=value)

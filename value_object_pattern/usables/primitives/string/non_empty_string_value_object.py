@@ -9,7 +9,7 @@ from .string_value_object import StringValueObject
 
 class NotEmptyStringValueObject(StringValueObject):
     """
-    NotEmptyStringValueObject value object.
+    NotEmptyStringValueObject value object ensures the provided value is not an empty string.
 
     Example:
     ```python
@@ -25,13 +25,13 @@ class NotEmptyStringValueObject(StringValueObject):
     @validation(order=0)
     def _ensure_value_is_not_empty_string(self, value: str) -> None:
         """
-        Ensures the value object value is not an empty string.
+        Ensures the value object `value` is not an empty string.
 
         Args:
-            value (str): Value.
+            value (str): The provided value.
 
         Raises:
-            ValueError: If the value is an empty string.
+            ValueError: If the `value` is an empty string.
         """
         if not value:
             raise ValueError(f'NotEmptyStringValueObject value <<<{value}>>> is an empty string. Only non-empty strings are allowed.')  # noqa: E501  # fmt: skip

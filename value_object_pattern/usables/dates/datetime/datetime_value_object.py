@@ -12,7 +12,7 @@ from value_object_pattern.models import ValueObject
 
 class DatetimeValueObject(ValueObject[datetime]):
     """
-    DatetimeValueObject value object.
+    DatetimeValueObject value object ensures the provided value is a datetime.
 
     Example:
     ```python

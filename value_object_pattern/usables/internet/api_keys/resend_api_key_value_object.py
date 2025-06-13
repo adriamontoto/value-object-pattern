@@ -10,16 +10,16 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 
 class ResendApiKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    ResendApiKeyValueObject value object.
+    ResendApiKeyValueObject value object ensures the provided value is a valid Resend API Key.
 
     Example:
     ```python
     from value_object_pattern.usables.internet import ResendApiKeyValueObject
 
-    key = ResendApiKeyValueObject(value='re_c1tpEyD8_NKFusih9vKVQknRAQfmFcWCv')
+    key = ResendApiKeyValueObject(value='re_c1tpEyD8_NKFusih9vKVQknRAQfmFcWCv')  # gitleaks:allow
 
     print(repr(key))
-    # >>> ResendApiKeyValueObject(value=re_c1tpEyD8_NKFusih9vKVQknRAQfmFcWCv)
+    # >>> ResendApiKeyValueObject(value=re_c1tpEyD8_NKFusih9vKVQknRAQfmFcWCv)  # gitleaks:allow
     ```
     """
 
