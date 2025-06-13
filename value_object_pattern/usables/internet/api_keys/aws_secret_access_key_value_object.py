@@ -16,10 +16,10 @@ class AwsSecretAccessKeyValueObject(NotEmptyStringValueObject, TrimmedStringValu
     ```python
     from value_object_pattern.usables.internet import AwsSecretAccessKeyValueObject
 
-    key = AwsSecretAccessKeyValueObject(value='wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY')
+    key = AwsSecretAccessKeyValueObject(value='wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY')  # gitleaks:allow
 
     print(repr(key))
-    # >>> AwsSecretAccessKeyValueObject(value=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY)
+    # >>> AwsSecretAccessKeyValueObject(value=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY)  # gitleaks:allow
     ```
     """
 

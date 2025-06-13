@@ -16,10 +16,10 @@ class OpenaiApiKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObjec
     ```python
     from value_object_pattern.usables.internet import OpenaiApiKeyValueObject
 
-    key = OpenaiApiKeyValueObject(value='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')
+    key = OpenaiApiKeyValueObject(value='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')  # gitleaks:allow
 
     print(repr(key))
-    # >>> OpenaiApiKeyValueObject(value=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)
+    # >>> OpenaiApiKeyValueObject(value=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)  # gitleaks:allow
     ```
     """
 

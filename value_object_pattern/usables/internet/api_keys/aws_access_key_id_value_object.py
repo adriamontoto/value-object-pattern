@@ -16,10 +16,10 @@ class AwsAccessKeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObjec
     ```python
     from value_object_pattern.usables.internet import AwsAccessKeyValueObject
 
-    key = AwsAccessKeyValueObject(value='AKIAIOSFODNN7EXAMPLE')
+    key = AwsAccessKeyValueObject(value='AKIAIOSFODNN7EXAMPLE')  # gitleaks:allow
 
     print(repr(key))
-    # >>> AwsAccessKeyValueObject(value=AKIAIOSFODNN7EXAMPLE)
+    # >>> AwsAccessKeyValueObject(value=AKIAIOSFODNN7EXAMPLE)  # gitleaks:allow
     ```
     """
 
