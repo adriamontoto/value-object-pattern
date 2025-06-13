@@ -13,7 +13,7 @@ from .ipv4_address_value_object import Ipv4AddressValueObject
 
 class Ipv4NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    Ipv4NetworkValueObject value object.
+    Ipv4NetworkValueObject value object ensures the provided value is a valid IPv4 network.
 
     Example:
     ```python

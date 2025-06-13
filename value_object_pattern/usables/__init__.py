@@ -1,17 +1,12 @@
 from .primitives import (
-    AlphabeticStringValueObject,
+    AlphaStringValueObject,
     AlphanumericStringValueObject,
-    Base32StringValueObject,
-    Base56StringValueObject,
-    Base58StringValueObject,
-    Base64StringValueObject,
     BooleanValueObject,
     BytesValueObject,
     DigitStringValueObject,
     EvenIntegerValueObject,
     FalseValueObject,
     FloatValueObject,
-    HexadecimalStringValueObject,
     IntegerValueObject,
     LowercaseStringValueObject,
     NegativeFloatValueObject,
@@ -28,13 +23,8 @@ from .primitives import (
 )
 
 __all__ = (
-    'AlphabeticStringValueObject',
-    'AlphabeticStringValueObject',
+    'AlphaStringValueObject',
     'AlphanumericStringValueObject',
-    'Base32StringValueObject',
-    'Base56StringValueObject',
-    'Base58StringValueObject',
-    'Base64StringValueObject',
     'BooleanValueObject',
     'BytesValueObject',
     'DigitStringValueObject',

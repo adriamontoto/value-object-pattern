@@ -10,16 +10,17 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 
 class GitHubPersonalAccessTokenValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    GitHubPersonalAccessTokenValueObject value object.
+    GitHubPersonalAccessTokenValueObject value object ensures the provided value is a valid GitHub Personal Access
+    Token.
 
     Example:
     ```python
     from value_object_pattern.usables.internet import GitHubPersonalAccessTokenValueObject
 
-    key = GitHubPersonalAccessTokenValueObject(value='ghp_cgq4ZrHmFu0lLPl7ajKAwgMPnT5zhF000000')
+    key = GitHubPersonalAccessTokenValueObject(value='ghp_cgq4ZrHmFu0lLPl7ajKAwgMPnT5zhF000000')  # gitleaks:allow
 
     print(repr(key))
-    # >>> GitHubPersonalAccessTokenValueObject(value=ghp_cgq4ZrHmFu0lLPl7ajKAwgMPnT5zhF000000)
+    # >>> GitHubPersonalAccessTokenValueObject(value=ghp_cgq4ZrHmFu0lLPl7ajKAwgMPnT5zhF000000)  # gitleaks:allow
     ```
     """
 

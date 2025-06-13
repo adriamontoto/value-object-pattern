@@ -9,7 +9,7 @@ from .url_value_object import UrlValueObject, split_url
 
 class HttpUrlValueObject(UrlValueObject):
     """
-    HttpUrlValueObject value object.
+    HttpUrlValueObject value object ensures the provided value is a valid HTTP URL.
 
     Example:
     ```python

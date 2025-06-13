@@ -9,7 +9,7 @@ from .integer_value_object import IntegerValueObject
 
 class PositiveIntegerValueObject(IntegerValueObject):
     """
-    PositiveIntegerValueObject value object.
+    PositiveIntegerValueObject value object ensures the provided value is a positive integer.
 
     Example:
     ```python
@@ -25,13 +25,13 @@ class PositiveIntegerValueObject(IntegerValueObject):
     @validation(order=0)
     def _ensure_value_is_positive_integer(self, value: int) -> None:
         """
-        Ensures the value object value is a positive integer.
+        Ensures the value object `value` is a positive integer.
 
         Args:
-            value (int): Value.
+            value (int): The provided value.
 
         Raises:
-            ValueError: If the value is not a positive integer.
+            ValueError: If the `value` is not a positive integer.
         """
         if value <= 0:
             raise ValueError(f'PositiveIntegerValueObject value <<<{value}>>> must be a positive integer.')

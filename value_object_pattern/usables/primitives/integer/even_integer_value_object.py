@@ -9,7 +9,7 @@ from .integer_value_object import IntegerValueObject
 
 class EvenIntegerValueObject(IntegerValueObject):
     """
-    EvenIntegerValueObject value object.
+    EvenIntegerValueObject value object ensures the provided value is an even integer.
 
     Example:
     ```python
@@ -25,13 +25,13 @@ class EvenIntegerValueObject(IntegerValueObject):
     @validation(order=0)
     def _ensure_value_is_even_number(self, value: int) -> None:
         """
-        Ensures the value object value is an even number.
+        Ensures the value object `value` is an even number.
 
         Args:
-            value (int): Value.
+            value (int): The provided value.
 
         Raises:
-            ValueError: If the value is not an even number.
+            ValueError: If the `value` is not an even number.
         """
         if value % 2 != 0:
             raise ValueError(f'EvenIntegerValueObject value <<<{value}>>> must be an even number.')

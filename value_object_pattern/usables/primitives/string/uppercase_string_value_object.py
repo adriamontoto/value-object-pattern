@@ -9,7 +9,7 @@ from .string_value_object import StringValueObject
 
 class UppercaseStringValueObject(StringValueObject):
     """
-    UppercaseStringValueObject value object.
+    UppercaseStringValueObject value object ensures the provided value is uppercase.
 
     Example:
     ```python
@@ -25,13 +25,13 @@ class UppercaseStringValueObject(StringValueObject):
     @validation(order=0)
     def _ensure_value_is_uppercase(self, value: str) -> None:
         """
-        Ensures the value object value is uppercase.
+        Ensures the value object `value` is uppercase.
 
         Args:
-            value (str): Value.
+            value (str): The provided value.
 
         Raises:
-            ValueError: If the value is not uppercase.
+            ValueError: If the `value` is not uppercase.
         """
         if not value.isupper():
             raise ValueError(f'UppercaseStringValueObject value <<<{value}>>> contains lowercase characters. Only uppercase characters are allowed.')  # noqa: E501  # fmt: skip

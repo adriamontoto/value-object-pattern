@@ -9,7 +9,7 @@ from .float_value_object import FloatValueObject
 
 class NegativeFloatValueObject(FloatValueObject):
     """
-    NegativeFloatValueObject value object.
+    NegativeFloatValueObject value object ensures the provided value is a negative float.
 
     Example:
     ```python
@@ -25,13 +25,13 @@ class NegativeFloatValueObject(FloatValueObject):
     @validation(order=0)
     def _ensure_value_is_negative_float(self, value: float) -> None:
         """
-        Ensures the value object value is a negative float.
+        Ensures the value object `value` is a negative float.
 
         Args:
-            value (float): Value.
+            value (float): The provided value.
 
         Raises:
-            ValueError: If the value is not a negative float.
+            ValueError: If the `value` is not a negative float.
         """
         if value >= 0:
             raise ValueError(f'NegativeFloatValueObject value <<<{value}>>> must be a negative float.')
