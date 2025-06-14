@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v0.2.0 (2025-06-14)
+
+### ✨ Features
+
+- **identifiers**: Implement a function to raise exceptions
+  ([`3656cec`](https://github.com/adriamontoto/value-object-pattern/commit/3656cecc1432a494e3629f00308398bdf3a74e6c))
+
+- **primitives**: Implement a function to raise exceptions
+  ([`ade1a0b`](https://github.com/adriamontoto/value-object-pattern/commit/ade1a0b151f491b2133f50047a66fe3eb46a873d))
+
+
 ## v0.1.0 (2025-06-13)
 
 ### 🐛 Bug Fixes
