@@ -3,6 +3,7 @@ DniValueObject value object.
 """
 
 from re import Pattern, compile as re_compile
+from typing import NoReturn
 
 from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
@@ -16,7 +17,7 @@ class DniValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
 
     Example:
     ```python
-    from value_object_pattern.usables.identifiers.country_ids import DniValueObject
+    from value_object_pattern.usables.identifiers.countries.spain import DniValueObject
 
     dni = DniValueObject(value='87654321X')
 
@@ -54,10 +55,22 @@ class DniValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         """
         match = self.__DNI_VALUE_OBJECT_REGEX.fullmatch(string=value)
         if not match:
-            raise ValueError(f'DniValueObject value <<<{value}>>> is not a valid Spanish DNI.')
+            self._raise_value_is_not_dni(value=value)
 
         number, letter = match.groups()
 
         expected_letter = self.__DNI_VALUE_OBJECT_LETTERS[int(number) % 23]
         if letter.upper() != expected_letter:
-            raise ValueError(f'DniValueObject value <<<{value}>>> is not a valid Spanish DNI.')
+            self._raise_value_is_not_dni(value=value)
+
+    def _raise_value_is_not_dni(self, value: str) -> NoReturn:
+        """
+        Raises a ValueError if the value object `value` is not a Spanish DNI.
+
+        Args:
+            value (str): The provided value.
+
+        Raises:
+            ValueError: If the `value` is not a Spanish DNI.
+        """
+        raise ValueError(f'DniValueObject value <<<{value}>>> is not a valid Spanish DNI.')

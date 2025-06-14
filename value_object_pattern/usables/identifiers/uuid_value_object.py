@@ -2,6 +2,7 @@
 UuidValueObject value object.
 """
 
+from typing import Any, NoReturn
 from uuid import UUID
 
 from value_object_pattern.decorators import validation
@@ -37,4 +38,16 @@ class UuidValueObject(ValueObject[UUID]):
             TypeError: If the `value` is not a UUID.
         """
         if type(value) is not UUID:
-            raise TypeError(f'UuidValueObject value <<<{value}>>> must be a UUID. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
+            self._raise_value_is_not_uuid(value=value)
+
+    def _raise_value_is_not_uuid(self, value: Any) -> NoReturn:
+        """
+        Raises a TypeError if the value object `value` is not a UUID.
+
+        Args:
+            value (Any): The provided value.
+
+        Raises:
+            TypeError: If the `value` is not a UUID.
+        """
+        raise TypeError(f'UuidValueObject value <<<{value}>>> must be a UUID. Got <<<{type(value).__name__}>>> type.')

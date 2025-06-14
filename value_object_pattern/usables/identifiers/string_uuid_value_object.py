@@ -2,8 +2,7 @@
 StringUuidValueObject value object.
 """
 
-from __future__ import annotations
-
+from typing import NoReturn
 from uuid import UUID
 
 from value_object_pattern.decorators import process, validation
@@ -52,5 +51,17 @@ class StringUuidValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         try:
             UUID(hex=value)
 
-        except ValueError as error:
-            raise ValueError(f'StringUuidValueObject value <<<{value}>>> is not a valid UUID.') from error
+        except ValueError:
+            self._raise_value_is_not_uuid(value=value)
+
+    def _raise_value_is_not_uuid(self, value: str) -> NoReturn:
+        """
+        Raises a ValueError if the value object `value` is not a UUID.
+
+        Args:
+            value (str): The provided value.
+
+        Raises:
+            ValueError: If the `value` is not a UUID.
+        """
+        raise ValueError(f'StringUuidValueObject value <<<{value}>>> is not a valid UUID.')
