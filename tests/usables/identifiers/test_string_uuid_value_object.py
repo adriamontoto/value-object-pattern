@@ -16,6 +16,7 @@ def test_uuid_value_object_happy_path() -> None:
     uuid_value = StringUuidValueObject(value=StringUuidMother.create())
 
     assert type(uuid_value.value) is str
+    assert uuid_value.value.islower()
 
 
 @mark.unit_testing
@@ -25,7 +26,7 @@ def test_uuid_value_object_empty_value() -> None:
     """
     with assert_raises(
         expected_exception=ValueError,
-        match=r'(?s)StringUuidValueObject value <<<.*>>> is an empty string. Only non-empty strings are allowed.',
+        match=r'StringUuidValueObject value <<<.*>>> is an empty string. Only non-empty strings are allowed.',
     ):
         StringUuidValueObject(value=StringMother.empty())
 

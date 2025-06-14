@@ -16,6 +16,7 @@ def test_printable_string_value_object_happy_path() -> None:
     string_value = PrintableStringValueObject(value=StringMother.create())
 
     assert type(string_value.value) is str
+    assert string_value.value.isprintable()
 
 
 @mark.unit_testing

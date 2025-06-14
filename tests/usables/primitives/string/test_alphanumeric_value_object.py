@@ -16,6 +16,7 @@ def test_alphanumeric_string_value_object_happy_path() -> None:
     string_value = AlphanumericStringValueObject(value=StringMother.alphanumeric())
 
     assert type(string_value.value) is str
+    assert string_value.value.isalnum()
 
 
 @mark.unit_testing
