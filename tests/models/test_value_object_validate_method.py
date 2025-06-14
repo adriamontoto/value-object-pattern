@@ -15,7 +15,7 @@ def test_value_object_validation_method_order_happy_path() -> None:
     """
 
     class PositiveIntegerValueObject(ValueObject[int]):
-        @validation(order=IntegerMother.create(min=0))
+        @validation()
         def ensure_value_is_integer(self, value: int) -> None:
             if type(value) is not int:
                 raise TypeError(f'Value object must be an integer, not {type(value).__name__}.')
