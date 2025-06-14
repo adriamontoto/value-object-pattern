@@ -2,6 +2,8 @@
 PrintableStringValueObject value object.
 """
 
+from typing import NoReturn
+
 from value_object_pattern.decorators import validation
 
 from .string_value_object import StringValueObject
@@ -34,4 +36,16 @@ class PrintableStringValueObject(StringValueObject):
             ValueError: If the `value` is not printable.
         """
         if not value.isprintable():
-            raise ValueError(f'PrintableStringValueObject value <<<{value}>>> contains invalid characters. Only printable characters are allowed.')  # noqa: E501  # fmt: skip
+            self._raise_value_is_not_printable(value=value)
+
+    def _raise_value_is_not_printable(self, value: str) -> NoReturn:
+        """
+        Raises a ValueError if the value object `value` is not printable.
+
+        Args:
+            value (str): The provided value.
+
+        Raises:
+            ValueError: If the `value` is not printable.
+        """
+        raise ValueError(f'PrintableStringValueObject value <<<{value}>>> contains invalid characters. Only printable characters are allowed.')  # noqa: E501  # fmt: skip

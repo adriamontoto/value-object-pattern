@@ -2,6 +2,8 @@
 BytesValueObject value object.
 """
 
+from typing import Any, NoReturn
+
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import ValueObject
 
@@ -33,4 +35,16 @@ class BytesValueObject(ValueObject[bytes]):
             TypeError: If the `value` is not bytes.
         """
         if type(value) is not bytes:
-            raise TypeError(f'BytesValueObject value <<<{str(object=value)}>>> must be bytes. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
+            self._raise_value_is_not_bytes(value=value)
+
+    def _raise_value_is_not_bytes(self, value: Any) -> NoReturn:
+        """
+        Raises a TypeError if the value object `value` is not bytes.
+
+        Args:
+            value (Any): The provided value.
+
+        Raises:
+            TypeError: If the `value` is not bytes.
+        """
+        raise TypeError(f'BytesValueObject value <<<{str(object=value)}>>> must be bytes. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip

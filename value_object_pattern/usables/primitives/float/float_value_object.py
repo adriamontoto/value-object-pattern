@@ -2,6 +2,8 @@
 FloatValueObject value object.
 """
 
+from typing import Any, NoReturn
+
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import ValueObject
 
@@ -33,4 +35,16 @@ class FloatValueObject(ValueObject[float]):
             TypeError: If the `value` is not a float.
         """
         if type(value) is not float:
-            raise TypeError(f'FloatValueObject value <<<{value}>>> must be a float. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
+            self._raise_value_is_not_float(value=value)
+
+    def _raise_value_is_not_float(self, value: Any) -> NoReturn:
+        """
+        Raises a TypeError if the value object `value` is not a float.
+
+        Args:
+            value (Any): The provided value.
+
+        Raises:
+            TypeError: If the `value` is not a float.
+        """
+        raise TypeError(f'FloatValueObject value <<<{value}>>> must be a float. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip

@@ -2,6 +2,8 @@
 NotEmptyStringValueObject value object.
 """
 
+from typing import NoReturn
+
 from value_object_pattern.decorators import validation
 
 from .string_value_object import StringValueObject
@@ -34,4 +36,16 @@ class NotEmptyStringValueObject(StringValueObject):
             ValueError: If the `value` is an empty string.
         """
         if not value:
-            raise ValueError(f'NotEmptyStringValueObject value <<<{value}>>> is an empty string. Only non-empty strings are allowed.')  # noqa: E501  # fmt: skip
+            self._raise_value_is_empty_string(value=value)
+
+    def _raise_value_is_empty_string(self, value: str) -> NoReturn:
+        """
+        Raises a ValueError if the value object `value` is an empty string.
+
+        Args:
+            value (str): The provided value.
+
+        Raises:
+            ValueError: If the `value` is an empty string.
+        """
+        raise ValueError(f'NotEmptyStringValueObject value <<<{value}>>> is an empty string. Only non-empty strings are allowed.')  # noqa: E501  # fmt: skip

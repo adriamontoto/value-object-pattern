@@ -2,6 +2,8 @@
 IntegerValueObject value object.
 """
 
+from typing import Any, NoReturn
+
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import ValueObject
 
@@ -33,4 +35,16 @@ class IntegerValueObject(ValueObject[int]):
             TypeError: If the `value` is not an integer.
         """
         if type(value) is not int:
-            raise TypeError(f'IntegerValueObject value <<<{value}>>> must be an integer. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
+            self._raise_value_is_not_integer(value=value)
+
+    def _raise_value_is_not_integer(self, value: Any) -> NoReturn:
+        """
+        Raises a TypeError if the value object `value` is not an integer.
+
+        Args:
+            value (Any): The provided value.
+
+        Raises:
+            TypeError: If the `value` is not an integer.
+        """
+        raise TypeError(f'IntegerValueObject value <<<{value}>>> must be an integer. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip

@@ -2,6 +2,8 @@
 NegativeFloatValueObject value object.
 """
 
+from typing import NoReturn
+
 from value_object_pattern.decorators import validation
 
 from .float_value_object import FloatValueObject
@@ -34,4 +36,16 @@ class NegativeFloatValueObject(FloatValueObject):
             ValueError: If the `value` is not a negative float.
         """
         if value >= 0:
-            raise ValueError(f'NegativeFloatValueObject value <<<{value}>>> must be a negative float.')
+            self._raise_value_is_not_negative_float(value=value)
+
+    def _raise_value_is_not_negative_float(self, value: float) -> NoReturn:
+        """
+        Raises a ValueError if the value object `value` is not a negative float.
+
+        Args:
+            value (float): The provided value.
+
+        Raises:
+            ValueError: If the `value` is not a negative float.
+        """
+        raise ValueError(f'NegativeFloatValueObject value <<<{value}>>> must be a negative float.')

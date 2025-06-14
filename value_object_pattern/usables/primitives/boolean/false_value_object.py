@@ -2,6 +2,8 @@
 FalseValueObject value object.
 """
 
+from typing import NoReturn
+
 from value_object_pattern.decorators import validation
 
 from .boolean_value_object import BooleanValueObject
@@ -34,4 +36,16 @@ class FalseValueObject(BooleanValueObject):
             ValueError: If the `value` is not false.
         """
         if value:
-            raise ValueError(f'FalseValueObject value <<<{value}>>> must be false.')
+            self._raise_value_is_not_false(value=value)
+
+    def _raise_value_is_not_false(self, value: bool) -> NoReturn:
+        """
+        Raises a ValueError if the value object `value` is not false.
+
+        Args:
+            value (bool): The provided value.
+
+        Raises:
+            ValueError: If the `value` is not false.
+        """
+        raise ValueError(f'FalseValueObject value <<<{value}>>> must be false.')
