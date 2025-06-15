@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.3.0 (2025-06-15)
+
+### ✨ Features
+
+- Implement enumeration value object
+  ([`cf2b52e`](https://github.com/adriamontoto/value-object-pattern/commit/cf2b52ef9b42efddb9d7c18c27886a1554d339ad))
+
+
 ## v0.2.0 (2025-06-14)
 
 ### ✨ Features
