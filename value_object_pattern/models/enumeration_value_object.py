@@ -18,7 +18,7 @@ from value_object_pattern.models.value_object import ValueObject
 E = TypeVar('E', bound=Enum)
 
 
-class EnumerationValueObject(ValueObject[str | E], Generic[E]):
+class EnumerationValueObject(ValueObject[str | E], Generic[E]):  # noqa: UP046
     """
     EnumerationValueObject is a value object that ensures the provided value is from an enumeration.
 

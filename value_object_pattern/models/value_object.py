@@ -15,7 +15,7 @@ else:
 T = TypeVar('T')
 
 
-class ValueObject(ABC, Generic[T]):
+class ValueObject(ABC, Generic[T]):  # noqa: UP046
     """
     ValueObject generic type.
 
