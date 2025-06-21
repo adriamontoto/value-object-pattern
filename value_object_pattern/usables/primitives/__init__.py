@@ -8,6 +8,7 @@ from .integer import (
     OddIntegerValueObject,
     PositiveIntegerValueObject,
 )
+from .none import NoneValueObject, NotNoneValueObject
 from .string import (
     AlphaStringValueObject,
     AlphanumericStringValueObject,
@@ -33,7 +34,9 @@ __all__ = (
     'LowercaseStringValueObject',
     'NegativeFloatValueObject',
     'NegativeIntegerValueObject',
+    'NoneValueObject',
     'NotEmptyStringValueObject',
+    'NotNoneValueObject',
     'OddIntegerValueObject',
     'PositiveFloatValueObject',
     'PositiveIntegerValueObject',
