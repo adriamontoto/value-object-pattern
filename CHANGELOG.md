@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.6.0 (2025-06-21)
+
+### ✨ Features
+
+- Implement none and not none value object
+  ([`56df6be`](https://github.com/adriamontoto/value-object-pattern/commit/56df6be41b18b5d5bf79237ab8e0ac30fcd65de2))
+
+
 ## v0.5.0 (2025-06-21)
 
 ### ✨ Features
