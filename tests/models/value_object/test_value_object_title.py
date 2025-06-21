@@ -1,5 +1,5 @@
 """
-Test value object module.
+Test value object module title attribute.
 """
 
 from object_mother_pattern.mothers import StringMother
@@ -23,17 +23,22 @@ def test_value_object_title_attribute_equals_custom_value_object_name() -> None:
     """
     Test that a value object title attribute equals the custom value object name.
     """
-    value_object = TrimmedStringValueObject(value=StringMother.create(), title='CustomValueObject')
+    title_name = StringMother.create()
+    value_object = TrimmedStringValueObject(value=StringMother.create(), title=title_name)
 
-    assert value_object.title == 'CustomValueObject'
+    assert value_object.title == title_name
 
 
 @mark.unit_testing
-def test_value_object_title_attribute_accepts_empty_string() -> None:
+def test_value_object_title_attribute_raises_value_error_when_empty_string() -> None:
     """
-    Test that a value object title attribute accepts an empty string.
+    Test that a value object title attribute raises ValueError when an empty string is provided.
     """
-    TrimmedStringValueObject(value=StringMother.create(), title='')  # TODO: use StringMother.empty()
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'ValueObject title <<<.*>>> must not be an empty string.',
+    ):
+        TrimmedStringValueObject(value=StringMother.create(), title=StringMother.empty())
 
 
 @mark.unit_testing
@@ -43,7 +48,7 @@ def test_value_object_title_attribute_raises_type_error_when_not_string() -> Non
     """
     with assert_raises(
         expected_exception=TypeError,
-        match=r'ValueObject value <<<.*>>> must be a string. Got <<<.*>>> instead.',
+        match=r'ValueObject title <<<.*>>> must be a string. Got <<<.*>>> instead.',
     ):
         TrimmedStringValueObject(value=StringMother.create(), title=StringMother.invalid_type())
 
@@ -57,4 +62,4 @@ def test_value_object_title_attribute_can_not_contain_leading_or_trailing_whites
         expected_exception=ValueError,
         match=r'ValueObject title <<<.*>>> contains leading or trailing whitespaces. Only trimmed values are allowed.',
     ):
-        TrimmedStringValueObject(value=StringMother.create(), title=f' {StringMother.create()} ')
+        TrimmedStringValueObject(value=StringMother.create(), title=StringMother.not_trimmed())
