@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v0.4.0 (2025-06-21)
+
+### 🐛 Bug Fixes
+
+- Discard generic warning
+  ([`733a126`](https://github.com/adriamontoto/value-object-pattern/commit/733a1262ebdec453862f7f330256eab6e7386ecc))
+
+### ✨ Features
+
+- Implement parameter attribute to change exception text
+  ([`93fe71b`](https://github.com/adriamontoto/value-object-pattern/commit/93fe71bb1946ea2b1917f14506d9ad7c27c55fbf))
+
+
 ## v0.3.0 (2025-06-15)
 
 ### ✨ Features
