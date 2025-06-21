@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.5.0 (2025-06-21)
+
+### ✨ Features
+
+- Implement timezone value object
+  ([`0f8cf72`](https://github.com/adriamontoto/value-object-pattern/commit/0f8cf72f096aa681e269854ad65384de0ace2f12))
+
+
 ## v0.4.0 (2025-06-21)
 
 ### 🐛 Bug Fixes

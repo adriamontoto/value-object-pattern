@@ -1,4 +1,4 @@
-__version__ = '0.4.0'
+__version__ = '0.5.0'
 
 from .decorators import process, validation
 from .models import EnumerationValueObject, ValueObject
