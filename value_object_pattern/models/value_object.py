@@ -15,7 +15,7 @@ else:
 T = TypeVar('T')
 
 
-class ValueObject(ABC, Generic[T]):
+class ValueObject(ABC, Generic[T]):  # noqa: UP046
     """
     ValueObject generic type.
 
@@ -34,13 +34,14 @@ class ValueObject(ABC, Generic[T]):
     ```
     """
 
-    __slots__ = ('_title', '_value')
-    __match_args__ = ('_title', '_value')
+    __slots__ = ('_parameter', '_title', '_value')
+    __match_args__ = ('_parameter', '_title', '_value')
 
     _value: T
     _title: str
+    _parameter: str
 
-    def __init__(self, *, value: T, title: str | None = None) -> None:
+    def __init__(self, *, value: T, title: str | None = None, parameter: str | None = None) -> None:
         """
         ValueObject value object constructor.
 
@@ -48,10 +49,16 @@ class ValueObject(ABC, Generic[T]):
             value (T): The value to store in the value object.
             title (str | None, optional): The title of the value object when raising exceptions, if title is None, the
             class name is used instead. Defaults to None.
+            parameter (str | None, optional): The parameter name of the value object when raising exceptions, if
+            parameter is None, the string "value" is used instead. Defaults to None.
 
         Raises:
             TypeError: If the title is not a string.
+            ValueError: If the title is an empty string.
             ValueError: If the title contains leading or trailing whitespaces.
+            TypeError: If the parameter is not a string.
+            ValueError: If the parameter is an empty string.
+            ValueError: If the parameter contains leading or trailing whitespaces.
 
         Example:
         ```python
@@ -71,12 +78,28 @@ class ValueObject(ABC, Generic[T]):
             title = self.__class__.__name__
 
         if type(title) is not str:
-            raise TypeError(f'ValueObject value <<<{title}>>> must be a string. Got <<<{type(title).__name__}>>> instead.')  # noqa: E501  # fmt: skip
+            raise TypeError(f'ValueObject title <<<{title}>>> must be a string. Got <<<{type(title).__name__}>>> instead.')  # noqa: E501  # fmt: skip
+
+        if title == '':
+            raise ValueError(f'ValueObject title <<<{title}>>> must not be an empty string.')  # noqa: E501  # fmt: skip
 
         if title.strip() != title:
             raise ValueError(f'ValueObject title <<<{title}>>> contains leading or trailing whitespaces. Only trimmed values are allowed.')  # noqa: E501  # fmt: skip
 
+        if parameter is None:
+            parameter = 'value'
+
+        if type(parameter) is not str:
+            raise TypeError(f'ValueObject parameter <<<{parameter}>>> must be a string. Got <<<{type(parameter).__name__}>>> instead.')  # noqa: E501  # fmt: skip
+
+        if parameter == '':
+            raise ValueError(f'ValueObject parameter <<<{parameter}>>> must not be an empty string.')  # noqa: E501  # fmt: skip
+
+        if parameter.strip() != parameter:
+            raise ValueError(f'ValueObject parameter <<<{parameter}>>> contains leading or trailing whitespaces. Only trimmed values are allowed.')  # noqa: E501  # fmt: skip
+
         object.__setattr__(self, '_title', title)
+        object.__setattr__(self, '_parameter', parameter)
 
         self._validate(value=value)
         value = self._process(value=value)
@@ -247,6 +270,8 @@ class ValueObject(ABC, Generic[T]):
             for class_name in {cls.__name__ for cls in classes}:
                 error.args = (str(object=error.args[0]).replace(class_name, self.title),)
 
+            error.args = (str(object=error.args[0]).replace('value', self.parameter, 1),)
+
             raise error
 
     def _post_order_dfs_mro(self, cls: type, visited: set[type] | None = None, cut_off: type = object) -> list[type]:
@@ -381,3 +406,27 @@ class ValueObject(ABC, Generic[T]):
         ```
         """
         return self._title
+
+    @property
+    def parameter(self) -> str:
+        """
+        Returns the value object parameter name.
+
+        Returns:
+            str: The value object parameter name.
+
+        Example:
+        ```python
+        from value_object_pattern import ValueObject
+
+
+        class IntegerValueObject(ValueObject[int]):
+            pass
+
+
+        integer = IntegerValueObject(value=10)
+        print(integer.parameter)
+        # >>> value
+        ```
+        """
+        return self._parameter
