@@ -2,7 +2,7 @@
 Test NotNoneValueObject value object.
 """
 
-from object_mother_pattern.mothers import BaseMother
+from object_mother_pattern.models import BaseMother
 from pytest import mark, raises as assert_raises
 
 from value_object_pattern.usables import NotNoneValueObject

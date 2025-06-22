@@ -4,7 +4,7 @@ Test UuidValueObject value object.
 
 from uuid import UUID
 
-from object_mother_pattern.mothers import UuidMother
+from object_mother_pattern import UuidMother
 from pytest import mark, raises as assert_raises
 
 from value_object_pattern.usables.identifiers import UuidValueObject

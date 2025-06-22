@@ -2,7 +2,7 @@
 Test DniValueObject value object.
 """
 
-from object_mother_pattern.mothers import StringMother
+from object_mother_pattern import StringMother
 from object_mother_pattern.mothers.identifiers.countries.spain import DniMother
 from pytest import mark, raises as assert_raises
 

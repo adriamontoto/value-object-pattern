@@ -2,7 +2,7 @@
 Test value object module.
 """
 
-from object_mother_pattern.mothers import IntegerMother, StringMother
+from object_mother_pattern import IntegerMother, StringMother
 from pytest import mark, raises as assert_raises
 
 from value_object_pattern.usables import IntegerValueObject

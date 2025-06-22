@@ -2,7 +2,7 @@
 Test value object module parameter attribute.
 """
 
-from object_mother_pattern.mothers import StringMother
+from object_mother_pattern import StringMother
 from pytest import mark, raises as assert_raises
 
 from value_object_pattern.usables import TrimmedStringValueObject

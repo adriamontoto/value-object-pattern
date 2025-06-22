@@ -2,7 +2,7 @@
 Test value object representation method.
 """
 
-from object_mother_pattern.mothers import (
+from object_mother_pattern import (
     BooleanMother,
     BytesMother,
     DateMother,

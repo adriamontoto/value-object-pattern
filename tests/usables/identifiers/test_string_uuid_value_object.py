@@ -2,7 +2,7 @@
 Test StringUuidValueObject value object.
 """
 
-from object_mother_pattern.mothers import StringMother, StringUuidMother
+from object_mother_pattern import StringMother, StringUuidMother
 from pytest import mark, raises as assert_raises
 
 from value_object_pattern.usables.identifiers import StringUuidValueObject

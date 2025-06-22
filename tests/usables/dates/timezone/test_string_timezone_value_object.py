@@ -2,7 +2,7 @@
 Test StringTimezoneValueObject value object.
 """
 
-from object_mother_pattern.mothers import StringMother
+from object_mother_pattern import StringMother
 from object_mother_pattern.mothers.dates import StringTimezoneMother
 from pytest import mark, raises as assert_raises
 
