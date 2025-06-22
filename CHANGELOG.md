@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.6.2 (2025-06-22)
+
+### 🐛 Bug Fixes
+
+- Change the way enumeration type is tested
+  ([`9b400cf`](https://github.com/adriamontoto/value-object-pattern/commit/9b400cfc15719e70393eeccbd921daf1e463a8bb))
+
+
 ## v0.6.1 (2025-06-22)
 
 ### 📦 Build System
