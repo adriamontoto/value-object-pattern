@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.6.1 (2025-06-22)
+
+### 📦 Build System
+
+- Bmp object mother pattern package v3.0.0
+  ([`ab8ef08`](https://github.com/adriamontoto/value-object-pattern/commit/ab8ef0841bf7c1217bcf827adfa7e0e7126da8ef))
+
+
 ## v0.6.0 (2025-06-21)
 
 ### ✨ Features
