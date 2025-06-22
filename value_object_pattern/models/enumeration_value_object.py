@@ -119,10 +119,10 @@ class EnumerationValueObject(ValueObject[str | E], Generic[E]):  # noqa: UP046
         Returns:
             E: The processed value.
         """
-        if isinstance(value, str):
+        if type(value) is str:
             return self._enumeration[value.upper()]
 
-        return value
+        return value  # type: ignore[return-value]
 
     @validation(order=0)
     def _ensure_value_is_from_enumeration(self, value: str | E) -> None:
