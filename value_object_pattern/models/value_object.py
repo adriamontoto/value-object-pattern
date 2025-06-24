@@ -2,15 +2,16 @@
 Value object generic type.
 """
 
-from abc import ABC
-from collections import deque
 from sys import version_info
-from typing import Any, Callable, Generic, NoReturn, TypeVar
 
 if version_info >= (3, 12):
     from typing import override  # pragma: no cover
 else:
     from typing_extensions import override  # pragma: no cover
+
+from abc import ABC
+from collections import deque
+from typing import Any, Callable, Generic, NoReturn, TypeVar
 
 T = TypeVar('T')
 
@@ -128,7 +129,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         # >>> IntegerValueObject(value=10)
         ```
         """
-        return f'{self.__class__.__name__}(value={self._value!s})'
+        return f'{self.__class__.__name__}(value={self._value!r})'
 
     @override
     def __str__(self) -> str:

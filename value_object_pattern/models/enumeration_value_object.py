@@ -2,15 +2,16 @@
 EnumerationValueObject module.
 """
 
-from enum import Enum
-from inspect import isclass
 from sys import version_info
-from typing import Any, Generic, TypeVar, get_args, get_origin
 
 if version_info >= (3, 12):
     from typing import override  # pragma: no cover
 else:
     from typing_extensions import override  # pragma: no cover
+
+from enum import Enum
+from inspect import isclass
+from typing import Any, Generic, TypeVar, get_args, get_origin
 
 from value_object_pattern.decorators import process, validation
 from value_object_pattern.models.value_object import ValueObject
