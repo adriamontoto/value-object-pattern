@@ -1,5 +1,5 @@
 """
-Value object generic type.
+ValueObject module.
 """
 
 from sys import version_info
@@ -18,7 +18,9 @@ T = TypeVar('T')
 
 class ValueObject(ABC, Generic[T]):  # noqa: UP046
     """
-    ValueObject generic type.
+    ValueObject class is a value object that ensures the provided value follows the domain rules.
+
+    ***This class is abstract and should not be instantiated directly***.
 
     Example:
     ```python

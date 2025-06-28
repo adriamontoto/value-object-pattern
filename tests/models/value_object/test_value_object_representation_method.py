@@ -41,7 +41,7 @@ def test_value_object_string_representation_method() -> None:
     string_value = StringMother.create()
     string = StringValueObject(value=string_value)
 
-    assert repr(string) == f'StringValueObject(value={string_value})'
+    assert repr(string) == f'StringValueObject(value={string_value!r})'
 
 
 @mark.unit_testing
@@ -52,7 +52,7 @@ def test_value_object_bytes_representation_method() -> None:
     bytes_value = BytesMother.create()
     bytes_ = BytesValueObject(value=bytes_value)
 
-    assert repr(bytes_) == f'BytesValueObject(value={bytes_value!s})'
+    assert repr(bytes_) == f'BytesValueObject(value={bytes_value!r})'
 
 
 @mark.unit_testing
@@ -63,7 +63,7 @@ def test_value_object_bool_representation_method() -> None:
     boolean_value = BooleanMother.create()
     boolean = BooleanValueObject(value=boolean_value)
 
-    assert repr(boolean) == f'BooleanValueObject(value={boolean_value})'
+    assert repr(boolean) == f'BooleanValueObject(value={boolean_value!r})'
 
 
 @mark.unit_testing
@@ -74,7 +74,7 @@ def test_value_object_integer_representation_method() -> None:
     integer_value = IntegerMother.create()
     integer = IntegerValueObject(value=integer_value)
 
-    assert repr(integer) == f'IntegerValueObject(value={integer_value})'
+    assert repr(integer) == f'IntegerValueObject(value={integer_value!r})'
 
 
 @mark.unit_testing
@@ -85,7 +85,7 @@ def test_value_object_float_representation_method() -> None:
     float_value = FloatMother.create()
     float_ = FloatValueObject(value=float_value)
 
-    assert repr(float_) == f'FloatValueObject(value={float_value})'
+    assert repr(float_) == f'FloatValueObject(value={float_value!r})'
 
 
 @mark.unit_testing
@@ -96,7 +96,7 @@ def test_value_object_date_representation_method() -> None:
     date_value = DateMother.create()
     date = DateValueObject(value=date_value)
 
-    assert repr(date) == f'DateValueObject(value={date_value})'
+    assert repr(date) == f'DateValueObject(value={date_value!r})'
 
 
 @mark.unit_testing
@@ -107,7 +107,7 @@ def test_value_object_string_date_representation_method() -> None:
     string_date_value = StringDateMother.create()
     string_date = StringDateValueObject(value=string_date_value)
 
-    assert repr(string_date) == f'StringDateValueObject(value={string_date_value})'
+    assert repr(string_date) == f'StringDateValueObject(value={string_date_value!r})'
 
 
 @mark.unit_testing
@@ -118,7 +118,7 @@ def test_value_object_datetime_representation_method() -> None:
     datetime_value = DatetimeMother.create()
     datetime = DatetimeValueObject(value=datetime_value)
 
-    assert repr(datetime) == f'DatetimeValueObject(value={datetime_value})'
+    assert repr(datetime) == f'DatetimeValueObject(value={datetime_value!r})'
 
 
 @mark.unit_testing
@@ -129,7 +129,7 @@ def test_value_object_string_datetime_representation_method() -> None:
     string_datetime_value = StringDatetimeMother.create()
     string_datetime = StringDatetimeValueObject(value=string_datetime_value)
 
-    assert repr(string_datetime) == f'StringDatetimeValueObject(value={string_datetime_value})'
+    assert repr(string_datetime) == f'StringDatetimeValueObject(value={string_datetime_value!r})'
 
 
 @mark.unit_testing
@@ -140,7 +140,7 @@ def test_value_object_uuid_representation_method() -> None:
     uuid_value = UuidMother.create()
     uuid = UuidValueObject(value=uuid_value)
 
-    assert repr(uuid) == f'UuidValueObject(value={uuid_value})'
+    assert repr(uuid) == f'UuidValueObject(value={uuid_value!r})'
 
 
 @mark.unit_testing
@@ -151,4 +151,4 @@ def test_value_object_string_uuid_representation_method() -> None:
     string_uuid_value = StringUuidMother.create()
     string_uuid = StringUuidValueObject(value=string_uuid_value)
 
-    assert repr(string_uuid) == f'StringUuidValueObject(value={string_uuid_value})'
+    assert repr(string_uuid) == f'StringUuidValueObject(value={string_uuid_value!r})'

@@ -23,6 +23,8 @@ class EnumerationValueObject(ValueObject[str | E], Generic[E]):  # noqa: UP046
     """
     EnumerationValueObject is a value object that ensures the provided value is from an enumeration.
 
+    ***This class is abstract and should not be instantiated directly***.
+
     Example:
     ```python
     from enum import Enum, unique
