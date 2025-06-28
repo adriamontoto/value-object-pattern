@@ -26,7 +26,7 @@ def test_alphanumeric_string_value_object_invalid_value() -> None:
     """
     with assert_raises(
         expected_exception=ValueError,
-        match=r'(?s)AlphanumericStringValueObject value <<<.*>>> contains invalid characters. Only alphanumeric characters are allowed.',  # noqa: E501
+        match=r'AlphanumericStringValueObject value <<<.*>>> contains invalid characters. Only alphanumeric characters are allowed.',  # noqa: E501
     ):
         AlphanumericStringValueObject(value=StringMother.invalid_value())
 

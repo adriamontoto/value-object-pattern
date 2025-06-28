@@ -26,7 +26,7 @@ def test_printable_string_value_object_invalid_value() -> None:
     """
     with assert_raises(
         expected_exception=ValueError,
-        match=r'(?s)PrintableStringValueObject value <<<.*>>> contains invalid characters. Only printable characters are allowed.',  # noqa: E501
+        match=r'PrintableStringValueObject value <<<.*>>> contains invalid characters. Only printable characters are allowed.',  # noqa: E501
     ):
         PrintableStringValueObject(value=StringMother.invalid_value())
 
