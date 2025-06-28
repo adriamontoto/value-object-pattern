@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v0.7.1 (2025-06-28)
+
+### 🐛 Bug Fixes
+
+- Fix DniValueObject tests
+  ([`392d785`](https://github.com/adriamontoto/value-object-pattern/commit/392d785b6bda3728f7d07489401326a19de80f14))
+
+- Fix equal method tests
+  ([`1ee662b`](https://github.com/adriamontoto/value-object-pattern/commit/1ee662b5b194cdd26b3589fe5db77ff71073cc67))
+
+
 ## v0.7.0 (2025-06-28)
 
 ### 🐛 Bug Fixes
