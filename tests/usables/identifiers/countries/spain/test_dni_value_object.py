@@ -4,6 +4,7 @@ Test DniValueObject value object.
 
 from object_mother_pattern import StringMother
 from object_mother_pattern.mothers.identifiers.countries.spain import DniMother
+from object_mother_pattern.mothers.primitives.utils.alphabets import ALPHABET_UPPERCASE_BASIC
 from pytest import mark, raises as assert_raises
 
 from value_object_pattern.usables.identifiers.countries.spain import DniValueObject
@@ -74,7 +75,9 @@ def test_dni_value_object_invalid_dni_letter() -> None:
     Test DniValueObject value object raises ValueError when value is not a valid dni letter.
     """
     dni_value = DniMother.create()
-    dni_value = dni_value[:-1] + StringMother.alpha(min_length=1, max_length=1)
+    last_letter = dni_value[-1].upper()
+
+    dni_value = dni_value[:-1] + ALPHABET_UPPERCASE_BASIC.replace(last_letter, '', 1)
 
     with assert_raises(
         expected_exception=ValueError,
