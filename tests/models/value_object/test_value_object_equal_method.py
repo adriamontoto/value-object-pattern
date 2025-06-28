@@ -138,8 +138,8 @@ def test_value_object_integer_equal_method_with_different_values() -> None:
     """
     Test value object integer equal method with different values.
     """
-    integer_value_a = IntegerMother.create()
-    integer_value_b = IntegerMother.create()
+    integer_value_a = IntegerMother.create(min=0, max=16)
+    integer_value_b = IntegerMother.create(min=17, max=32)
 
     assert IntegerValueObject(value=integer_value_a) != IntegerValueObject(value=integer_value_b)
 
