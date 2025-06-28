@@ -47,4 +47,4 @@ class BytesValueObject(ValueObject[bytes]):
         Raises:
             TypeError: If the `value` is not bytes.
         """
-        raise TypeError(f'BytesValueObject value <<<{str(object=value)}>>> must be bytes. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
+        raise TypeError(f'BytesValueObject value <<<{value}>>> must be bytes. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
