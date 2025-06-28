@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v0.7.0 (2025-06-28)
+
+### 🐛 Bug Fixes
+
+- Remove bytes string conversion
+  ([`8520732`](https://github.com/adriamontoto/value-object-pattern/commit/8520732319ba8e3702312ec8af3d8ec2bf00c091))
+
+### ✨ Features
+
+- Implement base model
+  ([`77b6316`](https://github.com/adriamontoto/value-object-pattern/commit/77b6316a8f3eb4d3937a24c96672ef680a86d844))
+
+
 ## v0.6.2 (2025-06-22)
 
 ### 🐛 Bug Fixes
