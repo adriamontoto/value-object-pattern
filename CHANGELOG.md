@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.7.3 (2025-07-01)
+
+### 🐛 Bug Fixes
+
+- Make enumeration value object to accept the enumeration and enumeration value, not the key
+  ([`7975cee`](https://github.com/adriamontoto/value-object-pattern/commit/7975ceecec5e6cfe726dcf9de7879cbd70728ce8))
+
+
 ## v0.7.2 (2025-06-30)
 
 ### 🐛 Bug Fixes
