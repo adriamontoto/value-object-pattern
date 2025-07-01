@@ -19,7 +19,7 @@ from value_object_pattern.models.value_object import ValueObject
 E = TypeVar('E', bound=Enum)
 
 
-class EnumerationValueObject(ValueObject[str | E], Generic[E]):  # noqa: UP046
+class EnumerationValueObject(ValueObject[Any | E], Generic[E]):  # noqa: UP046
     """
     EnumerationValueObject is a value object that ensures the provided value is from an enumeration.
 
@@ -109,31 +109,71 @@ class EnumerationValueObject(ValueObject[str | E], Generic[E]):  # noqa: UP046
         # >>> ColorValueObject(value=ColorEnumeration.RED)
         ```
         """
-        return f'{self.__class__.__name__}(value={self.value.__class__.__name__}.{self.value.name})'
+        return f'{self.__class__.__name__}(value={self.value!r})'
+
+    @override
+    def __str__(self) -> str:
+        """
+        Returns a simple string representation of the value object.
+
+        Returns:
+            str: The string representation of the value object value.
+
+        Example:
+        ```python
+        from enum import Enum, unique
+
+        from value_object_pattern import EnumerationValueObject
+
+
+        @unique
+        class ColorEnumeration(Enum):
+            RED = 1
+            GREEN = 2
+            BLUE = 3
+
+
+        class ColorValueObject(EnumerationValueObject[ColorEnumeration]):
+            pass
+
+
+        red = ColorValueObject(value=ColorEnumeration.RED)
+        print(str(red))
+        # >>> 1
+        ```
+        """
+        return str(object=self._value.value)
 
     @process(order=0)
-    def _ensure_value_is_stored_as_enumeration(self, value: str | E) -> E:
+    def _ensure_value_is_stored_as_enumeration(self, value: Any | E) -> E:
         """
         Ensures the value object `value` is stored as an enumeration.
 
         Args:
-            value (str | E): The provided value. It can be the name of the member or the member itself.
+            value (Any | E): The provided value. It can be the name of the member or the member itself.
+
+        Raises:
+            TypeError: If the `value` is not from the enumeration.
 
         Returns:
             E: The processed value.
         """
-        if type(value) is str:
-            return self._enumeration[value.upper()]
+        if isinstance(value, self._enumeration):
+            return value
 
-        return value  # type: ignore[return-value]
+        for member in self._enumeration:
+            if member.value == value:
+                return member
+
+        raise TypeError(f'EnumerationValueObject value <<<{value}>>> must be from the enumeration <<<{self._title}>>>.')
 
     @validation(order=0)
-    def _ensure_value_is_from_enumeration(self, value: str | E) -> None:
+    def _ensure_value_is_from_enumeration(self, value: Any | E) -> None:
         """
         Ensures the value object `value` is from the enumeration.
 
         Args:
-            value (str | E): The provided value. It can be the name of the member or the member itself.
+            value (Any | E): The provided value. It can be the name of the member or the member itself.
 
         Raises:
             TypeError: If the `value` is not from the enumeration.
@@ -141,10 +181,10 @@ class EnumerationValueObject(ValueObject[str | E], Generic[E]):  # noqa: UP046
         if isinstance(value, self._enumeration):
             return
 
-        if isinstance(value, str) and value in self._enumeration.__members__:
+        if any(value == member.value for member in self._enumeration):
             return
 
-        raise TypeError(f'EnumerationValueObject value <<<{value}>>> must be from the enumeration <<<{self._title}>>>.')  # noqa: E501  # fmt: skip
+        raise TypeError(f'EnumerationValueObject value <<<{value}>>> must be from the enumeration <<<{self._title}>>>.')
 
     @override
     @property
@@ -169,4 +209,4 @@ class EnumerationValueObject(ValueObject[str | E], Generic[E]):  # noqa: UP046
         # >>> 10
         ```
         """
-        return self._value  # type: ignore[return-value]
+        return self._value
