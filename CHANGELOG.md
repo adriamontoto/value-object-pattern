@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.7.2 (2025-06-30)
+
+### 🐛 Bug Fixes
+
+- When the primitive value is an enum convert to the enum key
+  ([`8b4316f`](https://github.com/adriamontoto/value-object-pattern/commit/8b4316f158e6d015f279ad183187259f199e215a))
+
+
 ## v0.7.1 (2025-06-28)
 
 ### 🐛 Bug Fixes
