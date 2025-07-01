@@ -10,6 +10,7 @@ else:
     from typing_extensions import override  # pragma: no cover
 
 from abc import ABC, abstractmethod
+from enum import Enum
 from typing import Any, Self
 
 
@@ -329,8 +330,14 @@ class BaseModel(ABC):
             if isinstance(value, BaseModel):
                 value = value.to_primitives()
 
+            elif isinstance(value, Enum):
+                value = value.name
+
             elif hasattr(value, 'value'):
                 value = value.value
+
+                if isinstance(value, Enum):
+                    value = value.name
 
             elif isinstance(value, primitive_types):  # noqa: SIM114
                 pass
