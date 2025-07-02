@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.7.4 (2025-07-02)
+
+### 🐛 Bug Fixes
+
+- Use enum.value when executing to primitives method
+  ([`cbf77fe`](https://github.com/adriamontoto/value-object-pattern/commit/cbf77fe54e9b8d3e79d906ad525bd3ee206e24dd))
+
+
 ## v0.7.3 (2025-07-01)
 
 ### 🐛 Bug Fixes
