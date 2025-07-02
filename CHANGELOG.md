@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.7.5 (2025-07-02)
+
+### 🐛 Bug Fixes
+
+- When raising enumeration value object errors add enumeration name
+  ([`92f087d`](https://github.com/adriamontoto/value-object-pattern/commit/92f087d84c540d0a3f804b4a65f8f71c7048f6f7))
+
+
 ## v0.7.4 (2025-07-02)
 
 ### 🐛 Bug Fixes
