@@ -165,7 +165,7 @@ class EnumerationValueObject(ValueObject[Any | E], Generic[E]):  # noqa: UP046
             if member.value == value:
                 return member
 
-        raise TypeError(f'EnumerationValueObject value <<<{value}>>> must be from the enumeration <<<{self._title}>>>.')
+        raise TypeError(f'EnumerationValueObject value <<<{value}>>> must be from the enumeration <<<{self._enumeration.__name__}>>>. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
 
     @validation(order=0)
     def _ensure_value_is_from_enumeration(self, value: Any | E) -> None:
@@ -184,7 +184,7 @@ class EnumerationValueObject(ValueObject[Any | E], Generic[E]):  # noqa: UP046
         if any(value == member.value for member in self._enumeration):
             return
 
-        raise TypeError(f'EnumerationValueObject value <<<{value}>>> must be from the enumeration <<<{self._title}>>>.')
+        raise TypeError(f'EnumerationValueObject value <<<{value}>>> must be from the enumeration <<<{self._enumeration.__name__}>>>. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
 
     @override
     @property
