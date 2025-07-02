@@ -331,13 +331,13 @@ class BaseModel(ABC):
                 value = value.to_primitives()
 
             elif isinstance(value, Enum):
-                value = value.name
+                value = value.value
 
             elif hasattr(value, 'value'):
                 value = value.value
 
                 if isinstance(value, Enum):
-                    value = value.name
+                    value = value.value
 
             elif isinstance(value, primitive_types):  # noqa: SIM114
                 pass
