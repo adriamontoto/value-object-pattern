@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.8.0 (2025-07-03)
+
+### ✨ Features
+
+- Add support for collections value object
+  ([`d7e6acd`](https://github.com/adriamontoto/value-object-pattern/commit/d7e6acd53f1b119dcb72543321c6c895dfddf455))
+
+
 ## v0.7.5 (2025-07-02)
 
 ### 🐛 Bug Fixes
