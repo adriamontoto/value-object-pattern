@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.9.0 (2025-07-03)
+
+### ✨ Features
+
+- Ensure enumeration value object can raise custom exceptions
+  ([`888e61e`](https://github.com/adriamontoto/value-object-pattern/commit/888e61e4d5601f754429b26076b721962206fb25))
+
+
 ## v0.8.0 (2025-07-03)
 
 ### ✨ Features
