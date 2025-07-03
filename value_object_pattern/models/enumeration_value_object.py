@@ -11,7 +11,7 @@ else:
 
 from enum import Enum
 from inspect import isclass
-from typing import Any, Generic, TypeVar, get_args, get_origin
+from typing import Any, Generic, NoReturn, TypeVar, get_args, get_origin
 
 from value_object_pattern.decorators import process, validation
 from value_object_pattern.models.value_object import ValueObject
@@ -165,7 +165,7 @@ class EnumerationValueObject(ValueObject[Any | E], Generic[E]):  # noqa: UP046
             if member.value == value:
                 return member
 
-        raise TypeError(f'EnumerationValueObject value <<<{value}>>> must be from the enumeration <<<{self._enumeration.__name__}>>>. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
+        self._raise_value_is_not_from_enumeration(value=value)
 
     @validation(order=0)
     def _ensure_value_is_from_enumeration(self, value: Any | E) -> None:
@@ -184,6 +184,18 @@ class EnumerationValueObject(ValueObject[Any | E], Generic[E]):  # noqa: UP046
         if any(value == member.value for member in self._enumeration):
             return
 
+        self._raise_value_is_not_from_enumeration(value=value)
+
+    def _raise_value_is_not_from_enumeration(self, value: Any) -> NoReturn:
+        """
+        Raises a TypeError exception if the value is not from the enumeration.
+
+        Args:
+            value (Any): The provided value.
+
+        Raises:
+            TypeError: If the value is not from the enumeration.
+        """
         raise TypeError(f'EnumerationValueObject value <<<{value}>>> must be from the enumeration <<<{self._enumeration.__name__}>>>. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
 
     @override
