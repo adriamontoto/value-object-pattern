@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.9.1 (2025-07-05)
+
+### 🐛 Bug Fixes
+
+- Raise TypeError if BaseModel.from_primitives parameter is not a dictionary of strings
+  ([`b28a112`](https://github.com/adriamontoto/value-object-pattern/commit/b28a112535aebfc8c708981f0e0dcb4d95cab293))
+
+
 ## v0.9.0 (2025-07-03)
 
 ### ✨ Features
