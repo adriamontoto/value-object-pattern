@@ -11,6 +11,7 @@ else:
 
 from abc import ABC, abstractmethod
 from enum import Enum
+from inspect import Parameter, _empty, signature
 from typing import Any, NoReturn, Self
 
 from .value_object import ValueObject
@@ -267,6 +268,7 @@ class BaseModel(ABC):
 
         Raises:
             TypeError: If the `primitives` is not a dictionary of strings.
+            ValueError: If the `primitives` does not have all the required attributes.
 
         Returns:
             Self: Instance of the class.
@@ -297,6 +299,14 @@ class BaseModel(ABC):
         if not isinstance(primitives, dict) or not all(isinstance(key, str) for key in primitives):  # type: ignore[redundant-expr]
             cls._raise_value_is_not_dict_of_strings(value=primitives)
 
+        constructor_signature = signature(obj=cls.__init__)
+        parameters: dict[str, Parameter] = {parameter.name: parameter for parameter in constructor_signature.parameters.values() if parameter.name != 'self'}  # noqa: E501  # fmt: skip
+        missing = {name for name, parameter in parameters.items() if parameter.default is _empty and name not in primitives}  # noqa: E501  # fmt: skip
+        extra = set(primitives) - parameters.keys()
+
+        if missing or extra:
+            cls._raise_value_constructor_parameters_mismatch(primitives=set(primitives), missing=missing, extra=extra)
+
         return cls(**primitives)
 
     @classmethod
@@ -311,6 +321,30 @@ class BaseModel(ABC):
             TypeError: If the `value` is not a dictionary of strings.
         """
         raise TypeError(f'{cls.__name__} primitives <<<{value}>>> must be a dictionary of strings. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
+
+    @classmethod
+    def _raise_value_constructor_parameters_mismatch(
+        cls,
+        primitives: set[str],
+        missing: set[str],
+        extra: set[str],
+    ) -> NoReturn:
+        """
+        Raises a ValueError if the value object constructor parameters do not match the provided primitives.
+
+        Args:
+            primitives (set[str]): Set of primitives keys. Only the keys are used to not expose private attributes.
+            missing (set[str]): Set of missing parameters.
+            extra (set[str]): Set of extra parameters.
+
+        Raises:
+            ValueError: If the constructor parameters do not match the provided primitives.
+        """
+        primitives_names = ', '.join(sorted(primitives))
+        missing_names = ', '.join(sorted(missing))
+        extra_names = ', '.join(sorted(extra))
+
+        raise ValueError(f'{cls.__name__} primitives <<<{primitives_names}>>> must contain all constructor parameters. Missing parameters: <<<{missing_names}>> and extra parameters: <<<{extra_names}>>>.')  # noqa: E501  # fmt: skip
 
     def to_primitives(self) -> dict[str, Any]:
         """
