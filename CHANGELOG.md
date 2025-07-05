@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.9.2 (2025-07-05)
+
+### 🐛 Bug Fixes
+
+- Allow BaseModel and ValueObject or their methods to create primitives dictionary
+  ([`71bdec5`](https://github.com/adriamontoto/value-object-pattern/commit/71bdec53f3d057e1263d2e8368f8ba6c283aae57))
+
+
 ## v0.9.1 (2025-07-05)
 
 ### 🐛 Bug Fixes
