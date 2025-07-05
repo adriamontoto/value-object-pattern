@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.9.3 (2025-07-05)
+
+### 🐛 Bug Fixes
+
+- Check if the provided primitive parameters are constructor BaseModel parameters
+  ([`4908540`](https://github.com/adriamontoto/value-object-pattern/commit/490854067782aea88dbf1c207279ecdac3e047ac))
+
+
 ## v0.9.2 (2025-07-05)
 
 ### 🐛 Bug Fixes
