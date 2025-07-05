@@ -13,6 +13,8 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Any, NoReturn, Self
 
+from .value_object import ValueObject
+
 
 class BaseModel(ABC):
     """
@@ -346,13 +348,13 @@ class BaseModel(ABC):
 
         dictionary = self._to_dict(ignore_private=True)
         for key, value in dictionary.items():
-            if isinstance(value, BaseModel):
+            if isinstance(value, BaseModel) or hasattr(value, 'to_primitives'):
                 value = value.to_primitives()
 
             elif isinstance(value, Enum):
                 value = value.value
 
-            elif hasattr(value, 'value'):
+            elif isinstance(value, ValueObject) or hasattr(value, 'value'):
                 value = value.value
 
                 if isinstance(value, Enum):
