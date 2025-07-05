@@ -11,7 +11,7 @@ else:
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, Self
+from typing import Any, NoReturn, Self
 
 
 class BaseModel(ABC):
@@ -263,6 +263,9 @@ class BaseModel(ABC):
         Args:
             primitives (dict[str, Any]): Dictionary to create the instance from.
 
+        Raises:
+            TypeError: If the `primitives` is not a dictionary of strings.
+
         Returns:
             Self: Instance of the class.
 
@@ -289,7 +292,23 @@ class BaseModel(ABC):
         # >>> {'name': 'John Doe', 'birthdate': '1900-01-01T00:00:00+00:00'}
         ```
         """  # noqa: E501
+        if not isinstance(primitives, dict) or not all(isinstance(key, str) for key in primitives):  # type: ignore[redundant-expr]
+            cls._raise_value_is_not_dict_of_strings(value=primitives)
+
         return cls(**primitives)
+
+    @classmethod
+    def _raise_value_is_not_dict_of_strings(cls, value: Any) -> NoReturn:
+        """
+        Raises a TypeError if the value object `value` is not a dictionary of strings.
+
+        Args:
+            value (Any): The provided value.
+
+        Raises:
+            TypeError: If the `value` is not a dictionary of strings.
+        """
+        raise TypeError(f'{cls.__name__} primitives <<<{value}>>> must be a dictionary of strings. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
 
     def to_primitives(self) -> dict[str, Any]:
         """
