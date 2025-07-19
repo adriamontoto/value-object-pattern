@@ -14,7 +14,8 @@ from inspect import isclass
 from typing import Any, Generic, NoReturn, TypeVar, get_args, get_origin
 
 from value_object_pattern.decorators import process, validation
-from value_object_pattern.models.value_object import ValueObject
+
+from .value_object import ValueObject
 
 E = TypeVar('E', bound=Enum)
 
@@ -77,72 +78,6 @@ class EnumerationValueObject(ValueObject[Any | E], Generic[E]):  # noqa: UP046
                 return
 
         raise TypeError('EnumerationValueObject must be parameterized, e.g. "class ColorValueObject(EnumerationValueObject[ColorEnumeration])".')  # noqa: E501  # fmt: skip
-
-    @override
-    def __repr__(self) -> str:
-        """
-        Returns a detailed string representation of the value object.
-
-        Returns:
-            str: A string representation of the value object in the format 'ClassName(value=value)'.
-
-        Example:
-        ```python
-        from enum import Enum, unique
-
-        from value_object_pattern import EnumerationValueObject
-
-
-        @unique
-        class ColorEnumeration(Enum):
-            RED = 1
-            GREEN = 2
-            BLUE = 3
-
-
-        class ColorValueObject(EnumerationValueObject[ColorEnumeration]):
-            pass
-
-
-        red = ColorValueObject(value=ColorEnumeration.RED)
-        print(repr(red))
-        # >>> ColorValueObject(value=ColorEnumeration.RED)
-        ```
-        """
-        return f'{self.__class__.__name__}(value={self.value!r})'
-
-    @override
-    def __str__(self) -> str:
-        """
-        Returns a simple string representation of the value object.
-
-        Returns:
-            str: The string representation of the value object value.
-
-        Example:
-        ```python
-        from enum import Enum, unique
-
-        from value_object_pattern import EnumerationValueObject
-
-
-        @unique
-        class ColorEnumeration(Enum):
-            RED = 1
-            GREEN = 2
-            BLUE = 3
-
-
-        class ColorValueObject(EnumerationValueObject[ColorEnumeration]):
-            pass
-
-
-        red = ColorValueObject(value=ColorEnumeration.RED)
-        print(str(red))
-        # >>> 1
-        ```
-        """
-        return str(object=self._value.value)
 
     @process(order=0)
     def _ensure_value_is_stored_as_enumeration(self, value: Any | E) -> E:
@@ -209,16 +144,25 @@ class EnumerationValueObject(ValueObject[Any | E], Generic[E]):  # noqa: UP046
 
         Example:
         ```python
-        from value_object_pattern import ValueObject
+        from enum import Enum, unique
+
+        from value_object_pattern import EnumerationValueObject
 
 
-        class IntegerValueObject(ValueObject[int]):
+        @unique
+        class ColorEnumeration(Enum):
+            RED = 1
+            GREEN = 2
+            BLUE = 3
+
+
+        class ColorValueObject(EnumerationValueObject[ColorEnumeration]):
             pass
 
 
-        integer = IntegerValueObject(value=10)
-        print(integer.value)
-        # >>> 10
+        red = ColorValueObject(value=ColorEnumeration.RED)
+        print(red.value)
+        # >>> ColorEnumeration.RED
         ```
         """
         return self._value

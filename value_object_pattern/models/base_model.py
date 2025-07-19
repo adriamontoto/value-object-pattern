@@ -401,7 +401,7 @@ class BaseModel(ABC):
                 pass
 
             else:
-                value = str(value)
+                value = str(object=value)
 
             dictionary[key] = value
 

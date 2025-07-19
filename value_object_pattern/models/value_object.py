@@ -131,7 +131,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         # >>> IntegerValueObject(value=10)
         ```
         """
-        return f'{self.__class__.__name__}(value={self._value!r})'
+        return f'{self.__class__.__name__}(value={self.value!r})'
 
     @override
     def __str__(self) -> str:
@@ -155,7 +155,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         # >>> 10
         ```
         """
-        return str(object=self._value)
+        return str(object=self.value)
 
     @override
     def __hash__(self) -> int:
