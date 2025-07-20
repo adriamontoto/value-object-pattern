@@ -15,6 +15,9 @@
     <a href="https://pypi.org/project/value-object-pattern/" target="_blank">
         <img src="https://img.shields.io/pypi/pyversions/value-object-pattern.svg?color=%2334D058" alt="Supported Python Versions">
     </a>
+    <a href="https://pepy.tech/projects/value-object-pattern" target="_blank">
+        <img src="https://static.pepy.tech/badge/value-object-pattern/month" alt="Package Downloads">
+    </a>
 </p>
 
 The **Value Object Pattern** is a Python 🐍 package that streamlines the creation and management of value objects 📦 in your projects. Value objects are immutable, self-validating objects that represent descriptive aspects of the domain with no conceptual identity. This pattern is essential for maintaining clean 🧹, maintainable, and bug-resistant 🐛 codebases by encapsulating domain-specific logic and ensuring consistency across your application 📱.
