@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v0.10.0 (2025-07-20)
+
+### 🐛 Bug Fixes
+
+- Update string representation methods to use 'self.value' instead of 'self._value'
+  ([`66d6489`](https://github.com/adriamontoto/value-object-pattern/commit/66d648972e67096aec108cfb29931164ddc302e2))
+
+### ✨ Features
+
+- Remove unused collection value objects and introduce ListValueObject
+  ([`6483727`](https://github.com/adriamontoto/value-object-pattern/commit/64837273f2828142c934a11016cc758b1b920a9f))
+
+
 ## v0.9.3 (2025-07-05)
 
 ### 🐛 Bug Fixes
