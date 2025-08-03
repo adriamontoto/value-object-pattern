@@ -1,7 +1,13 @@
-from .string_uuid_value_object import StringUuidValueObject
-from .uuid_value_object import UuidValueObject
+from .uuid import (
+    StringUuidV4ValueObject,
+    StringUuidValueObject,
+    UuidV4ValueObject,
+    UuidValueObject,
+)
 
 __all__ = (
+    'StringUuidV4ValueObject',
     'StringUuidValueObject',
+    'UuidV4ValueObject',
     'UuidValueObject',
 )

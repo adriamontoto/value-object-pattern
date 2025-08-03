@@ -11,7 +11,7 @@ from value_object_pattern.models import ValueObject
 
 class UuidValueObject(ValueObject[UUID]):
     """
-    UuidValueObject value object ensures the provided value is a valid UUID.
+    UuidValueObject value object ensures the provided value is a valid UUID (all versions).
 
     Example:
     ```python

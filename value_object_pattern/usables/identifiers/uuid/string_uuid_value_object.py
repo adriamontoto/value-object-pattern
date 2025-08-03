@@ -11,7 +11,7 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 
 class StringUuidValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    StringUuidValueObject value object ensures the provided value is a valid UUID.
+    StringUuidValueObject value object ensures the provided value is a valid UUID (all versions).
 
     Example:
     ```python

@@ -12,9 +12,8 @@ from object_mother_pattern import (
     StringDateMother,
     StringDatetimeMother,
     StringMother,
-    StringUuidMother,
-    UuidMother,
 )
+from object_mother_pattern.mothers.identifiers import StringUuidMother, UuidMother
 from pytest import mark
 
 from value_object_pattern.usables import (
