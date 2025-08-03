@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.11.0 (2025-08-03)
+
+### ✨ Features
+
+- Implement UuidV4ValueObject and StringUuidV4ValueObject
+  ([`9699563`](https://github.com/adriamontoto/value-object-pattern/commit/969956397a0e0233b881aa1e8505cf65542305f9))
+
+
 ## v0.10.0 (2025-07-20)
 
 ### 🐛 Bug Fixes
