@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.17.0 (2025-08-04)
+
+### ✨ Features
+
+- **internet**: Implement methods for system, user, and ephemeral port ranges in PortValueObject
+  ([`e7c4aaf`](https://github.com/adriamontoto/value-object-pattern/commit/e7c4aaf61b5f3d91366dab5dd53477f381a59f6c))
+
+
 ## v0.16.0 (2025-08-04)
 
 ### ✨ Features
