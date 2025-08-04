@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.13.0 (2025-08-04)
+
+### ✨ Features
+
+- Implement PassportValueObject
+  ([`8896bb6`](https://github.com/adriamontoto/value-object-pattern/commit/8896bb69c265be62ddf756b17f80619ff6ea5bfc))
+
+
 ## v0.12.0 (2025-08-04)
 
 ### ✨ Features
