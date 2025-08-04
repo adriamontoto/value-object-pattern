@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.15.0 (2025-08-04)
+
+### ✨ Features
+
+- **identifiers**: Implement VinValueObject
+  ([`1ec705d`](https://github.com/adriamontoto/value-object-pattern/commit/1ec705de43123372daaa799c821b79cbf35814d0))
+
+
 ## v0.14.0 (2025-08-04)
 
 ### ✨ Features
