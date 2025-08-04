@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v0.14.0 (2025-08-04)
+
+### ✨ Features
+
+- Implement NifValueObject
+  ([`95debb5`](https://github.com/adriamontoto/value-object-pattern/commit/95debb5d9ef814b1f25907392a69644c55bd6dc2))
+
+- **identifiers**: Implement Iso3166Alpha2CodeValueObject
+  ([`497316c`](https://github.com/adriamontoto/value-object-pattern/commit/497316cfacb15107a90b8f29f8582a1a804a3923))
+
+
 ## v0.13.0 (2025-08-04)
 
 ### ✨ Features
