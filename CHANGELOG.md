@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.12.0 (2025-08-04)
+
+### ✨ Features
+
+- Implement NieValueObject
+  ([`d02b3ed`](https://github.com/adriamontoto/value-object-pattern/commit/d02b3ed4960da9210fae9ae1da55d956b86405c4))
+
+
 ## v0.11.0 (2025-08-03)
 
 ### ✨ Features
