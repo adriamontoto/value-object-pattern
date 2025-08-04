@@ -22,7 +22,7 @@ def get_top_level_domains() -> set[str]:
         set[str]: The top level domains in lower case.
 
     References:
-        https://data.iana.org/TLD/tlds-alpha-by-domain.txt
+        TLD Domains: https://data.iana.org/TLD/tlds-alpha-by-domain.txt
     """
     url = 'https://data.iana.org/TLD/tlds-alpha-by-domain.txt'
     with urlopen(url=url) as response:  # noqa: S310
@@ -36,7 +36,7 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     DomainValueObject value object ensures the provided value is a valid domain.
 
     References:
-        https://data.iana.org/TLD/tlds-alpha-by-domain.txt
+        TLD Domains: https://data.iana.org/TLD/tlds-alpha-by-domain.txt
 
     Example:
     ```python
