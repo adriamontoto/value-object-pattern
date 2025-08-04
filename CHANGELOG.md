@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.16.0 (2025-08-04)
+
+### ✨ Features
+
+- **identifiers**: Implement IbanValueObject
+  ([`78ef23d`](https://github.com/adriamontoto/value-object-pattern/commit/78ef23d6851186be6933cf93dd5efff415897fc5))
+
+
 ## v0.15.0 (2025-08-04)
 
 ### ✨ Features
