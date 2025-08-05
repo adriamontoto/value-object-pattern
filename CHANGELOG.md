@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.19.0 (2025-08-05)
+
+### ✨ Features
+
+- **internet**: Implement ImeiValueObject
+  ([`81be1c4`](https://github.com/adriamontoto/value-object-pattern/commit/81be1c4ca0c778d9bb734d85fd46c3ece22cc7e7))
+
+
 ## v0.18.0 (2025-08-05)
 
 ### ✨ Features
