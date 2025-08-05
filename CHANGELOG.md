@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.18.0 (2025-08-05)
+
+### ✨ Features
+
+- **identifiers**: Implement PhoneNumberValueObject
+  ([`6945733`](https://github.com/adriamontoto/value-object-pattern/commit/694573329c4429b77066776b437d22cffcda3ed7))
+
+
 ## v0.17.0 (2025-08-04)
 
 ### ✨ Features
