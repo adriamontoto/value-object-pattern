@@ -1,4 +1,5 @@
 from functools import lru_cache
+from importlib.resources import files
 
 
 @lru_cache(maxsize=1)
@@ -12,7 +13,7 @@ def get_iban_lengths() -> dict[str, int]:
     References:
         IBAN Structure: https://www.iban.com/structure
     """
-    with open(file='value_object_pattern/usables/money/utils/iban_lengths.txt') as file:
+    with files(anchor='value_object_pattern.usables.money.utils').joinpath('iban_lengths.txt').open(mode='r') as file:
         lines = file.read().splitlines()
         filtered_lines = tuple(line for line in lines if not line.startswith('#') and (_line := line.strip().upper()))
 
