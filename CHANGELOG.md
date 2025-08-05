@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.20.1 (2025-08-05)
+
+### 🐛 Bug Fixes
+
+- Change open function to importlib.resources.files because other projects can not access the file
+  ([`008ea32`](https://github.com/adriamontoto/value-object-pattern/commit/008ea32bbee304813fd22eeee8fc33eb53d9a0ce))
+
+
 ## v0.20.0 (2025-08-05)
 
 ### ✨ Features
