@@ -2,6 +2,38 @@
 
 <!-- version list -->
 
+## v0.20.0 (2025-08-05)
+
+### ✨ Features
+
+- **plates**: Implement AgriculturalPlateValueObject
+  ([`fd08cea`](https://github.com/adriamontoto/value-object-pattern/commit/fd08cea1db3f3e37ce93d80e6b6886ad9f6a727f))
+
+- **plates**: Implement AirForcePlateValueObject
+  ([`b5211a2`](https://github.com/adriamontoto/value-object-pattern/commit/b5211a2c4f87a3ee109a2561fab00296ca8e9ba1))
+
+- **plates**: Implement ArmyPlateValueObject
+  ([`b65046d`](https://github.com/adriamontoto/value-object-pattern/commit/b65046d1aa923f8edb8393b4e6ae213dfaacecf3))
+
+- **plates**: Implement CarPlateValueObject that supports variations
+  ([`02fe0df`](https://github.com/adriamontoto/value-object-pattern/commit/02fe0df32b4fdd83d528cf5582f2d04159ba6089))
+
+- **plates**: Implement CatalanPolicePlateValueObject
+  ([`b5a25aa`](https://github.com/adriamontoto/value-object-pattern/commit/b5a25aadcc8871f80112c5677deeafb310bc08e1))
+
+- **plates**: Implement CivilGuardPlateValueObject
+  ([`832e619`](https://github.com/adriamontoto/value-object-pattern/commit/832e6198615d6dc093867ec0b065c3d8aab09ee0))
+
+- **plates**: Implement NationalPolicePlateValueObject
+  ([`c792d61`](https://github.com/adriamontoto/value-object-pattern/commit/c792d61cfba65c15da6029db8d7e2caf5dd01fab))
+
+- **plates**: Implement NavyPlateValueObject
+  ([`7dac40b`](https://github.com/adriamontoto/value-object-pattern/commit/7dac40b03ad9c48cb58bbe35ffa37efc7502dff2))
+
+- **plates**: Implement OrdinaryPlateValueObject
+  ([`8a87d66`](https://github.com/adriamontoto/value-object-pattern/commit/8a87d66f0813355824f5de601baa7606caead8ca))
+
+
 ## v0.19.0 (2025-08-05)
 
 ### ✨ Features
