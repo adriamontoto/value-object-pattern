@@ -34,7 +34,7 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
         """
-        Ensures the value object `value` is an upper string.
+        Ensures the value object `value` is stored in upper case.
 
         Args:
             value (str): The provided value.
