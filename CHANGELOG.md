@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.21.0 (2025-08-06)
+
+### ✨ Features
+
+- Implement all spain plate value objects
+  ([`f992d1f`](https://github.com/adriamontoto/value-object-pattern/commit/f992d1fed3dfe13762c6eaa3ccb6f13821f148e2))
+
+
 ## v0.20.1 (2025-08-05)
 
 ### 🐛 Bug Fixes
