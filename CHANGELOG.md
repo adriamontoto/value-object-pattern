@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v1.0.0 (2025-08-06)
+
+### ✨ Features
+
+- **identifiers**: Improve importing of identifiers module by making a better hierarchy structure
+  ([`490630e`](https://github.com/adriamontoto/value-object-pattern/commit/490630e0aa2aa08e3c4ac7e19c6b779feffabd23))
+
+- **identifiers**: Improve importing of identifiers module by making a better hierarchy structure
+  ([`302947e`](https://github.com/adriamontoto/value-object-pattern/commit/302947ea11c3fd35654a898cf92e06500bb84485))
+
+
 ## v0.23.0 (2025-08-06)
 
 ### ✨ Features
