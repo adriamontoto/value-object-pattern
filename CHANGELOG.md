@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v0.23.0 (2025-08-06)
+
+### ✨ Features
+
+- **identifiers**: Implement CountryTldValueObject, Iso3166Alpha3CodeValueObject,
+  Iso3166NumericCodeValueObject and PhoneCodeValueObject and its conversions
+  ([`0129f5b`](https://github.com/adriamontoto/value-object-pattern/commit/0129f5bbe4171c7a1ca60f42a225746acc871016))
+
+
 ## v0.22.0 (2025-08-06)
 
 ### 🐛 Bug Fixes
