@@ -28,12 +28,12 @@ class AirForcePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObje
     ```
     """
 
-    __AIR_FORCE_PLATE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'(ea|EA)[-\s]?([0-9]{4}(3|31))')
+    __AIR_FORCE_PLATE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([eE][aA])[-\s]?([0-9]{4}[-\s]?(3|31))')
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
         """
-        Ensures the value object `value` is an upper string.
+        Ensures the value object `value` is stored in upper case.
 
         Args:
             value (str): The provided value.
@@ -46,7 +46,7 @@ class AirForcePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObje
     @process(order=1)
     def _ensure_value_is_formatted(self, value: str) -> str:
         """
-        Ensures the value object `value` is stored in the format EA123456.
+        Ensures the value object `value` is stored without separators.
 
         Args:
             value (str): The provided value.
@@ -81,3 +81,13 @@ class AirForcePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObje
             ValueError: If the `value` is not a valid Spanish air force plate.
         """
         raise ValueError(f'AirForcePlateValueObject value <<<{value}>>> is not a valid Spanish air force plate.')
+
+    @classmethod
+    def regexs(cls) -> list[Pattern[str]]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            list[Pattern[str]]: List of regex patterns.
+        """
+        return [cls.__AIR_FORCE_PLATE_VALUE_OBJECT_REGEX]

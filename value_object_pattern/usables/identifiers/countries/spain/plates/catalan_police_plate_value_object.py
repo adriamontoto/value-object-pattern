@@ -28,12 +28,12 @@ class CatalanPolicePlateValueObject(NotEmptyStringValueObject, TrimmedStringValu
     ```
     """
 
-    __CATALAN_POLICE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'(cme|CME)[\s-]?([0-9]{4})')
+    __CATALAN_POLICE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([cC][mM][eE])[\s-]?([0-9]{4})')
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
         """
-        Ensures the value object `value` is an upper string.
+        Ensures the value object `value` is stored in upper case.
 
         Args:
             value (str): The provided value.
@@ -46,7 +46,7 @@ class CatalanPolicePlateValueObject(NotEmptyStringValueObject, TrimmedStringValu
     @process(order=1)
     def _ensure_value_is_formatted(self, value: str) -> str:
         """
-        Ensures the value object `value` is stored in the format CME1234.
+        Ensures the value object `value` is stored without separators.
 
         Args:
             value (str): The provided value.
@@ -81,3 +81,13 @@ class CatalanPolicePlateValueObject(NotEmptyStringValueObject, TrimmedStringValu
             ValueError: If the `value` is not a valid Spanish Catalan police plate.
         """
         raise ValueError(f'CatalanPolicePlateValueObject value <<<{value}>>> is not a valid Spanish Catalan police plate.')  # noqa: E501  # fmt: skip
+
+    @classmethod
+    def regexs(cls) -> list[Pattern[str]]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            list[Pattern[str]]: List of regex patterns.
+        """
+        return [cls.__CATALAN_POLICE_VALUE_OBJECT_REGEX]

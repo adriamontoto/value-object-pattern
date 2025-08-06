@@ -29,12 +29,12 @@ class NationalPolicePlateValueObject(NotEmptyStringValueObject, TrimmedStringVal
     ```
     """
 
-    __NATIONAL_POLICE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'(cnp|CNP)[\s-]?([0-9]{4})[\s-]?([a-zA-Z]{2})')  # noqa: E501  # fmt: skip
+    __NATIONAL_POLICE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([cC][nN][pP])[\s-]?([0-9]{4})[\s-]?([a-zA-Z]{2})')  # noqa: E501  # fmt: skip
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
         """
-        Ensures the value object `value` is an upper string.
+        Ensures the value object `value` is stored in upper case.
 
         Args:
             value (str): The provided value.
@@ -47,7 +47,7 @@ class NationalPolicePlateValueObject(NotEmptyStringValueObject, TrimmedStringVal
     @process(order=1)
     def _ensure_value_is_formatted(self, value: str) -> str:
         """
-        Ensures the value object `value` is stored in the format CNP1234AA.
+        Ensures the value object `value` is stored without separators.
 
         Args:
             value (str): The provided value.
@@ -82,3 +82,13 @@ class NationalPolicePlateValueObject(NotEmptyStringValueObject, TrimmedStringVal
             ValueError: If the `value` is not a valid Spanish police plate.
         """
         raise ValueError(f'NationalPolicePlateValueObject value <<<{value}>>> is not a valid Spanish police plate.')
+
+    @classmethod
+    def regexs(cls) -> list[Pattern[str]]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            list[Pattern[str]]: List of regex patterns.
+        """
+        return [cls.__NATIONAL_POLICE_VALUE_OBJECT_REGEX]

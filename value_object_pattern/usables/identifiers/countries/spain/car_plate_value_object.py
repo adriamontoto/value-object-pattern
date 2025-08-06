@@ -2,6 +2,7 @@
 CarPlateValueObject value object.
 """
 
+from re import Pattern
 from typing import NoReturn
 
 from value_object_pattern.decorators import process, validation
@@ -9,14 +10,29 @@ from value_object_pattern.models.value_object import ValueObject
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
 from .plates import (
-    AgriculturalPlateValueObject,
+    AdministrativeTechnicianPlateValueObject,
     AirForcePlateValueObject,
     ArmyPlateValueObject,
+    CanariasPolicePlateValueObject,
     CatalanPolicePlateValueObject,
     CivilGuardPlateValueObject,
+    ConsularCorpsPlateValueObject,
+    DiplomaticCorpsPlateValueObject,
+    EspecialPlateValueObject,
+    HistoricalPlateValueObject,
+    InternationalOrganizationPlateValueObject,
+    MinistryDevelopmentPlateValueObject,
+    MinistryEnvironmentPlateValueObject,
     NationalPolicePlateValueObject,
     NavyPlateValueObject,
     OrdinaryPlateValueObject,
+    OrdinaryTruckPlateValueObject,
+    ProvincialSystemPlateValueObject,
+    StateMotorPoolPlateValueObject,
+    TemporalCompanyNotRegisteredPlateValueObject,
+    TemporalCompanyRegisteredPlateValueObject,
+    TemporalPrivateIndividualPlateValueObject,
+    TwoWheelsPlateValueObject,
 )
 
 
@@ -39,26 +55,41 @@ class CarPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
 
     __CAR_PLATE_VALUE_OBJECT_VARIATIONS: tuple[type[ValueObject[str]], ...] = (
-        AgriculturalPlateValueObject,
-        ArmyPlateValueObject,
+        AdministrativeTechnicianPlateValueObject,
         AirForcePlateValueObject,
+        ArmyPlateValueObject,
+        CanariasPolicePlateValueObject,
         CatalanPolicePlateValueObject,
         CivilGuardPlateValueObject,
+        ConsularCorpsPlateValueObject,
+        DiplomaticCorpsPlateValueObject,
+        EspecialPlateValueObject,
+        HistoricalPlateValueObject,
+        InternationalOrganizationPlateValueObject,
+        MinistryDevelopmentPlateValueObject,
+        MinistryEnvironmentPlateValueObject,
         NationalPolicePlateValueObject,
         NavyPlateValueObject,
         OrdinaryPlateValueObject,
+        OrdinaryTruckPlateValueObject,
+        ProvincialSystemPlateValueObject,
+        StateMotorPoolPlateValueObject,
+        TemporalCompanyNotRegisteredPlateValueObject,
+        TemporalCompanyRegisteredPlateValueObject,
+        TemporalPrivateIndividualPlateValueObject,
+        TwoWheelsPlateValueObject,
     )
 
     @process(order=0)
-    def _ensure_value_is_upper(self, value: str) -> str:  # type: ignore[return]
+    def _ensure_value_is_stored_formatted(self, value: str) -> str:  # type: ignore[return]
         """
-        Ensures the value object `value` is an upper string.
+        Ensures the value object `value` is stored formatted.
 
         Args:
             value (str): The provided value.
 
         Returns:
-            str: Upper case value.
+            str: Formatted `value`.
         """
         for variation in self.__CAR_PLATE_VALUE_OBJECT_VARIATIONS:
             try:
@@ -99,3 +130,13 @@ class CarPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If the `value` is not a valid Spanish car plate.
         """
         raise ValueError(f'CarPlateValueObject value <<<{value}>>> is not a valid Spanish car plate.')
+
+    @classmethod
+    def regexs(cls) -> list[Pattern[str]]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            list[Pattern[str]]: List of regex patterns.
+        """
+        return [variation.regexs() for variation in cls.__CAR_PLATE_VALUE_OBJECT_VARIATIONS]  # type: ignore[attr-defined]

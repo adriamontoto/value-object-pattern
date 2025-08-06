@@ -29,12 +29,12 @@ class CivilGuardPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueOb
     ```
     """
 
-    __CIVIL_GUARD_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'(pgc|PGC)[-\s]?([0-9]{5})[-\s]?([a-zA-Z]{1})')  # noqa: E501  # fmt: skip
+    __CIVIL_GUARD_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([pP][gG][cC])[-\s]?([0-9]{5})[-\s]?([a-zA-Z]{1})')  # noqa: E501  # fmt: skip
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
         """
-        Ensures the value object `value` is an upper string.
+        Ensures the value object `value` is stored in upper case.
 
         Args:
             value (str): The provided value.
@@ -47,7 +47,7 @@ class CivilGuardPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueOb
     @process(order=1)
     def _ensure_value_is_formatted(self, value: str) -> str:
         """
-        Ensures the value object `value` is stored in the format PGC12345E.
+        Ensures the value object `value` is stored without separators.
 
         Args:
             value (str): The provided value.
@@ -82,3 +82,13 @@ class CivilGuardPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueOb
             ValueError: If the `value` is not a valid Spanish civil guard plate.
         """
         raise ValueError(f'CivilGuardPlateValueObject value <<<{value}>>> is not a valid Spanish civil guard plate.')
+
+    @classmethod
+    def regexs(cls) -> list[Pattern[str]]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            list[Pattern[str]]: List of regex patterns.
+        """
+        return [cls.__CIVIL_GUARD_VALUE_OBJECT_REGEX]

@@ -28,12 +28,12 @@ class ArmyPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
-    __ARMY_PLATE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'(et|ET)[-\s]?([0-9]{5,6})')
+    __ARMY_PLATE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([eE][tT])[-\s]?([0-9]{5,6})')
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
         """
-        Ensures the value object `value` is an upper string.
+        Ensures the value object `value` is stored in upper case.
 
         Args:
             value (str): The provided value.
@@ -46,7 +46,7 @@ class ArmyPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     @process(order=1)
     def _ensure_value_is_formatted(self, value: str) -> str:
         """
-        Ensures the value object `value` is stored in the format ET123456.
+        Ensures the value object `value` is stored without separators.
 
         Args:
             value (str): The provided value.
@@ -81,3 +81,13 @@ class ArmyPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If the `value` is not a valid Spanish army plate.
         """
         raise ValueError(f'ArmyPlateValueObject value <<<{value}>>> is not a valid Spanish army plate.')
+
+    @classmethod
+    def regexs(cls) -> list[Pattern[str]]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            list[Pattern[str]]: List of regex patterns.
+        """
+        return [cls.__ARMY_PLATE_VALUE_OBJECT_REGEX]

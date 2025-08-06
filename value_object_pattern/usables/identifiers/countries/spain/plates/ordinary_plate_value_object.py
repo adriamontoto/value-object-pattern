@@ -33,7 +33,7 @@ class OrdinaryPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObje
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
         """
-        Ensures the value object `value` is an upper string.
+        Ensures the value object `value` is stored in upper case.
 
         Args:
             value (str): The provided value.
@@ -46,7 +46,7 @@ class OrdinaryPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObje
     @process(order=1)
     def _ensure_value_is_formatted(self, value: str) -> str:
         """
-        Ensures the value object `value` is stored in the format 0000BBB.
+        Ensures the value object `value` is stored without separators.
 
         Args:
             value (str): The provided value.
@@ -81,3 +81,13 @@ class OrdinaryPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObje
             ValueError: If the `value` is not a valid Spanish ordinary plate.
         """
         raise ValueError(f'OrdinaryPlateValueObject value <<<{value}>>> is not a valid Spanish ordinary plate.')
+
+    @classmethod
+    def regexs(cls) -> list[Pattern[str]]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            list[Pattern[str]]: List of regex patterns.
+        """
+        return [cls.__ORDINARY_PLATE_VALUE_OBJECT_REGEX]
