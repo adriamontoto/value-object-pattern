@@ -37,12 +37,13 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
     ```
     """
 
-    __slots__ = ('_parameter', '_title', '_value')
-    __match_args__ = ('_parameter', '_title', '_value')
+    __slots__ = ('_early_processed', '_parameter', '_title', '_value')
+    __match_args__ = ('_early_processed', '_parameter', '_title', '_value')
 
     _value: T
     _title: str
     _parameter: str
+    _early_processed: T | None
 
     def __init__(self, *, value: T, title: str | None = None, parameter: str | None = None) -> None:
         """
@@ -103,9 +104,10 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
 
         object.__setattr__(self, '_title', title)
         object.__setattr__(self, '_parameter', parameter)
+        object.__setattr__(self, '_early_processed', None)
 
         self._validate(value=value)
-        value = self._process(value=value)
+        value = self._process(value=value) if self._early_processed is None else self._early_processed  # type: ignore[redundant-expr]
 
         object.__setattr__(self, '_value', value)
 
@@ -266,6 +268,10 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
             methods = self._gather_decorated_methods(instance=self, attribute_name='_is_validation')
             while methods:
                 method: Callable[..., T] = methods.popleft().__get__(self, self.__class__)
+                if getattr(method, '_early_process', False):
+                    method(value=self.early_process(value=value))
+                    continue
+
                 method(value=value)
 
         except Exception as error:
@@ -361,6 +367,26 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
 
         # sort by class hierarchy, method order attribute, and method name
         return deque([method for _, _, method in sorted(classes_methods, key=sort_key)])
+
+    def early_process(self, value: T) -> T:
+        """
+        This method processes the value object value before validation. This is useful for early processing of the value
+        object value where you need to have a format before validating. If the value object has already been early
+        processed, it returns the already processed value.
+
+        Args:
+            value (T): The value object value.
+
+        Returns:
+            T: The processed value object value.
+        """
+        if self._early_processed is not None:
+            return self._early_processed
+
+        processed_value = self._process(value=value)
+        object.__setattr__(self, '_early_processed', processed_value)
+
+        return processed_value
 
     @property
     def value(self) -> T:

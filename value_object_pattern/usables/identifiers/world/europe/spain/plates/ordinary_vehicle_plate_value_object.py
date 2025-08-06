@@ -1,5 +1,5 @@
 """
-OrdinaryPlateValueObject value object.
+OrdinaryVehiclePlateValueObject value object.
 """
 
 from re import Pattern, compile as re_compile
@@ -9,9 +9,9 @@ from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
 
-class OrdinaryPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
+class OrdinaryVehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    OrdinaryPlateValueObject value object ensures the provided value is a valid Spanish ordinary plate (2000-today). The
+    OrdinaryVehiclePlateValueObject value object ensures the provided value is a valid Spanish ordinary plate (2000-today). The
     plate format is 4 digits followed by 3 letters, and can and it can contain spaces, hyphens, or no separators.
 
     References:
@@ -19,16 +19,16 @@ class OrdinaryPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObje
 
     Example:
     ```python
-    from value_object_pattern.usables.identifiers.world.europe.spain.plates import OrdinaryPlateValueObject
+    from value_object_pattern.usables.identifiers.world.europe.spain.plates import OrdinaryVehiclePlateValueObject
 
-    plate = OrdinaryPlateValueObject(value='1234-BCD')
+    plate = OrdinaryVehiclePlateValueObject(value='1234-BCD')
 
     print(repr(plate))
-    # >>> OrdinaryPlateValueObject(value=1234BCD)
+    # >>> OrdinaryVehiclePlateValueObject(value=1234BCD)
     ```
     """  # noqa: E501  # fmt: skip
 
-    __ORDINARY_PLATE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([0-9]{4})[-\s]?([bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]{3})')  # noqa: E501  # fmt: skip
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([0-9]{4})[-\s]?([bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]{3})')  # noqa: E501  # fmt: skip
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -54,20 +54,20 @@ class OrdinaryPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObje
         Returns:
             str: Formatted value.
         """
-        return self.__ORDINARY_PLATE_VALUE_OBJECT_REGEX.sub(repl=r'\1\2', string=value)
+        return self._IDENTIFICATION_REGEX.sub(repl=r'\1\2', string=value)
 
     @validation(order=0)
-    def _ensure_value_is_ordinary_plate(self, value: str) -> None:
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
         """
-        Ensures the value object `value` is a valid Spanish ordinary plate.
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a valid Spanish ordinary plate.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        if not self.__ORDINARY_PLATE_VALUE_OBJECT_REGEX.fullmatch(string=value):
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_ordinary_plate(value=value)
 
     def _raise_value_is_not_ordinary_plate(self, value: str) -> NoReturn:
@@ -80,14 +80,14 @@ class OrdinaryPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObje
         Raises:
             ValueError: If the `value` is not a valid Spanish ordinary plate.
         """
-        raise ValueError(f'OrdinaryPlateValueObject value <<<{value}>>> is not a valid Spanish ordinary plate.')
+        raise ValueError(f'OrdinaryVehiclePlateValueObject value <<<{value}>>> is not a valid Spanish ordinary plate.')
 
     @classmethod
-    def regexs(cls) -> list[Pattern[str]]:
+    def regex(cls) -> Pattern[str]:
         """
         Returns a list of regex patterns used for validation.
 
         Returns:
-            list[Pattern[str]]: List of regex patterns.
+            Pattern[str]: List of regex patterns.
         """
-        return [cls.__ORDINARY_PLATE_VALUE_OBJECT_REGEX]
+        return cls._IDENTIFICATION_REGEX

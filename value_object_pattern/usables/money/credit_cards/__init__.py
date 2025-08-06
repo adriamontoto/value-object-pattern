@@ -1,11 +1,11 @@
-from .amex_value_object import AmexValueObject
-from .discover_value_object import DiscoverValueObject
-from .mastercard_value_object import MasterCardValueObject
-from .visa_value_object import VisaValueObject
+from .amex_credit_card_value_object import AmexCreditCardValueObject
+from .discover_credit_card_value_object import DiscoverCreditCardValueObject
+from .mastercard_credit_card_value_object import MastercardCreditCardValueObject
+from .visa_credit_card_value_object import VisaCreditCardValueObject
 
 __all__ = (
-    'AmexValueObject',
-    'DiscoverValueObject',
-    'MasterCardValueObject',
-    'VisaValueObject',
+    'AmexCreditCardValueObject',
+    'DiscoverCreditCardValueObject',
+    'MastercardCreditCardValueObject',
+    'VisaCreditCardValueObject',
 )

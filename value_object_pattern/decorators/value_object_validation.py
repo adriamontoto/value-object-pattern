@@ -6,17 +6,22 @@ from functools import wraps
 from typing import Any, Callable
 
 
-def validation(order: int | None = None) -> Callable[[Callable[..., None]], Callable[..., None]]:
+def validation(
+    order: int | None = None,
+    early_process: bool = False,
+) -> Callable[[Callable[..., None]], Callable[..., None]]:
     """
     Decorator for validation the value before the value is created.
 
     Args:
         order (int | None, optional): The order of the validation that will be executed, if None the functions will be
         executed alphabetically. Defaults to None.
+        early_process (bool, optional): If True, the value will be processed before the validation. Defaults to False.
 
     Raises:
         TypeError: If the order is not an integer.
         ValueError: If the order is not equal or greater than 0.
+        TypeError: If early_process is not a boolean.
 
     Returns:
         Callable[[Callable[..., None]], Callable[..., None]]: Wrapper function for the validation.
@@ -48,6 +53,7 @@ def validation(order: int | None = None) -> Callable[[Callable[..., None]], Call
         Raises:
             TypeError: If the order is not an integer.
             ValueError: If the order is not equal or greater than 0.
+            TypeError: If early_process is not a boolean.
 
         Returns:
             Callable[..., None]: Wrapper function for the validation.
@@ -59,8 +65,12 @@ def validation(order: int | None = None) -> Callable[[Callable[..., None]], Call
             if order < 0:
                 raise ValueError(f'Validation order <<<{order}>>> must be equal or greater than 0.')
 
+        if type(early_process) is not bool:
+            raise TypeError(f'Validation early_process <<<{early_process}>>> must be a boolean. Got <<<{type(early_process).__name__}>>> type.')  # noqa: E501  # fmt: skip
+
         function._is_validation = True  # type: ignore[attr-defined]
         function._order = function.__name__ if order is None else str(order)  # type: ignore[attr-defined]
+        function._early_process = early_process
 
         @wraps(wrapped=function)
         def wrapper(*args: tuple[Any, ...], **kwargs: dict[str, Any]) -> None:

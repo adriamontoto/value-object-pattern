@@ -1,5 +1,5 @@
 """
-ArmyPlateValueObject value object.
+ArmyVehiclePlateValueObject value object.
 """
 
 from re import Pattern, compile as re_compile
@@ -9,9 +9,9 @@ from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
 
-class ArmyPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
+class ArmyVehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    ArmyPlateValueObject value object ensures the provided value is a valid Spanish army plate. The plate format is ET,
+    ArmyVehiclePlateValueObject value object ensures the provided value is a valid Spanish army plate. The plate format is ET,
     followed by 5 or 6 digits, and it can contain spaces, hyphens, or no separators.
 
     References:
@@ -19,16 +19,16 @@ class ArmyPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
 
     Example:
     ```python
-    from value_object_pattern.usables.identifiers.world.europe.spain.plates import ArmyPlateValueObject
+    from value_object_pattern.usables.identifiers.world.europe.spain.plates import ArmyVehiclePlateValueObject
 
-    plate = ArmyPlateValueObject(value='ET-123456')
+    plate = ArmyVehiclePlateValueObject(value='ET-123456')
 
     print(repr(plate))
-    # >>> ArmyPlateValueObject(value=ET-123456)
+    # >>> ArmyVehiclePlateValueObject(value=ET-123456)
     ```
     """
 
-    __ARMY_PLATE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([eE][tT])[-\s]?([0-9]{5,6})')
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([eE][tT])[-\s]?([0-9]{5,6})')
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -54,20 +54,20 @@ class ArmyPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         Returns:
             str: Formatted value.
         """
-        return self.__ARMY_PLATE_VALUE_OBJECT_REGEX.sub(repl=r'\1\2', string=value)
+        return self._IDENTIFICATION_REGEX.sub(repl=r'\1\2', string=value)
 
     @validation(order=0)
-    def _ensure_value_is_army_plate(self, value: str) -> None:
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
         """
-        Ensures the value object `value` is a valid Spanish army plate.
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a valid Spanish army plate.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        if not self.__ARMY_PLATE_VALUE_OBJECT_REGEX.fullmatch(string=value):
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_army_plate(value=value)
 
     def _raise_value_is_not_army_plate(self, value: str) -> NoReturn:
@@ -80,14 +80,14 @@ class ArmyPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         Raises:
             ValueError: If the `value` is not a valid Spanish army plate.
         """
-        raise ValueError(f'ArmyPlateValueObject value <<<{value}>>> is not a valid Spanish army plate.')
+        raise ValueError(f'ArmyVehiclePlateValueObject value <<<{value}>>> is not a valid Spanish army plate.')
 
     @classmethod
-    def regexs(cls) -> list[Pattern[str]]:
+    def regex(cls) -> Pattern[str]:
         """
         Returns a list of regex patterns used for validation.
 
         Returns:
-            list[Pattern[str]]: List of regex patterns.
+            Pattern[str]: List of regex patterns.
         """
-        return [cls.__ARMY_PLATE_VALUE_OBJECT_REGEX]
+        return cls._IDENTIFICATION_REGEX

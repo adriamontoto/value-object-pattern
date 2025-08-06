@@ -1,5 +1,5 @@
 """
-ProvincialSystemPlateValueObject value object.
+ProvincialSystemVehiclePlateValueObject value object.
 """
 
 from re import Pattern, compile as re_compile
@@ -11,9 +11,9 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 from .utils import get_provincial_plate_codes
 
 
-class ProvincialSystemPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
+class ProvincialSystemVehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    ProvincialSystemPlateValueObject value object ensures the provided value is a valid Spanish provincial system plate
+    ProvincialSystemVehiclePlateValueObject value object ensures the provided value is a valid Spanish provincial system plate
     (1971-2000). The plate format is 1 or 2 letters of province code followed by 4 digits followed with 1 or 2 letters
     and can and it can contain spaces, hyphens, or no separators.
 
@@ -22,16 +22,16 @@ class ProvincialSystemPlateValueObject(NotEmptyStringValueObject, TrimmedStringV
 
     Example:
     ```python
-    from value_object_pattern.usables.identifiers.world.europe.spain.plates import ProvincialSystemPlateValueObject
+    from value_object_pattern.usables.identifiers.world.europe.spain.plates import ProvincialSystemVehiclePlateValueObject
 
-    plate = ProvincialSystemPlateValueObject(value='M-0000-A')
+    plate = ProvincialSystemVehiclePlateValueObject(value='M-0000-A')
 
     print(repr(plate))
-    # >>> ProvincialSystemPlateValueObject(value=M0000A)
+    # >>> ProvincialSystemVehiclePlateValueObject(value=M0000A)
     ```
     """  # noqa: E501  # fmt: skip
 
-    __PROVINCIAL_SYSTEM_PLATE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([a-zA-Z]{1,2})[-\s]?([0-9]{4})[-\s]?([a-zA-Z]{1,2})')  # noqa: E501  # fmt: skip
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([a-zA-Z]{1,2})[-\s]?([0-9]{4})[-\s]?([a-zA-Z]{1,2})')  # noqa: E501  # fmt: skip
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -57,20 +57,20 @@ class ProvincialSystemPlateValueObject(NotEmptyStringValueObject, TrimmedStringV
         Returns:
             str: Formatted value.
         """
-        return self.__PROVINCIAL_SYSTEM_PLATE_VALUE_OBJECT_REGEX.sub(repl=r'\1\2\3', string=value)
+        return self._IDENTIFICATION_REGEX.sub(repl=r'\1\2\3', string=value)
 
     @validation(order=0)
-    def _ensure_value_is_provincial_system_plate(self, value: str) -> None:
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
         """
-        Ensures the value object `value` is a valid Spanish provincial system plate.
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a valid Spanish provincial system plate.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        match = self.__PROVINCIAL_SYSTEM_PLATE_VALUE_OBJECT_REGEX.fullmatch(string=value)
+        match = self._IDENTIFICATION_REGEX.fullmatch(string=value)
         if not match:
             self._raise_value_is_not_provincial_system_plate(value=value)
 
@@ -88,14 +88,14 @@ class ProvincialSystemPlateValueObject(NotEmptyStringValueObject, TrimmedStringV
         Raises:
             ValueError: If the `value` is not a valid Spanish provincial system plate.
         """
-        raise ValueError(f'ProvincialSystemPlateValueObject value <<<{value}>>> is not a valid Spanish provincial system plate.')  # noqa: E501  # fmt: skip
+        raise ValueError(f'ProvincialSystemVehiclePlateValueObject value <<<{value}>>> is not a valid Spanish provincial system plate.')  # noqa: E501  # fmt: skip
 
     @classmethod
-    def regexs(cls) -> list[Pattern[str]]:
+    def regex(cls) -> Pattern[str]:
         """
         Returns a list of regex patterns used for validation.
 
         Returns:
-            list[Pattern[str]]: List of regex patterns.
+            Pattern[str]: List of regex patterns.
         """
-        return [cls.__PROVINCIAL_SYSTEM_PLATE_VALUE_OBJECT_REGEX]
+        return cls._IDENTIFICATION_REGEX

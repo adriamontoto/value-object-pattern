@@ -1,5 +1,5 @@
 """
-HistoricalPlateValueObject value object.
+HistoricalVehiclePlateValueObject value object.
 """
 
 from re import Pattern, compile as re_compile
@@ -9,9 +9,9 @@ from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
 
-class HistoricalPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
+class HistoricalVehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    HistoricalPlateValueObject value object ensures the provided value is a valid Spanish historical vehicle plate.
+    HistoricalVehiclePlateValueObject value object ensures the provided value is a valid Spanish historical vehicle plate.
     The plate format is defined as H initial, followed by four digits and three uppercase letters, it can be represented
     with spaces, hyphens or no separators.
 
@@ -20,16 +20,16 @@ class HistoricalPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueOb
 
     Example:
     ```python
-    from value_object_pattern.usables.identifiers.world.europe.spain.plates import HistoricalPlateValueObject
+    from value_object_pattern.usables.identifiers.world.europe.spain.plates import HistoricalVehiclePlateValueObject
 
-    plate = HistoricalPlateValueObject(value='H-1234-ABC')
+    plate = HistoricalVehiclePlateValueObject(value='H-1234-ABC')
 
     print(repr(plate))
-    # >>> HistoricalPlateValueObject(value=H1234ABC)
+    # >>> HistoricalVehiclePlateValueObject(value=H1234ABC)
     ```
     """  # noqa: E501  # fmt: skip
 
-    __HISTORICAL_PLATE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([hH])[\s-]?([0-9]{4})[\s-]?([a-zA-Z]{3})')  # noqa: E501  # fmt: skip
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([hH])[\s-]?([0-9]{4})[\s-]?([a-zA-Z]{3})')  # noqa: E501  # fmt: skip
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -55,20 +55,20 @@ class HistoricalPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueOb
         Returns:
             str: Formatted value.
         """
-        return self.__HISTORICAL_PLATE_VALUE_OBJECT_REGEX.sub(repl=r'\1\2\3', string=value)
+        return self._IDENTIFICATION_REGEX.sub(repl=r'\1\2\3', string=value)
 
     @validation(order=0)
-    def _ensure_value_is_historical_plate(self, value: str) -> None:
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
         """
-        Ensures the value object `value` is a valid Spanish historical vehicle plate.
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a valid Spanish historical vehicle plate.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        if not self.__HISTORICAL_PLATE_VALUE_OBJECT_REGEX.fullmatch(string=value):
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_historical_plate(value=value)
 
     def _raise_value_is_not_historical_plate(self, value: str) -> NoReturn:
@@ -81,14 +81,14 @@ class HistoricalPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueOb
         Raises:
             ValueError: If the `value` is not a valid Spanish historical vehicle plate.
         """
-        raise ValueError(f'HistoricalPlateValueObject value <<<{value}>>> is not a valid Spanish historical vehicle plate.')  # noqa: E501  # fmt: skip
+        raise ValueError(f'HistoricalVehiclePlateValueObject value <<<{value}>>> is not a valid Spanish historical vehicle plate.')  # noqa: E501  # fmt: skip
 
     @classmethod
-    def regexs(cls) -> list[Pattern[str]]:
+    def regex(cls) -> Pattern[str]:
         """
         Returns a list of regex patterns used for validation.
 
         Returns:
-            list[Pattern[str]]: List of regex patterns.
+            Pattern[str]: List of regex patterns.
         """
-        return [cls.__HISTORICAL_PLATE_VALUE_OBJECT_REGEX]
+        return cls._IDENTIFICATION_REGEX

@@ -1,5 +1,5 @@
 """
-AirForcePlateValueObject value object.
+AirForceVehiclePlateValueObject value object.
 """
 
 from re import Pattern, compile as re_compile
@@ -9,9 +9,9 @@ from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
 
-class AirForcePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
+class AirForceVehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    AirForcePlateValueObject value object ensures the provided value is a valid Spanish air force plate. The plate
+    AirForceVehiclePlateValueObject value object ensures the provided value is a valid Spanish air force plate. The plate
     format is EA, followed by 4 digits and ending with 3 or 31. It can contain spaces, hyphens, or no separators.
 
     References:
@@ -19,16 +19,16 @@ class AirForcePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObje
 
     Example:
     ```python
-    from value_object_pattern.usables.identifiers.world.europe.spain.plates import AirForcePlateValueObject
+    from value_object_pattern.usables.identifiers.world.europe.spain.plates import AirForceVehiclePlateValueObject
 
-    plate = AirForcePlateValueObject(value='EA-123431')
+    plate = AirForceVehiclePlateValueObject(value='EA-123431')
 
     print(repr(plate))
-    # >>> AirForcePlateValueObject(value=EA123431)
+    # >>> AirForceVehiclePlateValueObject(value=EA123431)
     ```
     """  # noqa: E501  # fmt: skip
 
-    __AIR_FORCE_PLATE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([eE][aA])[-\s]?([0-9]{4}[-\s]?(3|31))')
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([eE][aA])[-\s]?([0-9]{4}[-\s]?(3|31))')
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -54,20 +54,20 @@ class AirForcePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObje
         Returns:
             str: Formatted value.
         """
-        return self.__AIR_FORCE_PLATE_VALUE_OBJECT_REGEX.sub(repl=r'\1\2', string=value)
+        return self._IDENTIFICATION_REGEX.sub(repl=r'\1\2', string=value)
 
     @validation(order=0)
-    def _ensure_value_is_air_force_plate(self, value: str) -> None:
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
         """
-        Ensures the value object `value` is a valid Spanish air force plate.
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a valid Spanish air force plate.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        if not self.__AIR_FORCE_PLATE_VALUE_OBJECT_REGEX.fullmatch(string=value):
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_air_force_plate(value=value)
 
     def _raise_value_is_not_air_force_plate(self, value: str) -> NoReturn:
@@ -80,14 +80,14 @@ class AirForcePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObje
         Raises:
             ValueError: If the `value` is not a valid Spanish air force plate.
         """
-        raise ValueError(f'AirForcePlateValueObject value <<<{value}>>> is not a valid Spanish air force plate.')
+        raise ValueError(f'AirForceVehiclePlateValueObject value <<<{value}>>> is not a valid Spanish air force plate.')
 
     @classmethod
-    def regexs(cls) -> list[Pattern[str]]:
+    def regex(cls) -> Pattern[str]:
         """
         Returns a list of regex patterns used for validation.
 
         Returns:
-            list[Pattern[str]]: List of regex patterns.
+            Pattern[str]: List of regex patterns.
         """
-        return [cls.__AIR_FORCE_PLATE_VALUE_OBJECT_REGEX]
+        return cls._IDENTIFICATION_REGEX

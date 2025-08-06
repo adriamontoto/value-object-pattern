@@ -1,49 +1,51 @@
-from .administrative_technician_plate_value_object import AdministrativeTechnicianPlateValueObject
-from .air_force_plate_value_object import AirForcePlateValueObject
-from .army_plate_value_object import ArmyPlateValueObject
-from .canarias_police_plate_value_object import CanariasPolicePlateValueObject
-from .catalan_police_plate_value_object import CatalanPolicePlateValueObject
-from .civil_guard_plate_value_object import CivilGuardPlateValueObject
-from .consular_corps_plate_value_object import ConsularCorpsPlateValueObject
-from .diplomatic_corps_plate_value_object import DiplomaticCorpsPlateValueObject
-from .especial_plate_value_object import EspecialPlateValueObject
-from .historical_plate_value_object import HistoricalPlateValueObject
-from .international_organization_plate_value_object import InternationalOrganizationPlateValueObject
-from .ministry_development_plate_value_object import MinistryDevelopmentPlateValueObject
-from .ministry_environment_plate_value_object import MinistryEnvironmentPlateValueObject
-from .national_police_plate_value_object import NationalPolicePlateValueObject
-from .navy_plate_value_object import NavyPlateValueObject
-from .ordinary_plate_value_object import OrdinaryPlateValueObject
-from .ordinary_truck_plate_value_object import OrdinaryTruckPlateValueObject
-from .provincial_system_plate_value_object import ProvincialSystemPlateValueObject
-from .state_motor_pool_plate_value_object import StateMotorPoolPlateValueObject
-from .temporal_company_not_registered_plate_value_object import TemporalCompanyNotRegisteredPlateValueObject
-from .temporal_company_registered_plate_value_object import TemporalCompanyRegisteredPlateValueObject
-from .temporal_private_individual_plate_value_object import TemporalPrivateIndividualPlateValueObject
-from .two_wheels_plate_value_object import TwoWheelsPlateValueObject
+from .administrative_technician_vehicle_plate_value_object import AdministrativeTechnicianVehiclePlateValueObject
+from .air_force_vehicle_plate_value_object import AirForceVehiclePlateValueObject
+from .army_vehicle_plate_value_object import ArmyVehiclePlateValueObject
+from .canarias_police_vehicle_plate_value_object import CanariasPoliceVehiclePlateValueObject
+from .catalan_police_vehicle_plate_value_object import CatalanPoliceVehiclePlateValueObject
+from .civil_guard_vehicle_plate_value_object import CivilGuardVehiclePlateValueObject
+from .consular_corps_vehicle_plate_value_object import ConsularCorpsVehiclePlateValueObject
+from .diplomatic_corps_vehicle_plate_value_object import DiplomaticCorpsVehiclePlateValueObject
+from .especial_plate_vehicle_plate_value_object import EspecialVehiclePlateValueObject
+from .historical_vehicle_plate_value_object import HistoricalVehiclePlateValueObject
+from .international_organization_vehicle_plate_value_object import InternationalOrganizationVehiclePlateValueObject
+from .ministry_development_vehicle_plate_value_object import MinistryDevelopmentVehiclePlateValueObject
+from .ministry_environment_vehicle_plate_value_object import MinistryEnvironmentVehiclePlateValueObject
+from .national_police_vehicle_plate_value_object import NationalPoliceVehiclePlateValueObject
+from .navy_vehicle_plate_value_object import NavyVehiclePlateValueObject
+from .ordinary_truck_vehicle_plate_value_object import OrdinaryTruckVehiclePlateValueObject
+from .ordinary_vehicle_plate_value_object import OrdinaryVehiclePlateValueObject
+from .provincial_system_vehicle_plate_value_object import ProvincialSystemVehiclePlateValueObject
+from .state_motor_pool_vehicle_plate_value_object import StateMotorPoolVehiclePlateValueObject
+from .temporal_company_not_registered_vehicle_plate_value_object import (
+    TemporalCompanyNotRegisteredVehiclePlateValueObject,
+)
+from .temporal_company_registered_vehicle_plate_value_object import TemporalCompanyRegisteredVehiclePlateValueObject
+from .temporal_private_individual_vehicle_plate_value_object import TemporalPrivateIndividualVehiclePlateValueObject
+from .two_wheels_vehicle_plate_value_object import TwoWheelsVehiclePlateValueObject
 
 __all__ = (
-    'AdministrativeTechnicianPlateValueObject',
-    'AirForcePlateValueObject',
-    'ArmyPlateValueObject',
-    'CanariasPolicePlateValueObject',
-    'CatalanPolicePlateValueObject',
-    'CivilGuardPlateValueObject',
-    'ConsularCorpsPlateValueObject',
-    'DiplomaticCorpsPlateValueObject',
-    'EspecialPlateValueObject',
-    'HistoricalPlateValueObject',
-    'InternationalOrganizationPlateValueObject',
-    'MinistryDevelopmentPlateValueObject',
-    'MinistryEnvironmentPlateValueObject',
-    'NationalPolicePlateValueObject',
-    'NavyPlateValueObject',
-    'OrdinaryPlateValueObject',
-    'OrdinaryTruckPlateValueObject',
-    'ProvincialSystemPlateValueObject',
-    'StateMotorPoolPlateValueObject',
-    'TemporalCompanyNotRegisteredPlateValueObject',
-    'TemporalCompanyRegisteredPlateValueObject',
-    'TemporalPrivateIndividualPlateValueObject',
-    'TwoWheelsPlateValueObject',
+    'AdministrativeTechnicianVehiclePlateValueObject',
+    'AirForceVehiclePlateValueObject',
+    'ArmyVehiclePlateValueObject',
+    'CanariasPoliceVehiclePlateValueObject',
+    'CatalanPoliceVehiclePlateValueObject',
+    'CivilGuardVehiclePlateValueObject',
+    'ConsularCorpsVehiclePlateValueObject',
+    'DiplomaticCorpsVehiclePlateValueObject',
+    'EspecialVehiclePlateValueObject',
+    'HistoricalVehiclePlateValueObject',
+    'InternationalOrganizationVehiclePlateValueObject',
+    'MinistryDevelopmentVehiclePlateValueObject',
+    'MinistryEnvironmentVehiclePlateValueObject',
+    'NationalPoliceVehiclePlateValueObject',
+    'NavyVehiclePlateValueObject',
+    'OrdinaryTruckVehiclePlateValueObject',
+    'OrdinaryVehiclePlateValueObject',
+    'ProvincialSystemVehiclePlateValueObject',
+    'StateMotorPoolVehiclePlateValueObject',
+    'TemporalCompanyNotRegisteredVehiclePlateValueObject',
+    'TemporalCompanyRegisteredVehiclePlateValueObject',
+    'TemporalPrivateIndividualVehiclePlateValueObject',
+    'TwoWheelsVehiclePlateValueObject',
 )

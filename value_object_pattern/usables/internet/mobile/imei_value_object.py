@@ -27,7 +27,7 @@ class ImeiValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
-    __IMEI_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'(?:[0-9][\s\-\.]?){14}[0-9]')
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'(?:[0-9][\s\-\.]?){14}[0-9]')
 
     @process(order=0)
     def _ensure_value_has_no_separators(self, value: str) -> str:
@@ -43,21 +43,31 @@ class ImeiValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         return value.replace('-', '').replace(' ', '').replace('.', '')
 
     @validation(order=0)
-    def _ensure_value_is_imei(self, value: str) -> None:
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
         """
-        Ensures the value object `value` is a valid International Mobile Equipment Identity.
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a valid IMEI.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        if not self.__IMEI_VALUE_OBJECT_REGEX.fullmatch(string=value):
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_imei(value=value)
 
-        replaced_value = value.replace('-', '').replace(' ', '').replace('.', '')
-        if not self._validate_luhn_checksum(imei=replaced_value):
+    @validation(order=1, early_process=True)
+    def _ensure_value_follows_luhn_algorithm(self, value: str) -> None:
+        """
+        Ensures the value object `value` follows the Luhn algorithm.
+
+        Args:
+            value (str): The provided value.
+
+        Raises:
+            ValueError: If the `value` does not follow the Luhn algorithm.
+        """
+        if not self._validate_luhn_checksum(imei=value):
             self._raise_value_is_not_imei(value=value)
 
     def _validate_luhn_checksum(self, imei: str) -> bool:
@@ -97,3 +107,13 @@ class ImeiValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If the `value` is not a valid IMEI.
         """
         raise ValueError(f'ImeiValueObject value <<<{value}>>> is not a valid International Mobile Equipment Identity.')
+
+    @classmethod
+    def regex(cls) -> Pattern[str]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            Pattern[str]: List of regex patterns.
+        """
+        return cls._IDENTIFICATION_REGEX

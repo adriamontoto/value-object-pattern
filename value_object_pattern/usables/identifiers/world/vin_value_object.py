@@ -26,7 +26,7 @@ class VinValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
-    __VIN_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'[0-9abcdefghjklmnprstuvwxyzABCDEFGHJKLMNPRSTUVWXYZ]{17}')  # noqa: E501  # fmt: skip
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'[0-9abcdefghjklmnprstuvwxyzABCDEFGHJKLMNPRSTUVWXYZ]{17}')  # noqa: E501  # fmt: skip
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -42,17 +42,17 @@ class VinValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         return value.upper()
 
     @validation(order=0)
-    def _ensure_value_is_vin(self, value: str) -> None:
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
         """
-        Ensures the value object `value` is a valid Vehicle Identification Number.
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a valid VIN.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        if not self.__VIN_VALUE_OBJECT_REGEX.fullmatch(string=value):
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_vin(value=value)
 
     def _raise_value_is_not_vin(self, value: str) -> NoReturn:
@@ -66,3 +66,13 @@ class VinValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If the `value` is not a valid VIN.
         """
         raise ValueError(f'VinValueObject value <<<{value}>>> is not a valid Vehicle Identification Number.')
+
+    @classmethod
+    def regex(cls) -> Pattern[str]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            Pattern[str]: List of regex patterns.
+        """
+        return cls._IDENTIFICATION_REGEX

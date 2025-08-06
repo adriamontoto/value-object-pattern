@@ -1,5 +1,5 @@
 """
-DiplomaticCorpsPlateValueObject value object.
+DiplomaticCorpsVehiclePlateValueObject value object.
 """
 
 from re import Pattern, compile as re_compile
@@ -9,9 +9,9 @@ from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
 
-class DiplomaticCorpsPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
+class DiplomaticCorpsVehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    DiplomaticCorpsPlateValueObject value object ensures the provided value is a valid Spanish diplomatic corps plate.
+    DiplomaticCorpsVehiclePlateValueObject value object ensures the provided value is a valid Spanish diplomatic corps plate.
     The plate format is CD, followed by 3 digits (not all mandatory) and ending with 3 digits. It can contain spaces,
     hyphens, or no separators.
 
@@ -20,16 +20,16 @@ class DiplomaticCorpsPlateValueObject(NotEmptyStringValueObject, TrimmedStringVa
 
     Example:
     ```python
-    from value_object_pattern.usables.identifiers.world.europe.spain.plates import DiplomaticCorpsPlateValueObject
+    from value_object_pattern.usables.identifiers.world.europe.spain.plates import DiplomaticCorpsVehiclePlateValueObject
 
-    plate = DiplomaticCorpsPlateValueObject(value='CD-123-456')
+    plate = DiplomaticCorpsVehiclePlateValueObject(value='CD-123-456')
 
     print(repr(plate))
-    # >>> DiplomaticCorpsPlateValueObject(value=CD123456)
+    # >>> DiplomaticCorpsVehiclePlateValueObject(value=CD123456)
     ```
     """  # noqa: E501  # fmt: skip
 
-    __DIPLOMATIC_CORPS_PLATE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([cC][dD])[-\s]?([0-9]{1,3})[-\s]?([0-9]{3})')  # noqa: E501  # fmt: skip
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([cC][dD])[-\s]?([0-9]{1,3})[-\s]?([0-9]{3})')  # noqa: E501  # fmt: skip
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -55,20 +55,20 @@ class DiplomaticCorpsPlateValueObject(NotEmptyStringValueObject, TrimmedStringVa
         Returns:
             str: Formatted value.
         """
-        return self.__DIPLOMATIC_CORPS_PLATE_VALUE_OBJECT_REGEX.sub(repl=r'\1\2\3', string=value)
+        return self._IDENTIFICATION_REGEX.sub(repl=r'\1\2\3', string=value)
 
     @validation(order=0)
-    def _ensure_value_is_diplomatic_corps_plate(self, value: str) -> None:
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
         """
-        Ensures the value object `value` is a valid Spanish diplomatic corps plate.
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a valid Spanish diplomatic corps plate.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        if not self.__DIPLOMATIC_CORPS_PLATE_VALUE_OBJECT_REGEX.fullmatch(string=value):
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_diplomatic_corps_plate(value=value)
 
     def _raise_value_is_not_diplomatic_corps_plate(self, value: str) -> NoReturn:
@@ -81,14 +81,14 @@ class DiplomaticCorpsPlateValueObject(NotEmptyStringValueObject, TrimmedStringVa
         Raises:
             ValueError: If the `value` is not a valid Spanish diplomatic corps plate.
         """
-        raise ValueError(f'DiplomaticCorpsPlateValueObject value <<<{value}>>> is not a valid Spanish diplomatic corps plate.')  # noqa: E501  # fmt: skip
+        raise ValueError(f'DiplomaticCorpsVehiclePlateValueObject value <<<{value}>>> is not a valid Spanish diplomatic corps plate.')  # noqa: E501  # fmt: skip
 
     @classmethod
-    def regexs(cls) -> list[Pattern[str]]:
+    def regex(cls) -> Pattern[str]:
         """
         Returns a list of regex patterns used for validation.
 
         Returns:
-            list[Pattern[str]]: List of regex patterns.
+            Pattern[str]: List of regex patterns.
         """
-        return [cls.__DIPLOMATIC_CORPS_PLATE_VALUE_OBJECT_REGEX]
+        return cls._IDENTIFICATION_REGEX

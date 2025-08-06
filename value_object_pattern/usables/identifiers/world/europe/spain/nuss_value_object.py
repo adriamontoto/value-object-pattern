@@ -26,7 +26,7 @@ class NussValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
-    __SOCIAL_SECURITY_NUMBER_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([0-9]{2})[-\s/]?([0-9]{7,8})[-\s/]?([0-9]{2})')  # noqa: E501  # fmt: skip
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([0-9]{2})[-\s/]?([0-9]{7,8})[-\s/]?([0-9]{2})')  # noqa: E501  # fmt: skip
 
     @process(order=0)
     def _ensure_value_is_formatted(self, value: str) -> str:
@@ -39,23 +39,34 @@ class NussValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         Returns:
             str: Formatted value.
         """
-        return self.__SOCIAL_SECURITY_NUMBER_VALUE_OBJECT_REGEX.sub(repl=r'\1\2\3', string=value)
+        return self._IDENTIFICATION_REGEX.sub(repl=r'\1\2\3', string=value)
 
     @validation(order=0)
-    def _ensure_value_is_social_security_number(self, value: str) -> None:
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
         """
-        Ensures the value object `value` is a valid Spanish Social Security Number.
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a valid Spanish Social Security Number.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        match = self.__SOCIAL_SECURITY_NUMBER_VALUE_OBJECT_REGEX.fullmatch(string=value)
-        if not match:
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_social_security_number(value=value)
 
+    @validation(order=1, early_process=True)
+    def _ensure_value_has_valid_control_letter(self, value: str) -> None:
+        """
+        Ensures the value object `value` has a valid control letter.
+
+        Args:
+            value (str): The provided value.
+
+        Raises:
+            ValueError: If the `value` does not have a valid control letter.
+        """
+        match = self._IDENTIFICATION_REGEX.fullmatch(string=value)
         province, sequential, control = match.groups()
 
         expected = self._calculate_control_value(province=province, sequential=sequential)
@@ -89,3 +100,13 @@ class NussValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If the `value` is not a valid Spanish Social Security Number.
         """
         raise ValueError(f'NussValueObject value <<<{value}>>> is not a valid Spanish Social Security Number.')  # noqa: E501  # fmt: skip
+
+    @classmethod
+    def regex(cls) -> Pattern[str]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            Pattern[str]: List of regex patterns.
+        """
+        return cls._IDENTIFICATION_REGEX

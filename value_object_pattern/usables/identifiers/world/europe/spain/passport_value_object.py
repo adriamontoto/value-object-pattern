@@ -26,7 +26,7 @@ class PassportValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
-    __PASSPORT_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([a-zA-Z]{2,3})([0-9]{6})')
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([a-zA-Z]{2,3})[-\s]?([0-9]{6})')
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -41,19 +41,31 @@ class PassportValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         """
         return value.upper()
 
-    @validation(order=0)
-    def _ensure_value_is_passport(self, value: str) -> None:
+    @process(order=1)
+    def _ensure_value_is_formatted(self, value: str) -> str:
         """
-        Ensures the value object `value` is a Spanish passport.
+        Ensures the value object `value` is stored without separators.
+
+        Args:
+            value (str): The provided value.
+
+        Returns:
+            str: Formatted value.
+        """
+        return self._IDENTIFICATION_REGEX.sub(repl=r'\1\2', string=value)
+
+    @validation(order=0)
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
+        """
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a Spanish passport.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        match = self.__PASSPORT_VALUE_OBJECT_REGEX.fullmatch(string=value)
-        if not match:
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_passport(value=value)
 
     def _raise_value_is_not_passport(self, value: str) -> NoReturn:
@@ -67,3 +79,13 @@ class PassportValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If the `value` is not a Spanish passport.
         """
         raise ValueError(f'PassportValueObject value <<<{value}>>> is not a valid Spanish passport.')
+
+    @classmethod
+    def regex(cls) -> Pattern[str]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            Pattern[str]: List of regex patterns.
+        """
+        return cls._IDENTIFICATION_REGEX

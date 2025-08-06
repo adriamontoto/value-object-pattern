@@ -27,10 +27,10 @@ class NifValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
-    __NIF_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([abcdefghjnpqrsuvwABCDEFGHJNPQRSUVW])([0-9]{7})([0-9abcdefghijABCDEFGHIJ])')  # noqa: E501  # fmt: skip
-    __NIF_VALUE_OBJECT_LETTER_CONTROL_LETTERS: ClassVar[list[str]] = ['J', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
-    __NIF_VALUE_OBJECT_CONTROL_CHARACTER_LETTERS: ClassVar[set[str]] = {'K', 'P', 'Q', 'S'}
-    __NIF_VALUE_OBJECT_CONTROL_CHARACTER_DIGITS: ClassVar[set[str]] = {'A', 'B', 'E', 'H'}
+    _NIF_LETTER_CONTROL_LETTERS: ClassVar[list[str]] = ['J', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+    _NIF_CONTROL_CHARACTER_LETTERS: ClassVar[set[str]] = {'K', 'P', 'Q', 'S'}
+    _NIF_CONTROL_CHARACTER_DIGITS: ClassVar[set[str]] = {'A', 'B', 'E', 'H'}
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([abcdefghjnpqrsuvwABCDEFGHJNPQRSUVW])[-\s]?([0-9]{7})[-\s]?([0-9abcdefghijABCDEFGHIJ])')  # noqa: E501  # fmt: skip
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -45,28 +45,52 @@ class NifValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         """
         return value.upper()
 
-    @validation(order=0)
-    def _ensure_value_is_nif(self, value: str) -> None:
+    @process(order=1)
+    def _ensure_value_is_formatted(self, value: str) -> str:
         """
-        Ensures the value object `value` is a Spanish company NIF.
+        Ensures the value object `value` is stored without separators.
+
+        Args:
+            value (str): The provided value.
+
+        Returns:
+            str: Formatted value.
+        """
+        return self._IDENTIFICATION_REGEX.sub(repl=r'\1\2\3', string=value)
+
+    @validation(order=0)
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
+        """
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a Spanish company NIF.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        match = self.__NIF_VALUE_OBJECT_REGEX.fullmatch(string=value)
-        if not match:
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_nif(value=value)
 
+    @validation(order=1, early_process=True)
+    def _ensure_value_has_valid_control_letter(self, value: str) -> None:
+        """
+        Ensures the value object `value` has a valid control letter.
+
+        Args:
+            value (str): The provided value.
+
+        Raises:
+            ValueError: If the `value` does not have a valid control letter.
+        """
+        match = self._IDENTIFICATION_REGEX.fullmatch(string=value)
         first_letter, number, control_character = match.groups()
 
         expected_number, expected_letter = self._calculate_control_values(number=number)
-        if first_letter.upper() in self.__NIF_VALUE_OBJECT_CONTROL_CHARACTER_DIGITS:
+        if first_letter.upper() in self._NIF_CONTROL_CHARACTER_DIGITS:
             expected = {expected_number}
 
-        elif first_letter.upper() in self.__NIF_VALUE_OBJECT_CONTROL_CHARACTER_LETTERS:
+        elif first_letter.upper() in self._NIF_CONTROL_CHARACTER_LETTERS:
             expected = {expected_letter}
 
         else:
@@ -86,7 +110,7 @@ class NifValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             tuple[str, str]: The calculated control digit and letter.
         """
         total = 0
-        for idx, digit in enumerate(number):
+        for idx, digit in enumerate(iterable=number):
             n = int(digit)
             if idx % 2 == 0:
                 n *= 2
@@ -97,7 +121,7 @@ class NifValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
 
         control_value = (10 - (total % 10)) % 10
 
-        return str(control_value), self.__NIF_VALUE_OBJECT_LETTER_CONTROL_LETTERS[control_value]
+        return str(control_value), self._NIF_LETTER_CONTROL_LETTERS[control_value]
 
     def _raise_value_is_not_nif(self, value: str) -> NoReturn:
         """
@@ -110,3 +134,13 @@ class NifValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If the `value` is not a Spanish company NIF.
         """
         raise ValueError(f'NifValueObject value <<<{value}>>> is not a valid Spanish company NIF.')
+
+    @classmethod
+    def regex(cls) -> Pattern[str]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            Pattern[str]: List of regex patterns.
+        """
+        return cls._IDENTIFICATION_REGEX

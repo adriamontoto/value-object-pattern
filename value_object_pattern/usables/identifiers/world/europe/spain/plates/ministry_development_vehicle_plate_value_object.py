@@ -1,5 +1,5 @@
 """
-MinistryDevelopmentPlateValueObject value object.
+MinistryDevelopmentVehiclePlateValueObject value object.
 """
 
 from re import Pattern, compile as re_compile
@@ -9,9 +9,9 @@ from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
 
-class MinistryDevelopmentPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
+class MinistryDevelopmentVehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    MinistryDevelopmentPlateValueObject value object ensures the provided value is a valid Spanish ministry of
+    MinistryDevelopmentVehiclePlateValueObject value object ensures the provided value is a valid Spanish ministry of
     development plate. The plate format is MMA followed by 5 numbers and it can contain spaces, hyphens, or no
     separators.
 
@@ -20,16 +20,16 @@ class MinistryDevelopmentPlateValueObject(NotEmptyStringValueObject, TrimmedStri
 
     Example:
     ```python
-    from value_object_pattern.usables.identifiers.world.europe.spain.plates import MinistryDevelopmentPlateValueObject
+    from value_object_pattern.usables.identifiers.world.europe.spain.plates import MinistryDevelopmentVehiclePlateValueObject
 
-    plate = MinistryDevelopmentPlateValueObject(value='MMA-12345')
+    plate = MinistryDevelopmentVehiclePlateValueObject(value='MMA-12345')
 
     print(repr(plate))
-    # >>> MinistryDevelopmentPlateValueObject(value=MMA12345)
+    # >>> MinistryDevelopmentVehiclePlateValueObject(value=MMA12345)
     ```
     """  # noqa: E501  # fmt: skip
 
-    __MINISTRY_DEVELOPMENT_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([mM][mM][aA])[\s-]?([0-9]{5})[\s-]?([a-zA-Z])')  # noqa: E501  # fmt: skip
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([mM][mM][aA])[\s-]?([0-9]{5})[\s-]?([a-zA-Z])')  # noqa: E501  # fmt: skip
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -55,20 +55,20 @@ class MinistryDevelopmentPlateValueObject(NotEmptyStringValueObject, TrimmedStri
         Returns:
             str: Formatted value.
         """
-        return self.__MINISTRY_DEVELOPMENT_VALUE_OBJECT_REGEX.sub(repl=r'\1\2\3', string=value)
+        return self._IDENTIFICATION_REGEX.sub(repl=r'\1\2\3', string=value)
 
     @validation(order=0)
-    def _ensure_value_is_ministry_development_plate(self, value: str) -> None:
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
         """
-        Ensures the value object `value` is a valid Spanish ministry of development plate.
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a valid Spanish ministry of development plate.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        if not self.__MINISTRY_DEVELOPMENT_VALUE_OBJECT_REGEX.fullmatch(string=value):
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_ministry_development_plate(value=value)
 
     def _raise_value_is_not_ministry_development_plate(self, value: str) -> NoReturn:
@@ -81,14 +81,14 @@ class MinistryDevelopmentPlateValueObject(NotEmptyStringValueObject, TrimmedStri
         Raises:
             ValueError: If the `value` is not a valid Spanish ministry of development plate.
         """
-        raise ValueError(f'MinistryDevelopmentPlateValueObject value <<<{value}>>> is not a valid Spanish ministry of development plate.')  # noqa: E501  # fmt: skip
+        raise ValueError(f'MinistryDevelopmentVehiclePlateValueObject value <<<{value}>>> is not a valid Spanish ministry of development plate.')  # noqa: E501  # fmt: skip
 
     @classmethod
-    def regexs(cls) -> list[Pattern[str]]:
+    def regex(cls) -> Pattern[str]:
         """
         Returns a list of regex patterns used for validation.
 
         Returns:
-            list[Pattern[str]]: List of regex patterns.
+            Pattern[str]: List of regex patterns.
         """
-        return [cls.__MINISTRY_DEVELOPMENT_VALUE_OBJECT_REGEX]
+        return cls._IDENTIFICATION_REGEX

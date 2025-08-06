@@ -1,5 +1,5 @@
 """
-NavyPlateValueObject value object.
+NavyVehiclePlateValueObject value object.
 """
 
 from re import Pattern, compile as re_compile
@@ -9,26 +9,26 @@ from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
 
-class NavyPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
+class NavyVehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    NavyPlateValueObject value object ensures the provided value is a valid Spanish navy plate. The pate format is FN,
-    followed by 4 or 5 digits, and it can contain spaces, hyphens, or no separators.
+    NavyVehiclePlateValueObject value object ensures the provided value is a valid Spanish navy plate. The pate format
+    is FN, followed by 4 or 5 digits, and it can contain spaces, hyphens, or no separators.
 
     References:
         Plates: https://matriculasdelmundo.com/espana.html
 
     Example:
     ```python
-    from value_object_pattern.usables.identifiers.world.europe.spain.plates import NavyPlateValueObject
+    from value_object_pattern.usables.identifiers.world.europe.spain.plates import NavyVehiclePlateValueObject
 
-    plate = NavyPlateValueObject(value='FN-12345')
+    plate = NavyVehiclePlateValueObject(value='FN-12345')
 
     print(repr(plate))
-    # >>> NavyPlateValueObject(value=FN-12345)
+    # >>> NavyVehiclePlateValueObject(value=FN-12345)
     ```
     """
 
-    __NAVY_PLATE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([fF][nN])[-\s]?([0-9]{4,5})')
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([fF][nN])[-\s]?([0-9]{4,5})')
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -54,20 +54,20 @@ class NavyPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         Returns:
             str: Formatted value.
         """
-        return self.__NAVY_PLATE_VALUE_OBJECT_REGEX.sub(repl=r'\1\2', string=value)
+        return self._IDENTIFICATION_REGEX.sub(repl=r'\1\2', string=value)
 
     @validation(order=0)
-    def _ensure_value_is_navy_plate(self, value: str) -> None:
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
         """
-        Ensures the value object `value` is a valid Spanish navy plate.
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a valid Spanish navy plate.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        if not self.__NAVY_PLATE_VALUE_OBJECT_REGEX.fullmatch(string=value):
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_navy_plate(value=value)
 
     def _raise_value_is_not_navy_plate(self, value: str) -> NoReturn:
@@ -80,14 +80,14 @@ class NavyPlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         Raises:
             ValueError: If the `value` is not a valid Spanish navy plate.
         """
-        raise ValueError(f'NavyPlateValueObject value <<<{value}>>> is not a valid Spanish navy plate.')
+        raise ValueError(f'NavyVehiclePlateValueObject value <<<{value}>>> is not a valid Spanish navy plate.')
 
     @classmethod
-    def regexs(cls) -> list[Pattern[str]]:
+    def regex(cls) -> Pattern[str]:
         """
         Returns a list of regex patterns used for validation.
 
         Returns:
-            list[Pattern[str]]: List of regex patterns.
+            Pattern[str]: List of regex patterns.
         """
-        return [cls.__NAVY_PLATE_VALUE_OBJECT_REGEX]
+        return cls._IDENTIFICATION_REGEX

@@ -3,7 +3,8 @@ IbanValueObject value object.
 """
 
 from re import Pattern, compile as re_compile
-from typing import NoReturn
+from string import ascii_uppercase
+from typing import ClassVar, NoReturn
 
 from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
@@ -29,7 +30,8 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
-    __IBAN_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([a-zA-Z]{2})[\s\-]*([0-9]{2})[\s\-]*([a-zA-Z0-9](?:[\s\-]*[a-zA-Z0-9]){0,29})')  # noqa: E501  # fmt: skip
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([a-zA-Z]{2})[\s\-]*([0-9]{2})[\s\-]*([a-zA-Z0-9](?:[\s\-]*[a-zA-Z0-9]){0,29})')  # noqa: E501  # fmt: skip
+    _ALPHA_MAP: ClassVar[dict[str, str]] = {character: str(10 + i) for i, character in enumerate(iterable=ascii_uppercase)}  # noqa: E501  # fmt: skip
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -45,43 +47,65 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         return value.upper()
 
     @process(order=1)
-    def _ensure_value_has_separators(self, value: str) -> str:
+    def _ensure_value_is_formatted(self, value: str) -> str:
         """
-        Removes all separators (spaces and hyphens) from the IBAN value for processing.
+        Ensures the value object `value` is stored without separators.
 
         Args:
             value (str): The provided value.
 
         Returns:
-            str: Value without spaces and hyphens.
+            str: Formatted value.
         """
         return value.replace(' ', '').replace('-', '')
 
     @validation(order=0)
-    def _ensure_value_is_iban(self, value: str) -> None:
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
         """
-        Ensures the value object `value` is a valid International Bank Account Number.
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a valid IBAN.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        match = self.__IBAN_VALUE_OBJECT_REGEX.fullmatch(string=value)
-        if not match:
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_iban(value=value)
 
-        replaced_value = value.upper().replace(' ', '').replace('-', '')
+    @validation(order=1, early_process=True)
+    def _ensure_value_country_code_is_valid(self, value: str) -> None:
+        """
+        Ensures the country code is valid.
+
+        Args:
+            value (str): The provided value.
+
+        Raises:
+            ValueError: If the country code is not valid.
+        """
+        match = self._IDENTIFICATION_REGEX.fullmatch(string=value)
+
         country_code, _, _ = match.groups()
         if country_code not in get_iban_lengths():
             self._raise_value_is_not_iban(value=value)
 
         expected_length = get_iban_lengths()[country_code]
-        if len(replaced_value) != expected_length:
+        if len(value) != expected_length:
             self._raise_value_is_not_iban(value=value)
 
-        if not self._validate_mod97_checksum(iban=replaced_value):
+    @validation(order=2, early_process=True)
+    def _ensure_value_follows_mod97_algorithm(self, value: str) -> None:
+        """
+        Ensures the value object `value` follows the MOD-97 algorithm.
+
+        Args:
+            value (str): The provided value.
+
+        Raises:
+            ValueError: If the `value` does not follow the MOD-97 algorithm.
+        """
+        if not self._validate_mod97_checksum(iban=value):
             self._raise_value_is_not_iban(value=value)
 
     def _validate_mod97_checksum(self, iban: str) -> bool:
@@ -95,42 +119,9 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             bool: True if checksum is valid.
         """
         rearranged = iban[4:] + iban[:4]
+        numeric = ''.join(self._ALPHA_MAP.get(character, character) for character in rearranged)
 
-        numeric_string = ''
-        for character in rearranged:
-            if character.isdigit():
-                numeric_string += character
-
-            else:
-                numeric_string += str(ord(character) - ord('A') + 10)
-
-        return self._calculate_mod97(numeric_string=numeric_string) == 1
-
-    def _calculate_mod97(self, numeric_string: str) -> int:
-        """
-        Calculates MOD-97 for large numbers by processing in chunks.
-
-        Args:
-            numeric_string (str): The numeric string to process.
-
-        Returns:
-            int: The remainder after MOD-97 operation.
-        """
-        remainder = 0
-
-        i = 0
-        while i < len(numeric_string):
-            if remainder < 10:  # noqa: SIM108
-                chunk_size = min(8, len(numeric_string) - i)
-
-            else:
-                chunk_size = min(7, len(numeric_string) - i)
-
-            chunk = str(remainder) + numeric_string[i : i + chunk_size]
-            remainder = int(chunk) % 97
-            i += chunk_size
-
-        return remainder
+        return int(numeric) % 97 == 1
 
     def _raise_value_is_not_iban(self, value: str) -> NoReturn:
         """

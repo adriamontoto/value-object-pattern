@@ -1,5 +1,5 @@
 """
-CatalanPolicePlateValueObject value object.
+CatalanPoliceVehiclePlateValueObject value object.
 """
 
 from re import Pattern, compile as re_compile
@@ -9,9 +9,9 @@ from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
 
-class CatalanPolicePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
+class CatalanPoliceVehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    CatalanPolicePlateValueObject value object ensures the provided value is a valid Spanish Catalan police plate. The
+    CatalanPoliceVehiclePlateValueObject value object ensures the provided value is a valid Spanish Catalan police plate. The
     plate format is CME, followed by 4 numbers and it can contain spaces, hyphens, or no separators.
 
     References:
@@ -19,16 +19,16 @@ class CatalanPolicePlateValueObject(NotEmptyStringValueObject, TrimmedStringValu
 
     Example:
     ```python
-    from value_object_pattern.usables.identifiers.world.europe.spain.plates import CatalanPolicePlateValueObject
+    from value_object_pattern.usables.identifiers.world.europe.spain.plates import CatalanPoliceVehiclePlateValueObject
 
-    plate = CatalanPolicePlateValueObject(value='CME-1234')
+    plate = CatalanPoliceVehiclePlateValueObject(value='CME-1234')
 
     print(repr(plate))
-    # >>> CatalanPolicePlateValueObject(value=CME1234)
+    # >>> CatalanPoliceVehiclePlateValueObject(value=CME1234)
     ```
     """  # noqa: E501  # fmt: skip
 
-    __CATALAN_POLICE_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([cC][mM][eE])[\s-]?([0-9]{4})')
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([cC][mM][eE])[\s-]?([0-9]{4})')
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -54,20 +54,20 @@ class CatalanPolicePlateValueObject(NotEmptyStringValueObject, TrimmedStringValu
         Returns:
             str: Formatted value.
         """
-        return self.__CATALAN_POLICE_VALUE_OBJECT_REGEX.sub(repl=r'\1\2', string=value)
+        return self._IDENTIFICATION_REGEX.sub(repl=r'\1\2', string=value)
 
     @validation(order=0)
-    def _ensure_value_is_police_plate(self, value: str) -> None:
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
         """
-        Ensures the value object `value` is a valid Spanish Catalan police plate.
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a valid Spanish Catalan police plate.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        if not self.__CATALAN_POLICE_VALUE_OBJECT_REGEX.fullmatch(string=value):
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_police_plate(value=value)
 
     def _raise_value_is_not_police_plate(self, value: str) -> NoReturn:
@@ -80,14 +80,14 @@ class CatalanPolicePlateValueObject(NotEmptyStringValueObject, TrimmedStringValu
         Raises:
             ValueError: If the `value` is not a valid Spanish Catalan police plate.
         """
-        raise ValueError(f'CatalanPolicePlateValueObject value <<<{value}>>> is not a valid Spanish Catalan police plate.')  # noqa: E501  # fmt: skip
+        raise ValueError(f'CatalanPoliceVehiclePlateValueObject value <<<{value}>>> is not a valid Spanish Catalan police plate.')  # noqa: E501  # fmt: skip
 
     @classmethod
-    def regexs(cls) -> list[Pattern[str]]:
+    def regex(cls) -> Pattern[str]:
         """
         Returns a list of regex patterns used for validation.
 
         Returns:
-            list[Pattern[str]]: List of regex patterns.
+            Pattern[str]: List of regex patterns.
         """
-        return [cls.__CATALAN_POLICE_VALUE_OBJECT_REGEX]
+        return cls._IDENTIFICATION_REGEX

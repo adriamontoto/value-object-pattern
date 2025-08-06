@@ -7,6 +7,7 @@ from typing import NoReturn
 
 from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
+from value_object_pattern.usables.identifiers.world import PhoneCodeValueObject
 
 
 class PhoneNumberValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
@@ -31,47 +32,44 @@ class PhoneNumberValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
     ```
     """
 
-    __PHONE_NUMBER_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'(?:\+34|0034)?[\s\-\(\)]*([6789](?:[\s\-\(\)]*[0-9]){8})')  # noqa: E501  # fmt: skip
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'(?:34|\+34|0034)?[\s-]*([6789](?:[\s-]*[0-9]){8})')  # noqa: E501  # fmt: skip
 
-    @process(order=0)
-    def _normalize_phone_number(self, value: str) -> str:
+    @process(order=1)
+    def _ensure_value_is_formatted(self, value: str) -> str:
         """
-        Normalizes the phone number by removing spaces, dashes, and ensuring +34 prefix.
+        Ensures the value object `value` is stored without separators.
 
         Args:
             value (str): The provided value.
 
         Returns:
-            str: Normalized phone number.
+            str: Formatted value.
         """
-        value = sub(pattern=r'[ \-\(\)]', repl='', string=value)
+        value = sub(pattern=r'[\s-]', repl='', string=value)
+
+        if value.startswith('34'):
+            return f'34 {value[2:]}'
+
+        if value.startswith('0034'):
+            return f'34 {value[4:]}'
 
         if value.startswith('+34'):
-            pass  # already canonical
+            return f'34 {value[3:]}'
 
-        elif value.startswith('0034'):
-            value = '+34' + value[4:]
-
-        elif value.startswith('34'):
-            value = '+34' + value[2:]
-
-        else:
-            value = '+34' + value
-
-        return value
+        return f'34 {value}'
 
     @validation(order=0)
-    def _ensure_value_is_spanish_phone_number(self, value: str) -> None:
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
         """
-        Ensures the value object `value` is a valid Spanish phone number.
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a valid Spanish phone number.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        if not self.__PHONE_NUMBER_VALUE_OBJECT_REGEX.fullmatch(string=value):
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_spanish_phone_number(value=value)
 
     def _raise_value_is_not_spanish_phone_number(self, value: str) -> NoReturn:
@@ -85,3 +83,23 @@ class PhoneNumberValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
             ValueError: If the `value` is not a valid Spanish phone number.
         """
         raise ValueError(f'PhoneNumberValueObject value <<<{value}>>> is not a valid Spanish phone number.')
+
+    @classmethod
+    def regex(cls) -> Pattern[str]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            Pattern[str]: List of regex patterns.
+        """
+        return cls._IDENTIFICATION_REGEX
+
+    @property
+    def phone_code(self) -> PhoneCodeValueObject:
+        """
+        Returns the phone code of the phone number.
+
+        Returns:
+            PhoneCodeValueObject: The phone code of the phone number.
+        """
+        return PhoneCodeValueObject(value=self.value.split()[0])

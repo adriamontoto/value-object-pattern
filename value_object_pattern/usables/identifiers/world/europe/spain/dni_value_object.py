@@ -26,8 +26,8 @@ class DniValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
-    __DNI_VALUE_OBJECT_LETTERS: str = 'TRWAGMYFPDXBNJZSQVHLCKE'
-    __DNI_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'([0-9]{8})([trwagmyfpdxbnjzsqvhlckeTRWAGMYFPDXBNJZSQVHLCKE])')  # noqa: E501  # fmt: skip
+    _DNI_LETTERS: str = 'TRWAGMYFPDXBNJZSQVHLCKE'
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([0-9]{8})[-\s]?([trwagmyfpdxbnjzsqvhlckeTRWAGMYFPDXBNJZSQVHLCKE])')  # noqa: E501  # fmt: skip
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -42,38 +42,50 @@ class DniValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         """
         return value.upper()
 
-    @validation(order=0)
-    def _ensure_value_is_dni(self, value: str) -> None:
+    @process(order=1)
+    def _ensure_value_is_formatted(self, value: str) -> str:
         """
-        Ensures the value object `value` is a Spanish DNI.
+        Ensures the value object `value` is stored without separators.
+
+        Args:
+            value (str): The provided value.
+
+        Returns:
+            str: Formatted value.
+        """
+        return self._IDENTIFICATION_REGEX.sub(repl=r'\1\2', string=value)
+
+    @validation(order=0)
+    def _ensure_value_follows_identification_regex(self, value: str) -> None:
+        """
+        Ensures the value object `value` follows the identification regex.
 
         Args:
             value (str): The provided value.
 
         Raises:
-            ValueError: If the `value` is not a Spanish DNI.
+            ValueError: If the `value` does not follow the identification regex.
         """
-        match = self.__DNI_VALUE_OBJECT_REGEX.fullmatch(string=value)
-        if not match:
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_dni(value=value)
 
-        number, control_letter = match.groups()
-
-        expected_letter = self._calculate_control_value(number=number)
-        if control_letter.upper() != expected_letter:
-            self._raise_value_is_not_dni(value=value)
-
-    def _calculate_control_value(self, number: str) -> str:
+    @validation(order=1, early_process=True)
+    def _ensure_value_has_valid_control_letter(self, value: str) -> None:
         """
-        Calculates the control letter for a given number in a Spanish DNI.
+        Ensures the value object `value` has a valid control letter.
 
         Args:
-            number (str): The 8-digit number part of the DNI.
+            value (str): The provided value.
 
-        Returns:
-            str: The calculated control letter.
+        Raises:
+            ValueError: If the `value` does not have a valid control letter.
         """
-        return self.__DNI_VALUE_OBJECT_LETTERS[int(number) % 23]
+        match = self._IDENTIFICATION_REGEX.fullmatch(string=value)
+        number, control_letter = match.groups()
+
+        expected_letter = self._DNI_LETTERS[int(number) % 23]
+        if control_letter != expected_letter:
+            self._raise_value_is_not_dni(value=value)
 
     def _raise_value_is_not_dni(self, value: str) -> NoReturn:
         """
@@ -86,3 +98,13 @@ class DniValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If the `value` is not a Spanish DNI.
         """
         raise ValueError(f'DniValueObject value <<<{value}>>> is not a valid Spanish DNI.')
+
+    @classmethod
+    def regex(cls) -> Pattern[str]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            Pattern[str]: List of regex patterns.
+        """
+        return cls._IDENTIFICATION_REGEX
