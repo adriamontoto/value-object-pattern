@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v0.22.0 (2025-08-06)
+
+### 🐛 Bug Fixes
+
+- Change open function to importlib.resources.files because other projects can not access the file
+  ([`6ac7be9`](https://github.com/adriamontoto/value-object-pattern/commit/6ac7be9288d9312c971fa31765039001dcd73538))
+
+### ✨ Features
+
+- **identifiers**: Implement NussValueObject
+  ([`07cbaf8`](https://github.com/adriamontoto/value-object-pattern/commit/07cbaf831053773b62bf0da599c0b669dc14903d))
+
+
 ## v0.21.0 (2025-08-06)
 
 ### ✨ Features
