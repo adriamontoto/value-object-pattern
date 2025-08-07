@@ -2,6 +2,8 @@
 HostValueObject value object.
 """
 
+from typing import NoReturn
+
 from value_object_pattern import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
@@ -18,9 +20,8 @@ class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```python
     from value_object_pattern.usables.internet import HostValueObject
 
-    key = HostValueObject(value='github.com')
-
-    print(repr(key))
+    hostname = HostValueObject(value='github.com')
+    print(repr(hostname))
     # >>> HostValueObject(value=github.com)
     ```
     """
@@ -36,10 +37,10 @@ class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         Returns:
             str: The host value stored in respective format.
         """
-        if self.is_domain(value=value):
+        if self._is_domain(value=value):
             return DomainValueObject(value=value).value
 
-        if self.is_ipv4_address(value=value):
+        if self._is_ipv4_address(value=value):
             return Ipv4AddressValueObject(value=value).value
 
         return Ipv6AddressValueObject(value=value).value
@@ -55,11 +56,23 @@ class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         Raises:
             ValueError: If the host is not a domain or an IPv4 or IPv6 address.
         """
-        if not (self.is_domain(value=value) or self.is_ipv4_address(value=value) or self.is_ipv6_address(value=value)):
-            raise ValueError(f'HostValueObject value <<<{value}>>> must be a domain or an IPv4 or IPv6 address.')
+        if not (
+            self._is_domain(value=value) or \
+            self._is_ipv4_address(value=value) or \
+            self._is_ipv6_address(value=value)
+        ):  # fmt: skip
+            self._raise_value_is_not_valid_host(value=value)
 
-    @classmethod
-    def is_domain(cls, *, value: str) -> bool:
+    def _raise_value_is_not_valid_host(self, value: str) -> NoReturn:
+        """
+        Raises a ValueError if the value is not a valid host.
+
+        Args:
+            value (str): The provided value.
+        """
+        raise ValueError(f'HostValueObject value <<<{value}>>> must be a domain or an IPv4 or IPv6 address.')
+
+    def is_domain(self) -> bool:
         """
         Checks if a value is a domain.
 
@@ -73,11 +86,22 @@ class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         ```python
         from value_object_pattern.usables.internet import HostValueObject
 
-        is_domain = HostValueObject.is_domain(value='github.com')
-
-        print(is_domain)
+        hostname = HostValueObject(value='github.com')
+        print(hostname.is_domain())
         # >>> True
         ```
+        """
+        return self._is_domain(value=self.value)
+
+    def _is_domain(self, value: str) -> bool:
+        """
+        Checks if a value is a domain.
+
+        Args:
+            value (str): Value.
+
+        Returns:
+            bool: True if the value is a domain, False otherwise.
         """
         try:
             DomainValueObject(value=value)
@@ -86,8 +110,7 @@ class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         except (TypeError, ValueError):
             return False
 
-    @classmethod
-    def is_ipv4_address(cls, *, value: str) -> bool:
+    def is_ipv4_address(self) -> bool:
         """
         Checks if a value is an IPv4 host.
 
@@ -101,11 +124,22 @@ class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         ```python
         from value_object_pattern.usables.internet import HostValueObject
 
-        is_ipv4 = HostValueObject.is_ipv4_address(value='1.1.1.1')
-
-        print(is_ipv4)
+        hostname = HostValueObject(value='1.1.1.1')
+        print(hostname.is_ipv4_address())
         # >>> True
         ```
+        """
+        return self._is_ipv4_address(value=self.value)
+
+    def _is_ipv4_address(self, value: str) -> bool:
+        """
+        Checks if a value is an IPv4 address.
+
+        Args:
+            value (str): Value.
+
+        Returns:
+            bool: True if the value is an IPv4 address, False otherwise.
         """
         try:
             Ipv4AddressValueObject(value=value)
@@ -114,8 +148,7 @@ class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         except (TypeError, ValueError):
             return False
 
-    @classmethod
-    def is_ipv6_address(cls, *, value: str) -> bool:
+    def is_ipv6_address(self) -> bool:
         """
         Checks if a value is an IPv6 host.
 
@@ -129,11 +162,22 @@ class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         ```python
         from value_object_pattern.usables.internet import HostValueObject
 
-        is_ipv6 = HostValueObject.is_ipv6_address(value='a1c4:c052:a98e:8da4:301a:bd2a:3b36:36b4')
-
-        print(is_ipv6)
+        hostname = HostValueObject(value='a1c4:c052:a98e:8da4:301a:bd2a:3b36:36b4')
+        print(hostname.is_ipv6_address())
         # >>> True
         ```
+        """
+        return self._is_ipv6_address(value=self.value)
+
+    def _is_ipv6_address(self, value: str) -> bool:
+        """
+        Checks if a value is an IPv6 address.
+
+        Args:
+            value (str): Value.
+
+        Returns:
+            bool: True if the value is an IPv6 address, False otherwise.
         """
         try:
             Ipv6AddressValueObject(value=value)
