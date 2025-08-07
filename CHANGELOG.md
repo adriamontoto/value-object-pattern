@@ -2,6 +2,28 @@
 
 <!-- version list -->
 
+## v1.2.0 (2025-08-07)
+
+### 🐛 Bug Fixes
+
+- Solve linting issues in recently edited files
+  ([`266df47`](https://github.com/adriamontoto/value-object-pattern/commit/266df47c5a24e59fbc1acee3ae75ac8fdcdd1d80))
+
+### ✨ Features
+
+- Implement a way to retrieve an early processed value while validating
+  ([`bfa8c80`](https://github.com/adriamontoto/value-object-pattern/commit/bfa8c8006115ca15080a706197564187a4e203f0))
+
+- Split mac address value objects into separate value objects for the different formats
+  ([`f169022`](https://github.com/adriamontoto/value-object-pattern/commit/f1690220ef7882ed8157075d9649c64223868bd0))
+
+- **internet**: Implement file reading to validate AWS cloud regions
+  ([`087809b`](https://github.com/adriamontoto/value-object-pattern/commit/087809bd313aca78ee792f8412ff8108fff1f050))
+
+- **internet**: Implement function to retrieve top level domains from IANA
+  ([`06b2403`](https://github.com/adriamontoto/value-object-pattern/commit/06b2403ce1842f15203fa67781387dc0f63560e9))
+
+
 ## v1.1.0 (2025-08-06)
 
 ### ✨ Features
