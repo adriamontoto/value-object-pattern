@@ -2,33 +2,12 @@
 DomainValueObject value object.
 """
 
-from functools import lru_cache
 from re import Pattern, compile as re_compile
-from urllib.request import urlopen
 
 from value_object_pattern import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
-
-@lru_cache(maxsize=1)
-def get_top_level_domains() -> set[str]:
-    """
-    Get top level domains from IANA.
-
-    Args:
-        url (str): The URL to get the top level domains.
-
-    Returns:
-        set[str]: The top level domains in lower case.
-
-    References:
-        TLD Domains: https://data.iana.org/TLD/tlds-alpha-by-domain.txt
-    """
-    url = 'https://data.iana.org/TLD/tlds-alpha-by-domain.txt'
-    with urlopen(url=url) as response:  # noqa: S310
-        content = response.read().decode('utf-8')
-
-    return {line.strip().lower() for line in content.splitlines() if line and not line.startswith('#')}
+from .utils import get_tld_dict
 
 
 class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
@@ -95,7 +74,7 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             raise ValueError(f'DomainValueObject value <<<{value}>>> has not a valid top level domain.')
 
         tdl = value.lower().rstrip('.').split(sep='.')[-1]
-        if tdl not in get_top_level_domains():
+        if tdl not in get_tld_dict()[len(tdl)]:
             raise ValueError(f'DomainValueObject value <<<{value}>>> has not a valid top level domain <<<{tdl}>>>.')
 
     @validation(order=1)
