@@ -33,16 +33,16 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
     ```
     """
 
-    __MAC_ADDRESS_VALUE_OBJECT_RAW_FORMAT_SEPARATOR: str = ''
-    __MAC_ADDRESS_VALUE_OBJECT_RAW_REGEX: Pattern[str] = re_compile(pattern=r'^[A-F0-9]{12}$')
-    __MAC_ADDRESS_VALUE_OBJECT_UNIVERSAL_SEPARATOR: str = ':'
-    __MAC_ADDRESS_VALUE_OBJECT_UNIVERSAL_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{2}:){5}[A-F0-9]{2}$')
-    __MAC_ADDRESS_VALUE_OBJECT_WINDOWS_FORMAT_SEPARATOR: str = '-'
-    __MAC_ADDRESS_VALUE_OBJECT_WINDOWS_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{2}-){5}[A-F0-9]{2}$')
-    __MAC_ADDRESS_VALUE_OBJECT_CISCO_FORMAT_SEPARATOR: str = '.'
-    __MAC_ADDRESS_VALUE_OBJECT_CISCO_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{4}\.){2}[0-9A-F]{4}$')
-    __MAC_ADDRESS_VALUE_OBJECT_SPACE_FORMAT_SEPARATOR: str = ' '
-    __MAC_ADDRESS_VALUE_OBJECT_SPACE_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{2} ){5}[A-F0-9]{2}$')
+    _MAC_ADDRESS_RAW_FORMAT_SEPARATOR: str = ''
+    _MAC_ADDRESS_RAW_REGEX: Pattern[str] = re_compile(pattern=r'^[A-F0-9]{12}$')
+    _MAC_ADDRESS_UNIVERSAL_SEPARATOR: str = ':'
+    _MAC_ADDRESS_UNIVERSAL_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{2}:){5}[A-F0-9]{2}$')
+    _MAC_ADDRESS_WINDOWS_FORMAT_SEPARATOR: str = '-'
+    _MAC_ADDRESS_WINDOWS_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{2}-){5}[A-F0-9]{2}$')
+    _MAC_ADDRESS_CISCO_FORMAT_SEPARATOR: str = '.'
+    _MAC_ADDRESS_CISCO_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{4}\.){2}[0-9A-F]{4}$')
+    _MAC_ADDRESS_SPACE_FORMAT_SEPARATOR: str = ' '
+    _MAC_ADDRESS_SPACE_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{2} ){5}[A-F0-9]{2}$')
 
     @process(order=0)
     def _ensure_value_is_uppercase(self, value: str) -> str:
@@ -73,18 +73,18 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
 
         if self.is_windows_format(value=value):
             return value.replace(
-                self.__MAC_ADDRESS_VALUE_OBJECT_WINDOWS_FORMAT_SEPARATOR,
-                self.__MAC_ADDRESS_VALUE_OBJECT_UNIVERSAL_SEPARATOR,
+                self._MAC_ADDRESS_WINDOWS_FORMAT_SEPARATOR,
+                self._MAC_ADDRESS_UNIVERSAL_SEPARATOR,
             )
 
         if self.is_cisco_format(value=value):
-            raw_mac = value.replace(self.__MAC_ADDRESS_VALUE_OBJECT_CISCO_FORMAT_SEPARATOR, '')
+            raw_mac = value.replace(self._MAC_ADDRESS_CISCO_FORMAT_SEPARATOR, '')
             return ':'.join(raw_mac[i : i + 2] for i in range(0, len(raw_mac), 2))
 
         if self.is_space_format(value=value):
             return value.replace(
-                self.__MAC_ADDRESS_VALUE_OBJECT_SPACE_FORMAT_SEPARATOR,
-                self.__MAC_ADDRESS_VALUE_OBJECT_UNIVERSAL_SEPARATOR,
+                self._MAC_ADDRESS_SPACE_FORMAT_SEPARATOR,
+                self._MAC_ADDRESS_UNIVERSAL_SEPARATOR,
             )
 
         return value
@@ -128,8 +128,8 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         ```
         """
         return self.value.replace(
-            self.__MAC_ADDRESS_VALUE_OBJECT_UNIVERSAL_SEPARATOR,
-            self.__MAC_ADDRESS_VALUE_OBJECT_RAW_FORMAT_SEPARATOR,
+            self._MAC_ADDRESS_UNIVERSAL_SEPARATOR,
+            self._MAC_ADDRESS_RAW_FORMAT_SEPARATOR,
         )
 
     @classmethod
@@ -156,7 +156,7 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         if type(value) is not str:
             return False
 
-        return bool(cls.__MAC_ADDRESS_VALUE_OBJECT_RAW_REGEX.fullmatch(string=value.upper()))
+        return bool(cls._MAC_ADDRESS_RAW_REGEX.fullmatch(string=value.upper()))
 
     @property
     def universal_format(self) -> str:
@@ -202,7 +202,7 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         if type(value) is not str:
             return False
 
-        return bool(cls.__MAC_ADDRESS_VALUE_OBJECT_UNIVERSAL_REGEX.fullmatch(string=value.upper()))
+        return bool(cls._MAC_ADDRESS_UNIVERSAL_REGEX.fullmatch(string=value.upper()))
 
     @property
     def windows_format(self) -> str:
@@ -223,8 +223,8 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         ```
         """
         return self.value.replace(
-            self.__MAC_ADDRESS_VALUE_OBJECT_UNIVERSAL_SEPARATOR,
-            self.__MAC_ADDRESS_VALUE_OBJECT_WINDOWS_FORMAT_SEPARATOR,
+            self._MAC_ADDRESS_UNIVERSAL_SEPARATOR,
+            self._MAC_ADDRESS_WINDOWS_FORMAT_SEPARATOR,
         )
 
     @classmethod
@@ -251,7 +251,7 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         if type(value) is not str:
             return False
 
-        return bool(cls.__MAC_ADDRESS_VALUE_OBJECT_WINDOWS_REGEX.fullmatch(string=value.upper()))
+        return bool(cls._MAC_ADDRESS_WINDOWS_REGEX.fullmatch(string=value.upper()))
 
     @property
     def cisco_format(self) -> str:
@@ -272,7 +272,7 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         ```
         """
         raw_mac = self.raw_format
-        return f'{raw_mac[:4]}{self.__MAC_ADDRESS_VALUE_OBJECT_CISCO_FORMAT_SEPARATOR}{raw_mac[4:8]}{self.__MAC_ADDRESS_VALUE_OBJECT_CISCO_FORMAT_SEPARATOR}{raw_mac[8:]}'  # noqa: E501
+        return f'{raw_mac[:4]}{self._MAC_ADDRESS_CISCO_FORMAT_SEPARATOR}{raw_mac[4:8]}{self._MAC_ADDRESS_CISCO_FORMAT_SEPARATOR}{raw_mac[8:]}'  # noqa: E501
 
     @classmethod
     def is_cisco_format(cls, *, value: str) -> bool:
@@ -298,7 +298,7 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         if type(value) is not str:
             return False
 
-        return bool(cls.__MAC_ADDRESS_VALUE_OBJECT_CISCO_REGEX.fullmatch(string=value.upper()))
+        return bool(cls._MAC_ADDRESS_CISCO_REGEX.fullmatch(string=value.upper()))
 
     @property
     def space_format(self) -> str:
@@ -319,8 +319,8 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         ```
         """
         return self.value.replace(
-            self.__MAC_ADDRESS_VALUE_OBJECT_UNIVERSAL_SEPARATOR,
-            self.__MAC_ADDRESS_VALUE_OBJECT_SPACE_FORMAT_SEPARATOR,
+            self._MAC_ADDRESS_UNIVERSAL_SEPARATOR,
+            self._MAC_ADDRESS_SPACE_FORMAT_SEPARATOR,
         )
 
     @classmethod
@@ -347,7 +347,7 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         if type(value) is not str:
             return False
 
-        return bool(cls.__MAC_ADDRESS_VALUE_OBJECT_SPACE_REGEX.fullmatch(string=value.upper()))
+        return bool(cls._MAC_ADDRESS_SPACE_REGEX.fullmatch(string=value.upper()))
 
     @classmethod
     def NULL(cls) -> MacAddressValueObject:

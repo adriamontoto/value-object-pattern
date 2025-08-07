@@ -115,11 +115,11 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
-    __URL_VALUE_OBJECT_SCHEME_REGEX: Pattern[str] = re_compile(pattern=r'^[a-zA-Z][a-zA-Z0-9\+\-\.]+$')
-    __URL_VALUE_OBJECT_USER_INFORMATION_REGEX: Pattern[str] = re_compile(pattern=r'^[a-zA-Z0-9\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]+$')  # noqa: E501  # fmt: skip
-    __URL_VALUE_OBJECT_PATH_REGEX: Pattern[str] = re_compile(pattern=r'^\/(?:[a-zA-Z0-9\/\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]|%[a-fA-F0-9]{2})*$')  # noqa: E501  # fmt: skip
-    __URL_VALUE_OBJECT_QUERY_REGEX: Pattern[str] = re_compile(pattern=r'^(?:[a-zA-Z0-9\/\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]|%[a-fA-F0-9]{2})*$')  # noqa: E501  # fmt: skip
-    __URL_VALUE_OBJECT_FRAGMENT_REGEX: Pattern[str] = re_compile(pattern=r'^(?:[a-zA-Z0-9\/\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]|%[a-fA-F0-9]{2})*$')  # noqa: E501  # fmt: skip
+    _URL_SCHEME_REGEX: Pattern[str] = re_compile(pattern=r'^[a-zA-Z][a-zA-Z0-9\+\-\.]+$')
+    _URL_USER_INFORMATION_REGEX: Pattern[str] = re_compile(pattern=r'^[a-zA-Z0-9\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]+$')  # noqa: E501  # fmt: skip
+    _URL_PATH_REGEX: Pattern[str] = re_compile(pattern=r'^\/(?:[a-zA-Z0-9\/\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]|%[a-fA-F0-9]{2})*$')  # noqa: E501  # fmt: skip
+    _URL_QUERY_REGEX: Pattern[str] = re_compile(pattern=r'^(?:[a-zA-Z0-9\/\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]|%[a-fA-F0-9]{2})*$')  # noqa: E501  # fmt: skip
+    _URL_FRAGMENT_REGEX: Pattern[str] = re_compile(pattern=r'^(?:[a-zA-Z0-9\/\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=\:\@]|%[a-fA-F0-9]{2})*$')  # noqa: E501  # fmt: skip
 
     @process(order=0)
     def _ensure_url_is_lower(self, value: str) -> str:
@@ -183,7 +183,7 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             https://www.rfc-editor.org/rfc/rfc3986#section-3.1
         """
         scheme, *_ = split_url(value=value)
-        if not self.__URL_VALUE_OBJECT_SCHEME_REGEX.match(string=scheme):
+        if not self._URL_SCHEME_REGEX.match(string=scheme):
             raise ValueError(f'UrlValueObject value <<<{value}>>> contains an invalid scheme <<<{scheme}>>>.')
 
     @validation(order=2)
@@ -205,7 +205,7 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         _, netloc, *_ = split_url(value=value)
         user_information, host, port = split_netloc(value=netloc)
 
-        if user_information is not None and not self.__URL_VALUE_OBJECT_USER_INFORMATION_REGEX.match(string=user_information):  # noqa: E501  # fmt: skip
+        if user_information is not None and not self._URL_USER_INFORMATION_REGEX.match(string=user_information):  # noqa: E501  # fmt: skip
             raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid user information <<<{user_information}>>>.')  # noqa: E501  # fmt: skip
 
         try:
@@ -239,7 +239,7 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         if not path:
             return
 
-        if not self.__URL_VALUE_OBJECT_PATH_REGEX.match(string=path):
+        if not self._URL_PATH_REGEX.match(string=path):
             raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid path <<<{path}>>>.')
 
     @validation(order=4)
@@ -266,7 +266,7 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         except ValueError as error:
             raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid query <<<{query}>>>.') from error
 
-        if not self.__URL_VALUE_OBJECT_QUERY_REGEX.match(string=query):
+        if not self._URL_QUERY_REGEX.match(string=query):
             raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid query <<<{query}>>>.')
 
     @validation(order=5)
@@ -287,7 +287,7 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         if not fragment:
             return
 
-        if not self.__URL_VALUE_OBJECT_FRAGMENT_REGEX.match(string=fragment):
+        if not self._URL_FRAGMENT_REGEX.match(string=fragment):
             raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid fragment <<<{fragment}>>>.')
 
     @property

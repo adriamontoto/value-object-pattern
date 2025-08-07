@@ -24,8 +24,8 @@ class PortValueObject(IntegerValueObject):
     ```
     """
 
-    __PORT_VALUE_OBJECT_MIN_PORT: int = 0
-    __PORT_VALUE_OBJECT_MAX_PORT: int = 65535
+    _PORT_MIN_PORT: int = 0
+    _PORT_MAX_PORT: int = 65535
 
     @validation(order=0)
     def _ensure_value_is_valid_port(self, value: int) -> None:
@@ -38,8 +38,8 @@ class PortValueObject(IntegerValueObject):
         Raises:
             ValueError: If the `value` is not a valid port.
         """
-        if value < self.__PORT_VALUE_OBJECT_MIN_PORT or value > self.__PORT_VALUE_OBJECT_MAX_PORT:
-            raise ValueError(f'PortValueObject value <<<{value}>>> must be between {self.__PORT_VALUE_OBJECT_MIN_PORT} and {self.__PORT_VALUE_OBJECT_MAX_PORT}.')  # noqa: E501  # fmt: skip
+        if value < self._PORT_MIN_PORT or value > self._PORT_MAX_PORT:
+            raise ValueError(f'PortValueObject value <<<{value}>>> must be between {self._PORT_MIN_PORT} and {self._PORT_MAX_PORT}.')  # noqa: E501  # fmt: skip
 
     @classmethod
     def system_ports(cls) -> tuple[PortValueObject, PortValueObject]:

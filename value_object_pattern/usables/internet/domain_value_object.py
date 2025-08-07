@@ -49,10 +49,10 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
-    __DOMAIN_VALUE_OBJECT_MIN_LABEL_LENGTH: int = 1
-    __DOMAIN_VALUE_OBJECT_MAX_LABEL_LENGTH: int = 63
-    __DOMAIN_VALUE_OBJECT_MAX_DOMAIN_LENGTH: int = 253
-    __DOMAIN_VALUE_OBJECT_REGEX: Pattern[str] = re_compile(pattern=r'^[a-zA-Z0-9-]+$')
+    _DOMAIN_MIN_LABEL_LENGTH: int = 1
+    _DOMAIN_MAX_LABEL_LENGTH: int = 63
+    _DOMAIN_MAX_DOMAIN_LENGTH: int = 253
+    _DOMAIN_REGEX: Pattern[str] = re_compile(pattern=r'^[a-zA-Z0-9-]+$')
 
     @process(order=0)
     def _ensure_domain_is_in_lowercase(self, value: str) -> str:
@@ -109,8 +109,8 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         Raises:
             ValueError: If value length is longer than the maximum domain length.
         """
-        if len(value) > self.__DOMAIN_VALUE_OBJECT_MAX_DOMAIN_LENGTH:
-            raise ValueError(f'DomainValueObject value <<<{value}>>> length is longer than <<<{self.__DOMAIN_VALUE_OBJECT_MAX_DOMAIN_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
+        if len(value) > self._DOMAIN_MAX_DOMAIN_LENGTH:
+            raise ValueError(f'DomainValueObject value <<<{value}>>> length is longer than <<<{self._DOMAIN_MAX_DOMAIN_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
 
     @validation(order=2)
     def _validate_domain_labels(self, value: str) -> None:
@@ -133,11 +133,11 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         labels = value.lower().rstrip('.').split(sep='.')
         labels = labels[:-1] if len(labels) > 1 else labels  # remove top level domain
         for label in labels:
-            if len(label) < self.__DOMAIN_VALUE_OBJECT_MIN_LABEL_LENGTH:
-                raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> shorter than <<<{self.__DOMAIN_VALUE_OBJECT_MIN_LABEL_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
+            if len(label) < self._DOMAIN_MIN_LABEL_LENGTH:
+                raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> shorter than <<<{self._DOMAIN_MIN_LABEL_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
 
-            if len(label) > self.__DOMAIN_VALUE_OBJECT_MAX_LABEL_LENGTH:
-                raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> longer than <<<{self.__DOMAIN_VALUE_OBJECT_MAX_LABEL_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
+            if len(label) > self._DOMAIN_MAX_LABEL_LENGTH:
+                raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> longer than <<<{self._DOMAIN_MAX_LABEL_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
 
             if label[0] == '-':
                 raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> that starts with a hyphen.')  # noqa: E501  # fmt: skip
@@ -145,5 +145,5 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             if label[-1] == '-':
                 raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> that ends with a hyphen.')  # noqa: E501  # fmt: skip
 
-            if not self.__DOMAIN_VALUE_OBJECT_REGEX.fullmatch(string=label.encode(encoding='idna').decode(encoding='utf-8')):  # noqa: E501  # fmt: skip
+            if not self._DOMAIN_REGEX.fullmatch(string=label.encode(encoding='idna').decode(encoding='utf-8')):  # noqa: E501  # fmt: skip
                 raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> containing invalid characters. Only letters, digits, and hyphens are allowed.')  # noqa: E501  # fmt: skip

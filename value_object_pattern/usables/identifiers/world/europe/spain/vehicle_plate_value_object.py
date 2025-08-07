@@ -53,7 +53,7 @@ class VehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObjec
     ```
     """
 
-    _VEHICLE_PLATE_VALUE_OBJECT_VARIATIONS: tuple[type[ValueObject[str]], ...] = (
+    _VEHICLE_PLATE_VARIATIONS: tuple[type[ValueObject[str]], ...] = (
         AdministrativeTechnicianVehiclePlateValueObject,
         AirForceVehiclePlateValueObject,
         ArmyVehiclePlateValueObject,
@@ -90,7 +90,7 @@ class VehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObjec
         Returns:
             str: Formatted value.
         """
-        for variation in self._VEHICLE_PLATE_VALUE_OBJECT_VARIATIONS:
+        for variation in self._VEHICLE_PLATE_VARIATIONS:
             try:
                 return variation(value=value).value
 
@@ -108,7 +108,7 @@ class VehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObjec
         Raises:
             ValueError: If the `value` is not a valid Spanish vehicle plate.
         """
-        for variation in self._VEHICLE_PLATE_VALUE_OBJECT_VARIATIONS:
+        for variation in self._VEHICLE_PLATE_VARIATIONS:
             try:
                 variation(value=value)
                 return
