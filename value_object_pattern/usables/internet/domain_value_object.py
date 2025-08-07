@@ -3,6 +3,7 @@ DomainValueObject value object.
 """
 
 from re import Pattern, compile as re_compile
+from typing import NoReturn
 
 from value_object_pattern import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
@@ -30,7 +31,7 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     _DOMAIN_MIN_LABEL_LENGTH: int = 1
     _DOMAIN_MAX_LABEL_LENGTH: int = 63
     _DOMAIN_MAX_DOMAIN_LENGTH: int = 253
-    _DOMAIN_REGEX: Pattern[str] = re_compile(pattern=r'^[a-zA-Z0-9-]+$')
+    _DOMAIN_REGEX: Pattern[str] = re_compile(pattern=r'[0-9a-zA-Z-]+')
 
     @process(order=0)
     def _ensure_domain_is_in_lowercase(self, value: str) -> str:
@@ -58,40 +59,66 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         """
         return value.rstrip('.')
 
-    @validation(order=0)
-    def _validate_top_level_domain(self, value: str) -> None:
+    @validation(order=0, early_process=True)
+    def _validate_top_level_domain(self, value: str, processed_value: str) -> None:
         """
         Validate top level domain.
 
         Args:
             value (str): The domain value.
+            processed_value (str): The early processed value.
 
         Raises:
             ValueError: If domain value has not a valid top level domain.
         """
-        if '.' not in value:
-            raise ValueError(f'DomainValueObject value <<<{value}>>> has not a valid top level domain.')
+        if '.' not in processed_value:
+            self._raise_value_has_not_valid_top_level_domain(value=value)
 
-        tdl = value.lower().rstrip('.').split(sep='.')[-1]
+        tdl = processed_value.split(sep='.')[-1]
         if tdl not in get_tld_dict():
-            raise ValueError(f'DomainValueObject value <<<{value}>>> has not a valid top level domain <<<{tdl}>>>.')
+            self._raise_value_has_not_valid_top_level_domain(value=value)
 
-    @validation(order=1)
-    def _validate_domain_length(self, value: str) -> None:
+    def _raise_value_has_not_valid_top_level_domain(self, value: str) -> NoReturn:
+        """
+        Raises a ValueError if the value has not a valid top level domain.
+
+        Args:
+            value (str): The invalid domain value.
+
+        Raises:
+            ValueError: If the value has not a valid top level domain.
+        """
+        raise ValueError(f'DomainValueObject value <<<{value}>>> has not a valid top level domain.')
+
+    @validation(order=1, early_process=True)
+    def _validate_domain_length(self, value: str, processed_value: str) -> None:
         """
         Validate domain length.
 
         Args:
             value (str): The domain value.
+            processed_value (str): The early processed value.
 
         Raises:
             ValueError: If value length is longer than the maximum domain length.
         """
-        if len(value) > self._DOMAIN_MAX_DOMAIN_LENGTH:
-            raise ValueError(f'DomainValueObject value <<<{value}>>> length is longer than <<<{self._DOMAIN_MAX_DOMAIN_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
+        if len(processed_value) > self._DOMAIN_MAX_DOMAIN_LENGTH:
+            self._raise_value_has_not_valid_domain_length(value=value)
 
-    @validation(order=2)
-    def _validate_domain_labels(self, value: str) -> None:
+    def _raise_value_has_not_valid_domain_length(self, value: str) -> NoReturn:
+        """
+        Raises a ValueError if the value has not a valid domain length.
+
+        Args:
+            value (str): The invalid domain value.
+
+        Raises:
+            ValueError: If the value has not a valid domain length.
+        """
+        raise ValueError(f'DomainValueObject value <<<{value}>>> length is longer than <<<{self._DOMAIN_MAX_DOMAIN_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
+
+    @validation(order=2, early_process=True)
+    def _validate_domain_labels(self, value: str, processed_value: str) -> None:
         """
         Validate each label (label) according to standard DNS rules.
          - Label must be between 1 and 63 characters long.
@@ -100,6 +127,7 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
 
         Args:
             value (str): The domain value.
+            processed_value (str): The early processed value.
 
         Raises:
             ValueError: If value has a label shorter than the minimum length.
@@ -108,20 +136,59 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If value has a label ending with a hyphen.
             ValueError: If value has a label containing invalid characters.
         """
-        labels = value.lower().rstrip('.').split(sep='.')
+        labels = processed_value.split(sep='.')
+
         labels = labels[:-1] if len(labels) > 1 else labels  # remove top level domain
         for label in labels:
             if len(label) < self._DOMAIN_MIN_LABEL_LENGTH:
-                raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> shorter than <<<{self._DOMAIN_MIN_LABEL_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
+                self._raise_value_labels_are_shorter_than_minimum_length(value=value, label=label)
 
             if len(label) > self._DOMAIN_MAX_LABEL_LENGTH:
-                raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> longer than <<<{self._DOMAIN_MAX_LABEL_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
+                self._raise_value_labels_are_longer_than_maximum_length(value=value, label=label)
 
             if label[0] == '-':
-                raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> that starts with a hyphen.')  # noqa: E501  # fmt: skip
+                self._raise_value_has_not_valid_format(value=value, label=label)
 
             if label[-1] == '-':
-                raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> that ends with a hyphen.')  # noqa: E501  # fmt: skip
+                self._raise_value_has_not_valid_format(value=value, label=label)
 
-            if not self._DOMAIN_REGEX.fullmatch(string=label.encode(encoding='idna').decode(encoding='utf-8')):  # noqa: E501  # fmt: skip
-                raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> containing invalid characters. Only letters, digits, and hyphens are allowed.')  # noqa: E501  # fmt: skip
+            if not self._DOMAIN_REGEX.fullmatch(string=label.encode(encoding='idna').decode(encoding='utf-8')):
+                self._raise_value_has_not_valid_format(value=value, label=label)
+
+    def _raise_value_labels_are_shorter_than_minimum_length(self, value: str, label: str) -> NoReturn:
+        """
+        Raises a ValueError if the value labels are shorter than the minimum length.
+
+        Args:
+            value (str): The invalid domain value.
+
+        Raises:
+            ValueError: If value has a label shorter than the minimum length.
+        """
+        raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> shorter than <<<{self._DOMAIN_MIN_LABEL_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
+
+    def _raise_value_labels_are_longer_than_maximum_length(self, value: str, label: str) -> NoReturn:
+        """
+        Raises a ValueError if the value labels are longer than the maximum length.
+
+        Args:
+            value (str): The invalid domain value.
+            label (str): The label that exceeds the maximum length.
+
+        Raises:
+            ValueError: If value has a label longer than the maximum length.
+        """
+        raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> longer than <<<{self._DOMAIN_MAX_LABEL_LENGTH}>>> characters.')  # noqa: E501  # fmt: skip
+
+    def _raise_value_has_not_valid_format(self, value: str, label: str) -> NoReturn:
+        """
+        Raises a ValueError if the value has not a valid format.
+
+        Args:
+            value (str): The invalid domain value.
+            label (str): The label that contains invalid characters.
+
+        Raises:
+            ValueError: If the value has not a valid format.
+        """
+        raise ValueError(f'DomainValueObject value <<<{value}>>> has a label <<<{label}>>> with invalid format, hyphens must be used only between letters and digits.')  # noqa: E501  # fmt: skip
