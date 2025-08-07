@@ -107,7 +107,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         object.__setattr__(self, '_early_processed', None)
 
         self._validate(value=value)
-        value = self._process(value=value) if self._early_processed is None else self._early_processed  # type: ignore[redundant-expr]
+        value = self._process(value=value) if self._early_processed is None else self._early_processed
 
         object.__setattr__(self, '_value', value)
 

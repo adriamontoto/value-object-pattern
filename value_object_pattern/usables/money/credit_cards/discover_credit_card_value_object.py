@@ -53,7 +53,7 @@ class DiscoverCreditCardValueObject(NotEmptyStringValueObject, TrimmedStringValu
             ValueError: If the `value` does not follow the identification regex.
         """
         if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
-            self._raise_value_is_not_discover_card(value=value)
+            self._raise_value_is_not_discover_credit_card(value=value)
 
     @validation(order=1, early_process=True)
     def _ensure_value_follows_luhn_algorithm(self, value: str) -> None:

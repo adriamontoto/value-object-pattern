@@ -80,7 +80,7 @@ class VehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObjec
     )
 
     @process(order=0)
-    def _ensure_value_is_formatted(self, value: str) -> str:
+    def _ensure_value_is_formatted(self, value: str) -> str:  # type: ignore[return]
         """
         Ensures the value object `value` is stored without separators.
 

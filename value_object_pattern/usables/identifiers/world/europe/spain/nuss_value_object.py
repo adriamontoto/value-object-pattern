@@ -67,7 +67,7 @@ class NussValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If the `value` does not have a valid control letter.
         """
         match = self._IDENTIFICATION_REGEX.fullmatch(string=value)
-        province, sequential, control = match.groups()
+        province, sequential, control = match.groups()  # type: ignore[union-attr]
 
         expected = self._calculate_control_value(province=province, sequential=sequential)
         if expected != int(control):

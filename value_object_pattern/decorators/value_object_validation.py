@@ -70,7 +70,7 @@ def validation(
 
         function._is_validation = True  # type: ignore[attr-defined]
         function._order = function.__name__ if order is None else str(order)  # type: ignore[attr-defined]
-        function._early_process = early_process
+        function._early_process = early_process  # type: ignore[attr-defined]
 
         @wraps(wrapped=function)
         def wrapper(*args: tuple[Any, ...], **kwargs: dict[str, Any]) -> None:

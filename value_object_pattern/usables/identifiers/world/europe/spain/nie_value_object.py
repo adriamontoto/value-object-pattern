@@ -83,7 +83,7 @@ class NieValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If the `value` does not have a valid control letter.
         """
         match = self._IDENTIFICATION_REGEX.fullmatch(string=value)
-        first_letter, number, control_letter = match.groups()
+        first_letter, number, control_letter = match.groups()  # type: ignore[union-attr]
 
         number_for_calculation = self._NIE_LETTER_TO_NUMBER[first_letter] + number
         expected_letter = self._NIE_LETTERS[int(number_for_calculation) % 23]

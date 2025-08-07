@@ -77,7 +77,7 @@ class CreditCardValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
 
         self._raise_value_is_not_credit_card(value=value)
 
-    def _raise_value_is_not_a_credit_card(self, value: str) -> NoReturn:
+    def _raise_value_is_not_credit_card(self, value: str) -> NoReturn:
         """
         Raises a ValueError if the value object `value` is not a valid credit card number.
 

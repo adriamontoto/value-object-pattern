@@ -11,8 +11,8 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 
 class ArmyVehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    ArmyVehiclePlateValueObject value object ensures the provided value is a valid Spanish army plate. The plate format is ET,
-    followed by 5 or 6 digits, and it can contain spaces, hyphens, or no separators.
+    ArmyVehiclePlateValueObject value object ensures the provided value is a valid Spanish army plate. The plate format
+    is ET, followed by 5 or 6 digits, and it can contain spaces, hyphens, or no separators.
 
     References:
         Plates: https://matriculasdelmundo.com/espana.html

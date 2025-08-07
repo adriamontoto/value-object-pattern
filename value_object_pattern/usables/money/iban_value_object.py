@@ -86,7 +86,7 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         """
         match = self._IDENTIFICATION_REGEX.fullmatch(string=value)
 
-        country_code, _, _ = match.groups()
+        country_code, _, _ = match.groups()  # type: ignore[union-attr]
         if country_code not in get_iban_lengths():
             self._raise_value_is_not_iban(value=value)
 
