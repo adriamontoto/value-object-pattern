@@ -41,4 +41,3 @@ def get_tld_dict() -> dict[int, tuple[str, ...]]:
         temp.setdefault(key, []).append(tld)
 
     return {key: tuple(value) for key, value in temp.items()}
-

@@ -1,0 +1,173 @@
+"""
+SpaceMacAddressValueObject value object.
+"""
+
+from __future__ import annotations
+
+from re import Pattern, compile as re_compile
+from typing import TYPE_CHECKING, NoReturn
+
+from value_object_pattern.decorators import process, validation
+from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
+
+if TYPE_CHECKING:
+    from .cisco_mac_address_value_object import CiscoMacAddressValueObject
+    from .raw_mac_address_value_object import RawMacAddressValueObject
+    from .universal_mac_address_value_object import UniversalMacAddressValueObject
+    from .windows_mac_address_value_object import WindowsMacAddressValueObject
+
+
+class SpaceMacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
+    """
+    SpaceMacAddressValueObject value object ensures the provided value is a valid MAC address in space format
+    (D5 B9 EB 4D C2 CC).
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet.mac_addresses import SpaceMacAddressValueObject
+
+    mac = SpaceMacAddressValueObject(value='D5 B9 EB 4D C2 CC')
+    print(repr(mac))
+    # >>> SpaceMacAddressValueObject(value=D5 B9 EB 4D C2 CC)
+    ```
+    """
+
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([0-9a-fA-F]{2} ){5}[0-9a-fA-F]{2}')
+
+    @process(order=0)
+    def _ensure_value_is_uppercase(self, value: str) -> str:
+        """
+        Ensures the value object value is uppercase.
+
+        Args:
+            value (str): The provided value.
+
+        Returns:
+            str: Uppercase value.
+        """
+        return value.upper()
+
+    @validation(order=0)
+    def _ensure_value_is_space_mac_address(self, value: str) -> None:
+        """
+        Ensures the value object `value` is a valid space MAC address.
+
+        Args:
+            value (str): The provided value.
+
+        Raises:
+            ValueError: If the `value` is not a valid space MAC address.
+        """
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
+            self._raise_value_is_not_space_mac_address(value=value)
+
+    def _raise_value_is_not_space_mac_address(self, value: str) -> NoReturn:
+        """
+        Raises a ValueError if the value object `value` is not a valid space MAC address.
+
+        Args:
+            value (str): The provided value.
+
+        Raises:
+            ValueError: If the `value` is not a valid space MAC address.
+        """
+        raise ValueError(f'SpaceMacAddressValueObject value <<<{value}>>> is not a valid space MAC address.')
+
+    def to_raw(self) -> RawMacAddressValueObject:
+        """
+        Converts the space MAC address to raw format (D5B9EB4DC2CC).
+
+        Returns:
+            RawMacAddressValueObject: MAC address in raw format.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet.mac_addresses import SpaceMacAddressValueObject
+
+        mac = SpaceMacAddressValueObject(value='D5 B9 EB 4D C2 CC')
+        print(repr(mac.to_raw()))
+        # >>> RawMacAddressValueObject(value=D5B9EB4DC2CC)
+        ```
+        """
+        from .raw_mac_address_value_object import RawMacAddressValueObject
+
+        raw_value = self.value.replace(' ', '')
+
+        return RawMacAddressValueObject(value=raw_value)
+
+    def to_universal(self) -> UniversalMacAddressValueObject:
+        """
+        Converts the space MAC address to universal format (D5:B9:EB:4D:C2:CC).
+
+        Returns:
+            UniversalMacAddressValueObject: MAC address in universal format.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet.mac_addresses import SpaceMacAddressValueObject
+
+        mac = SpaceMacAddressValueObject(value='D5 B9 EB 4D C2 CC')
+        print(repr(mac.to_universal()))
+        # >>> UniversalMacAddressValueObject(value=D5:B9:EB:4D:C2:CC)
+        ```
+        """
+        from .universal_mac_address_value_object import UniversalMacAddressValueObject
+
+        universal_value = self.value.replace(' ', ':')
+
+        return UniversalMacAddressValueObject(value=universal_value)
+
+    def to_windows(self) -> WindowsMacAddressValueObject:
+        """
+        Converts the space MAC address to Windows format (D5-B9-EB-4D-C2-CC).
+
+        Returns:
+            WindowsMacAddressValueObject: MAC address in Windows format.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet.mac_addresses import SpaceMacAddressValueObject
+
+        mac = SpaceMacAddressValueObject(value='D5 B9 EB 4D C2 CC')
+        print(repr(mac.to_windows()))
+        # >>> WindowsMacAddressValueObject(value=D5-B9-EB-4D-C2-CC)
+        ```
+        """
+        from .windows_mac_address_value_object import WindowsMacAddressValueObject
+
+        windows_value = self.value.replace(' ', '-')
+
+        return WindowsMacAddressValueObject(value=windows_value)
+
+    def to_cisco(self) -> CiscoMacAddressValueObject:
+        """
+        Converts the space MAC address to Cisco format (D5B9.EB4D.C2CC).
+
+        Returns:
+            CiscoMacAddressValueObject: MAC address in Cisco format.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet.mac_addresses import SpaceMacAddressValueObject
+
+        mac = SpaceMacAddressValueObject(value='D5 B9 EB 4D C2 CC')
+        print(repr(mac.to_cisco()))
+        # >>> CiscoMacAddressValueObject(value=D5B9.EB4D.C2CC)
+        ```
+        """
+        from .cisco_mac_address_value_object import CiscoMacAddressValueObject
+
+        raw_value = self.value.replace(' ', '')
+        cisco_value = f'{raw_value[:4]}.{raw_value[4:8]}.{raw_value[8:]}'
+
+        return CiscoMacAddressValueObject(value=cisco_value)
+
+    @classmethod
+    def regex(cls) -> Pattern[str]:
+        """
+        Returns the regex pattern used for validation.
+
+        Returns:
+            Pattern[str]: Regex pattern.
+        """
+        return cls._IDENTIFICATION_REGEX

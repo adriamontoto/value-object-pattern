@@ -5,17 +5,26 @@ MacAddressValueObject value object.
 
 from __future__ import annotations
 
-from re import Pattern, compile as re_compile
+from typing import NoReturn
 
 from value_object_pattern.decorators import process, validation
+from value_object_pattern.models.value_object import ValueObject
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
+
+from .mac_addresses import (
+    CiscoMacAddressValueObject,
+    RawMacAddressValueObject,
+    SpaceMacAddressValueObject,
+    UniversalMacAddressValueObject,
+    WindowsMacAddressValueObject,
+)
 
 
 class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     MacAddressValueObject value object ensures the provided value is a valid MAC address.
 
-    Formats:
+    Accepts any MAC address format and stores it as raw format:
         - Raw: D5B9EB4DC2CC
         - Universal: D5:B9:EB:4D:C2:CC
         - Windows: D5-B9-EB-4D-C2-CC
@@ -27,327 +36,171 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
     from value_object_pattern.usables.internet import MacAddressValueObject
 
     mac = MacAddressValueObject(value='D5:B9:EB:4D:C2:CC')
-
     print(repr(mac))
-    # >>> MacAddressValueObject(value=D5:B9:EB:4D:C2:CC)
+    # >>> MacAddressValueObject(value=D5B9EB4DC2CC)
     ```
     """
 
-    _MAC_ADDRESS_RAW_FORMAT_SEPARATOR: str = ''
-    _MAC_ADDRESS_RAW_REGEX: Pattern[str] = re_compile(pattern=r'^[A-F0-9]{12}$')
-    _MAC_ADDRESS_UNIVERSAL_SEPARATOR: str = ':'
-    _MAC_ADDRESS_UNIVERSAL_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{2}:){5}[A-F0-9]{2}$')
-    _MAC_ADDRESS_WINDOWS_FORMAT_SEPARATOR: str = '-'
-    _MAC_ADDRESS_WINDOWS_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{2}-){5}[A-F0-9]{2}$')
-    _MAC_ADDRESS_CISCO_FORMAT_SEPARATOR: str = '.'
-    _MAC_ADDRESS_CISCO_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{4}\.){2}[0-9A-F]{4}$')
-    _MAC_ADDRESS_SPACE_FORMAT_SEPARATOR: str = ' '
-    _MAC_ADDRESS_SPACE_REGEX: Pattern[str] = re_compile(pattern=r'^([A-F0-9]{2} ){5}[A-F0-9]{2}$')
+    _MAC_ADDRESS_VARIATIONS: tuple[type[ValueObject[str]], ...] = (
+        RawMacAddressValueObject,
+        UniversalMacAddressValueObject,
+        WindowsMacAddressValueObject,
+        CiscoMacAddressValueObject,
+        SpaceMacAddressValueObject,
+    )
 
     @process(order=0)
-    def _ensure_value_is_uppercase(self, value: str) -> str:
+    def _ensure_value_is_formatted(self, value: str) -> str:  # type: ignore[return]
         """
-        Ensures the value object value is uppercase.
+        Ensures the value object `value` is stored without separators (Raw format).
 
         Args:
-            value (str): Value.
+            value (str): The provided value.
 
         Returns:
-            str: Uppercase value.
+            str: Formatted value.
         """
-        return value.upper()
+        for variation in self._MAC_ADDRESS_VARIATIONS:
+            try:
+                mac_address = variation(value=value)
+                if hasattr(mac_address, 'to_raw'):
+                    return mac_address.to_raw().value  # type: ignore[no-any-return]
 
-    @process(order=1)
-    def _ensure_value_is_normalized(self, value: str) -> str:
-        """
-        Ensures the value object value is normalized (universally formatted).
+                return mac_address.value
 
-        Args:
-            value (str): Value.
-
-        Returns:
-            str: Value with the normalized format (universally formatted).
-        """
-        if self.is_raw_format(value=value):
-            return ':'.join(value[i : i + 2] for i in range(0, len(value), 2))
-
-        if self.is_windows_format(value=value):
-            return value.replace(
-                self._MAC_ADDRESS_WINDOWS_FORMAT_SEPARATOR,
-                self._MAC_ADDRESS_UNIVERSAL_SEPARATOR,
-            )
-
-        if self.is_cisco_format(value=value):
-            raw_mac = value.replace(self._MAC_ADDRESS_CISCO_FORMAT_SEPARATOR, '')
-            return ':'.join(raw_mac[i : i + 2] for i in range(0, len(raw_mac), 2))
-
-        if self.is_space_format(value=value):
-            return value.replace(
-                self._MAC_ADDRESS_SPACE_FORMAT_SEPARATOR,
-                self._MAC_ADDRESS_UNIVERSAL_SEPARATOR,
-            )
-
-        return value
+            except Exception:  # noqa: S112
+                continue
 
     @validation(order=0)
-    def _ensure_value_is_valid_mac_address(self, value: str) -> None:
+    def _ensure_value_is_mac_address(self, value: str) -> None:
         """
-        Ensures the value object value is a valid MAC address.
+        Ensures the value object `value` is a valid MAC address.
 
         Args:
-            value (str): Value.
+            value (str): The provided value.
 
         Raises:
-            ValueError: If the value is not a valid MAC address.
+            ValueError: If the `value` is not a valid MAC address.
         """
-        if (
-            not self.is_raw_format(value=value)
-            and not self.is_universal_format(value=value)
-            and not self.is_windows_format(value=value)
-            and not self.is_cisco_format(value=value)
-            and not self.is_space_format(value=value)
-        ):
-            raise ValueError(f'MacAddressValueObject value <<<{value}>>> is not a valid MAC address.')
+        for variation in self._MAC_ADDRESS_VARIATIONS:
+            try:
+                variation(value=value)
+                return
 
-    @property
-    def raw_format(self) -> str:
+            except Exception:  # noqa: S112
+                continue
+
+        self._raise_value_is_not_mac_address(value=value)
+
+    def _raise_value_is_not_mac_address(self, value: str) -> NoReturn:
         """
-        Returns the MAC address in raw format (D5B9EB4DC2CC).
-
-        Returns:
-            str: MAC address in raw format.
-
-        Example:
-        ```python
-        from value_object_pattern.usables.internet import MacAddressValueObject
-
-        mac = MacAddressValueObject(value='D5:B9:EB:4D:C2:CC').raw_format
-
-        print(mac)
-        # >>> D5B9EB4DC2CC
-        ```
-        """
-        return self.value.replace(
-            self._MAC_ADDRESS_UNIVERSAL_SEPARATOR,
-            self._MAC_ADDRESS_RAW_FORMAT_SEPARATOR,
-        )
-
-    @classmethod
-    def is_raw_format(cls, *, value: str) -> bool:
-        """
-        Returns whether the value is a MAC address in raw format (D5B9EB4DC2CC).
+        Raises a ValueError if the value object `value` is not a valid MAC address.
 
         Args:
-            value (str): Value.
+            value (str): The provided value.
+
+        Raises:
+            ValueError: If the `value` is not a valid MAC address.
+        """
+        raise ValueError(f'MacAddressValueObject value <<<{value}>>> is not a valid MAC address.')
+
+    def to_raw(self) -> RawMacAddressValueObject:
+        """
+        Converts the MAC address to raw format (D5B9EB4DC2CC).
 
         Returns:
-            bool: Whether the value is a MAC address in raw format.
+            RawMacAddressValueObject: MAC address in raw format.
 
         Example:
         ```python
         from value_object_pattern.usables.internet import MacAddressValueObject
 
-        is_raw = MacAddressValueObject.is_raw_format(value='D5B9EB4DC2CC')
-
-        print(is_raw)
-        # >>> True
+        mac = MacAddressValueObject(value='D5:B9:EB:4D:C2:CC')
+        print(repr(mac.to_raw()))
+        # >>> RawMacAddressValueObject(value=D5B9EB4DC2CC)
         ```
         """
-        if type(value) is not str:
-            return False
+        return RawMacAddressValueObject(value=self.value)
 
-        return bool(cls._MAC_ADDRESS_RAW_REGEX.fullmatch(string=value.upper()))
-
-    @property
-    def universal_format(self) -> str:
+    def to_universal(self) -> UniversalMacAddressValueObject:
         """
-        Returns the MAC address in universal format (D5:B9:EB:4D:C2:CC).
+        Converts the MAC address to universal format (D5:B9:EB:4D:C2:CC).
 
         Returns:
-            str: MAC address in universal format.
+            UniversalMacAddressValueObject: MAC address in universal format.
 
         Example:
         ```python
         from value_object_pattern.usables.internet import MacAddressValueObject
 
-        mac = MacAddressValueObject(value='D5:B9:EB:4D:C2:CC').universal_format
-
-        print(mac)
-        # >>> D5:B9:EB:4D:C2:CC
+        mac = MacAddressValueObject(value='D5B9EB4DC2CC')
+        print(repr(mac.to_universal()))
+        # >>> UniversalMacAddressValueObject(value=D5:B9:EB:4D:C2:CC)
         ```
         """
-        return self.value
+        universal_value = ':'.join(self.value[i : i + 2] for i in range(0, len(self.value), 2))
 
-    @classmethod
-    def is_universal_format(cls, *, value: str) -> bool:
+        return UniversalMacAddressValueObject(value=universal_value)
+
+    def to_windows(self) -> WindowsMacAddressValueObject:
         """
-        Returns whether the value is a MAC address in universal format (D5:B9:EB:4D:C2:CC).
-
-        Args:
-            value (str): Value.
+        Converts the MAC address to Windows format (D5-B9-EB-4D-C2-CC).
 
         Returns:
-            bool: Whether the value is a MAC address in universal format.
+            WindowsMacAddressValueObject: MAC address in Windows format.
 
         Example:
         ```python
         from value_object_pattern.usables.internet import MacAddressValueObject
 
-        is_universal = MacAddressValueObject.is_universal_format(value='D5:B9:EB:4D:C2:CC')
-
-        print(is_universal)
-        # >>> True
+        mac = MacAddressValueObject(value='D5B9EB4DC2CC')
+        print(repr(mac.to_windows()))
+        # >>> WindowsMacAddressValueObject(value=D5-B9-EB-4D-C2-CC)
         ```
         """
-        if type(value) is not str:
-            return False
+        windows_value = '-'.join(self.value[i : i + 2] for i in range(0, len(self.value), 2))
 
-        return bool(cls._MAC_ADDRESS_UNIVERSAL_REGEX.fullmatch(string=value.upper()))
+        return WindowsMacAddressValueObject(value=windows_value)
 
-    @property
-    def windows_format(self) -> str:
+    def to_cisco(self) -> CiscoMacAddressValueObject:
         """
-        Returns the MAC address in Windows format (D5-B9-EB-4D-C2-CC).
+        Converts the MAC address to Cisco format (D5B9.EB4D.C2CC).
 
         Returns:
-            str: MAC address in Windows format.
+            CiscoMacAddressValueObject: MAC address in Cisco format.
 
         Example:
         ```python
         from value_object_pattern.usables.internet import MacAddressValueObject
 
-        mac = MacAddressValueObject(value='D5:B9:EB:4D:C2:CC').windows_format
-
-        print(mac)
-        # >>> D5-B9-EB-4D-C2-CC
+        mac = MacAddressValueObject(value='D5B9EB4DC2CC')
+        print(repr(mac.to_cisco()))
+        # >>> CiscoMacAddressValueObject(value=D5B9.EB4D.C2CC)
         ```
         """
-        return self.value.replace(
-            self._MAC_ADDRESS_UNIVERSAL_SEPARATOR,
-            self._MAC_ADDRESS_WINDOWS_FORMAT_SEPARATOR,
-        )
+        cisco_value = f'{self.value[:4]}.{self.value[4:8]}.{self.value[8:]}'
 
-    @classmethod
-    def is_windows_format(cls, *, value: str) -> bool:
+        return CiscoMacAddressValueObject(value=cisco_value)
+
+    def to_space(self) -> SpaceMacAddressValueObject:
         """
-        Returns whether the value is a MAC address in Windows format (D5-B9-EB-4D-C2-CC).
-
-        Args:
-            value (str): Value.
+        Converts the MAC address to space format (D5 B9 EB 4D C2 CC).
 
         Returns:
-            bool: Whether the value is a MAC address in Windows format.
+            SpaceMacAddressValueObject: MAC address in space format.
 
         Example:
         ```python
         from value_object_pattern.usables.internet import MacAddressValueObject
 
-        is_windows = MacAddressValueObject.is_windows_format(value='D5-B9-EB-4D-C2-CC')
-
-        print(is_windows)
-        # >>> True
+        mac = MacAddressValueObject(value='D5B9EB4DC2CC')
+        print(repr(mac.to_space()))
+        # >>> SpaceMacAddressValueObject(value=D5 B9 EB 4D C2 CC)
         ```
         """
-        if type(value) is not str:
-            return False
+        space_value = ' '.join(self.value[i : i + 2] for i in range(0, len(self.value), 2))
 
-        return bool(cls._MAC_ADDRESS_WINDOWS_REGEX.fullmatch(string=value.upper()))
-
-    @property
-    def cisco_format(self) -> str:
-        """
-        Returns the MAC address in Cisco format (D5B9.EB4D.C2CC).
-
-        Returns:
-            str: MAC address in Cisco format.
-
-        Example:
-        ```python
-        from value_object_pattern.usables.internet import MacAddressValueObject
-
-        mac = MacAddressValueObject(value='D5:B9:EB:4D:C2:CC').cisco_format
-
-        print(mac)
-        # >>> D5B9.EB4D.C2CC
-        ```
-        """
-        raw_mac = self.raw_format
-        return f'{raw_mac[:4]}{self._MAC_ADDRESS_CISCO_FORMAT_SEPARATOR}{raw_mac[4:8]}{self._MAC_ADDRESS_CISCO_FORMAT_SEPARATOR}{raw_mac[8:]}'  # noqa: E501
-
-    @classmethod
-    def is_cisco_format(cls, *, value: str) -> bool:
-        """
-        Returns whether the value is a MAC address in Cisco format (D5B9.EB4D.C2CC).
-
-        Args:
-            value (str): Value.
-
-        Returns:
-            bool: Whether the value is a MAC address in Cisco format.
-
-        Example:
-        ```python
-        from value_object_pattern.usables.internet import MacAddressValueObject
-
-        is_cisco = MacAddressValueObject.is_cisco_format(value='D5B9.EB4D.C2CC')
-
-        print(is_cisco)
-        # >>> True
-        ```
-        """
-        if type(value) is not str:
-            return False
-
-        return bool(cls._MAC_ADDRESS_CISCO_REGEX.fullmatch(string=value.upper()))
-
-    @property
-    def space_format(self) -> str:
-        """
-        Returns the MAC address in space format (D5 B9 EB 4D C2 CC).
-
-        Returns:
-            str: MAC address in space format.
-
-        Example:
-        ```python
-        from value_object_pattern.usables.internet import MacAddressValueObject
-
-        mac = MacAddressValueObject(value='D5:B9:EB:4D:C2:CC').space_format
-
-        print(mac)
-        # >>> D5 B9 EB 4D C2 CC
-        ```
-        """
-        return self.value.replace(
-            self._MAC_ADDRESS_UNIVERSAL_SEPARATOR,
-            self._MAC_ADDRESS_SPACE_FORMAT_SEPARATOR,
-        )
-
-    @classmethod
-    def is_space_format(cls, *, value: str) -> bool:
-        """
-        Returns whether the value is a MAC address in space format (D5 B9 EB 4D C2 CC).
-
-        Args:
-            value (str): Value.
-
-        Returns:
-            bool: Whether the value is a MAC address in space format.
-
-        Example:
-        ```python
-        from value_object_pattern.usables.internet import MacAddressValueObject
-
-        is_space = MacAddressValueObject.is_space_format(value='D5 B9 EB 4D C2 CC')
-
-        print(is_space)
-        # >>> True
-        ```
-        """
-        if type(value) is not str:
-            return False
-
-        return bool(cls._MAC_ADDRESS_SPACE_REGEX.fullmatch(string=value.upper()))
+        return SpaceMacAddressValueObject(value=space_value)
 
     @classmethod
     def NULL(cls) -> MacAddressValueObject:
@@ -362,9 +215,8 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         from value_object_pattern.usables.internet import MacAddressValueObject
 
         mac = MacAddressValueObject.NULL()
-
         print(repr(mac))
-        # >>> MacAddressValueObject(value=00:00:00:00:00:00')
+        # >>> MacAddressValueObject(value=000000000000)
         ```
         """
         return cls(value='00:00:00:00:00:00')
@@ -382,9 +234,8 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         from value_object_pattern.usables.internet import MacAddressValueObject
 
         mac = MacAddressValueObject.BROADCAST()
-
         print(repr(mac))
-        # >>> MacAddressValueObject(value=FF:FF:FF:FF:FF:FF')
+        # >>> MacAddressValueObject(value=FFFFFFFFFFFF)
         ```
         """
         return cls(value='FF:FF:FF:FF:FF:FF')

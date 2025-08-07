@@ -6,11 +6,19 @@ from .ipv4_network_value_object import Ipv4NetworkValueObject
 from .ipv6_address_value_object import Ipv6AddressValueObject
 from .ipv6_network_value_object import Ipv6NetworkValueObject
 from .mac_address_value_object import MacAddressValueObject
+from .mac_addresses import (
+    CiscoMacAddressValueObject,
+    RawMacAddressValueObject,
+    SpaceMacAddressValueObject,
+    UniversalMacAddressValueObject,
+    WindowsMacAddressValueObject,
+)
 from .port_value_object import PortValueObject
 from .uri import HttpHttpsUrlValueObject, HttpUrlValueObject, HttpsUrlValueObject, UrlValueObject
 
 __all__ = (
     'AwsCloudRegionValueObject',
+    'CiscoMacAddressValueObject',
     'DomainValueObject',
     'HostValueObject',
     'HttpHttpsUrlValueObject',
@@ -22,5 +30,9 @@ __all__ = (
     'Ipv6NetworkValueObject',
     'MacAddressValueObject',
     'PortValueObject',
+    'RawMacAddressValueObject',
+    'SpaceMacAddressValueObject',
+    'UniversalMacAddressValueObject',
     'UrlValueObject',
+    'WindowsMacAddressValueObject',
 )
