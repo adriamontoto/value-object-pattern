@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.4.0 (2025-08-07)
+
+### ✨ Features
+
+- **internet**: Streamline IPv4 and IPv6 value object implementations for improved validation and
+  normalization
+  ([`d0dac62`](https://github.com/adriamontoto/value-object-pattern/commit/d0dac62ec610a4c4befb17dee1d67d9c865b82e8))
+
+
 ## v1.3.0 (2025-08-07)
 
 ### ✨ Features
