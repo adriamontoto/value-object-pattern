@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.1.0 (2025-08-06)
+
+### ✨ Features
+
+- **money**: Implement CreditCardValueObject accepting Visa, Mastercard, Amex and Discovery cards
+  ([`e3a5a02`](https://github.com/adriamontoto/value-object-pattern/commit/e3a5a02d30c12b4e52b628250fef7e3df6275556))
+
+
 ## v1.0.0 (2025-08-06)
 
 ### ✨ Features
