@@ -74,38 +74,40 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             self._raise_value_is_not_iban(value=value)
 
     @validation(order=1, early_process=True)
-    def _ensure_value_country_code_is_valid(self, value: str) -> None:
+    def _ensure_value_country_code_is_valid(self, value: str, processed_value: str) -> None:
         """
         Ensures the country code is valid.
 
         Args:
             value (str): The provided value.
+            processed_value (str): The early processed value.
 
         Raises:
             ValueError: If the country code is not valid.
         """
-        match = self._IDENTIFICATION_REGEX.fullmatch(string=value)
+        match = self._IDENTIFICATION_REGEX.fullmatch(string=processed_value)
 
         country_code, _, _ = match.groups()  # type: ignore[union-attr]
         if country_code not in get_iban_lengths():
             self._raise_value_is_not_iban(value=value)
 
         expected_length = get_iban_lengths()[country_code]
-        if len(value) != expected_length:
+        if len(processed_value) != expected_length:
             self._raise_value_is_not_iban(value=value)
 
     @validation(order=2, early_process=True)
-    def _ensure_value_follows_mod97_algorithm(self, value: str) -> None:
+    def _ensure_value_follows_mod97_algorithm(self, value: str, processed_value: str) -> None:
         """
         Ensures the value object `value` follows the MOD-97 algorithm.
 
         Args:
             value (str): The provided value.
+            processed_value (str): The early processed value.
 
         Raises:
             ValueError: If the `value` does not follow the MOD-97 algorithm.
         """
-        if not self._validate_mod97_checksum(iban=value):
+        if not self._validate_mod97_checksum(iban=processed_value):
             self._raise_value_is_not_iban(value=value)
 
     def _validate_mod97_checksum(self, iban: str) -> bool:

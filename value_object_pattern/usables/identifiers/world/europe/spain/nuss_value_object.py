@@ -56,17 +56,18 @@ class NussValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             self._raise_value_is_not_social_security_number(value=value)
 
     @validation(order=1, early_process=True)
-    def _ensure_value_has_valid_control_letter(self, value: str) -> None:
+    def _ensure_value_has_valid_control_letter(self, value: str, processed_value: str) -> None:
         """
         Ensures the value object `value` has a valid control letter.
 
         Args:
             value (str): The provided value.
+            processed_value (str): The early processed value.
 
         Raises:
             ValueError: If the `value` does not have a valid control letter.
         """
-        match = self._IDENTIFICATION_REGEX.fullmatch(string=value)
+        match = self._IDENTIFICATION_REGEX.fullmatch(string=processed_value)
         province, sequential, control = match.groups()  # type: ignore[union-attr]
 
         expected = self._calculate_control_value(province=province, sequential=sequential)

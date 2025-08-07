@@ -57,17 +57,18 @@ class ImeiValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             self._raise_value_is_not_imei(value=value)
 
     @validation(order=1, early_process=True)
-    def _ensure_value_follows_luhn_algorithm(self, value: str) -> None:
+    def _ensure_value_follows_luhn_algorithm(self, value: str, processed_value: str) -> None:
         """
         Ensures the value object `value` follows the Luhn algorithm.
 
         Args:
             value (str): The provided value.
+            processed_value (str): The early processed value.
 
         Raises:
             ValueError: If the `value` does not follow the Luhn algorithm.
         """
-        if not self._validate_luhn_checksum(imei=value):
+        if not self._validate_luhn_checksum(imei=processed_value):
             self._raise_value_is_not_imei(value=value)
 
     def _validate_luhn_checksum(self, imei: str) -> bool:

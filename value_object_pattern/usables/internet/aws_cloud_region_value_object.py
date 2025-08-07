@@ -41,17 +41,18 @@ class AwsCloudRegionValueObject(NotEmptyStringValueObject, TrimmedStringValueObj
         return value.lower()
 
     @validation(order=0, early_process=True)
-    def _validate_region(self, value: str) -> None:
+    def _validate_region(self, value: str, processed_value: str) -> None:
         """
         Validate AWS region.
 
         Args:
             value (str): The region value.
+            processed_value (str): The early processed value.
 
         Raises:
             ValueError: If the region does not exist.
         """
-        if value not in get_aws_cloud_regions():
+        if processed_value not in get_aws_cloud_regions():
             self._raise_value_is_not_valid_aws_cloud_region(value=value)
 
     def _raise_value_is_not_valid_aws_cloud_region(self, value: str) -> NoReturn:

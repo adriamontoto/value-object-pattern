@@ -275,7 +275,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
             while methods:
                 method: Callable[..., T] = methods.popleft().__get__(self, self.__class__)
                 if getattr(method, '_early_process', False):
-                    method(value=self.early_process(value=value))
+                    method(value=value, processed_value=self.early_process(value=value))
                     continue
 
                 method(value=value)

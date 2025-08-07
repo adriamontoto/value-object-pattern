@@ -56,17 +56,18 @@ class VisaCreditCardValueObject(NotEmptyStringValueObject, TrimmedStringValueObj
             self._raise_value_is_not_visa_credit_card(value=value)
 
     @validation(order=1, early_process=True)
-    def _ensure_value_follows_luhn_algorithm(self, value: str) -> None:
+    def _ensure_value_follows_luhn_algorithm(self, value: str, processed_value: str) -> None:
         """
         Ensures the value object `value` follows the Luhn algorithm.
 
         Args:
             value (str): The provided value.
+            processed_value (str): The early processed value.
 
         Raises:
             ValueError: If the `value` does not follow the Luhn algorithm.
         """
-        if not validate_luhn_checksum(value=value):
+        if not validate_luhn_checksum(value=processed_value):
             self._raise_value_is_not_visa_credit_card(value=value)
 
     def _raise_value_is_not_visa_credit_card(self, value: str) -> NoReturn:
