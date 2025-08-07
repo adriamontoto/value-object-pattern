@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.3.0 (2025-08-07)
+
+### ✨ Features
+
+- Allow value object to set internal attributes, for better performance
+  ([`1828fd0`](https://github.com/adriamontoto/value-object-pattern/commit/1828fd0f32d88e4be2dc155ae1d55577ff1a4a67))
+
+
 ## v1.2.0 (2025-08-07)
 
 ### 🐛 Bug Fixes
