@@ -11,7 +11,7 @@ else:
 
 from abc import ABC
 from collections import deque
-from typing import Any, Callable, Generic, NoReturn, TypeVar
+from typing import Any, Callable, Generic, TypeVar
 
 T = TypeVar('T')
 
@@ -215,7 +215,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         return self._value == other.value
 
     @override
-    def __setattr__(self, key: str, value: T) -> NoReturn:
+    def __setattr__(self, key: str, value: T) -> None:
         """
         Prevents modification or addition of attributes in the value object.
 
@@ -229,6 +229,12 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         """
         public_key = key.replace('_', '')
         public_slots1 = [slot.replace('_', '') for slot in self.__slots__]
+
+        if key.startswith('_internal_'):
+            # Allow internal attributes to be set, but not modified, those attributes should not be used outside the
+            # class, they are used for improving performance
+            object.__setattr__(self, key, value)
+            return
 
         if key in self.__slots__:
             raise AttributeError(f'Cannot modify attribute "{key}" of immutable instance.')
