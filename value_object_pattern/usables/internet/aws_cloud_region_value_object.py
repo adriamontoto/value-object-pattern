@@ -2,6 +2,8 @@
 AwsCloudRegionValueObject value object.
 """
 
+from typing import NoReturn
+
 from value_object_pattern import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
@@ -19,9 +21,8 @@ class AwsCloudRegionValueObject(NotEmptyStringValueObject, TrimmedStringValueObj
     ```python
     from value_object_pattern.usables.internet import AwsCloudRegionValueObject
 
-    key = AwsCloudRegionValueObject(value='us-east-1')
-
-    print(repr(key))
+    region = AwsCloudRegionValueObject(value='us-east-1')
+    print(repr(region))
     # >>> AwsCloudRegionValueObject(value=us-east-1)
     ```
     """
@@ -51,4 +52,16 @@ class AwsCloudRegionValueObject(NotEmptyStringValueObject, TrimmedStringValueObj
             ValueError: If the region does not exist.
         """
         if value not in get_aws_cloud_regions():
-            raise ValueError(f'AwsCloudRegionValueObject value <<<{value}>>> does not exist.')
+            self._raise_value_is_not_valid_aws_cloud_region(value=value)
+
+    def _raise_value_is_not_valid_aws_cloud_region(self, value: str) -> NoReturn:
+        """
+        Raises a ValueError if the value is not a valid AWS cloud region.
+
+        Args:
+            value (str): The invalid AWS cloud region value.
+
+        Raises:
+            ValueError: If the value is not a valid AWS cloud region.
+        """
+        raise ValueError(f'AwsCloudRegionValueObject value <<<{value}>>> is not a valid AWS cloud region.')

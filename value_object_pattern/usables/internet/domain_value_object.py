@@ -21,9 +21,8 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```python
     from value_object_pattern.usables.internet import DomainValueObject
 
-    key = DomainValueObject(value='github.com')
-
-    print(repr(key))
+    domain = DomainValueObject(value='github.com')
+    print(repr(domain))
     # >>> DomainValueObject(value=github.com)
     ```
     """
@@ -74,7 +73,7 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             raise ValueError(f'DomainValueObject value <<<{value}>>> has not a valid top level domain.')
 
         tdl = value.lower().rstrip('.').split(sep='.')[-1]
-        if tdl not in get_tld_dict()[len(tdl)]:
+        if tdl not in get_tld_dict():
             raise ValueError(f'DomainValueObject value <<<{value}>>> has not a valid top level domain <<<{tdl}>>>.')
 
     @validation(order=1)
