@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.5.0 (2025-08-07)
+
+### ✨ Features
+
+- **iban**: Add regex method for accessing identification regex pattern
+  ([`543a755`](https://github.com/adriamontoto/value-object-pattern/commit/543a7551044c2cb9c646b1d710e2c4820bd5a492))
+
+
 ## v1.4.0 (2025-08-07)
 
 ### ✨ Features
