@@ -30,7 +30,7 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
-    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([a-zA-Z]{2})[\s\-]*([0-9]{2})[\s\-]*([a-zA-Z0-9](?:[\s\-]*[a-zA-Z0-9]){0,29})')  # noqa: E501  # fmt: skip
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([a-zA-Z]{2})[\s\-]*([0-9]{2})[\s\-]*([0-9a-zA-Z](?:[\s\-]*[0-9a-zA-Z]){0,29})')  # noqa: E501  # fmt: skip
     _ALPHA_MAP: ClassVar[dict[str, str]] = {character: str(10 + i) for i, character in enumerate(iterable=ascii_uppercase)}  # noqa: E501  # fmt: skip
 
     @process(order=0)
@@ -134,3 +134,13 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If the `value` is not a valid IBAN.
         """
         raise ValueError(f'IbanValueObject value <<<{value}>>> is not a valid International Bank Account Number.')
+
+    @classmethod
+    def regex(cls) -> Pattern[str]:
+        """
+        Returns a list of regex patterns used for validation.
+
+        Returns:
+            Pattern[str]: List of regex patterns.
+        """
+        return cls._IDENTIFICATION_REGEX
