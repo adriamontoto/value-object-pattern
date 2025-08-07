@@ -3,7 +3,8 @@
 Ipv4NetworkValueObject value object.
 """
 
-from ipaddress import AddressValueError, IPv4Network, NetmaskValueError
+from ipaddress import IPv4Network, NetmaskValueError
+from typing import Generator, NoReturn
 
 from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
@@ -20,11 +21,12 @@ class Ipv4NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
     from value_object_pattern.usables.internet import Ipv4NetworkValueObject
 
     network = Ipv4NetworkValueObject(value='66.162.207.81')
-
     print(repr(network))
     # >>> Ipv4NetworkValueObject(value=66.162.207.81/32)
     ```
     """
+
+    _internal_network_object: IPv4Network
 
     @process(order=0)
     def _ensure_value_is_normalized(self, value: str) -> str:
@@ -48,33 +50,93 @@ class Ipv4NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
             value (str): Value.
 
         Raises:
+            ValueError: If the value does not have a valid netmask.
             ValueError: If the value is not a valid IPv4 network.
-        """
-        self._ipv4_network_validate(value=value)
-
-    @classmethod
-    def _ipv4_network_validate(cls, value: str) -> IPv4Network:
-        """
-        Validates the given IPv4 network.
-
-        Args:
-            value (str): IPv4 network.
-
-        Raises:
-            ValueError: If the value is not a valid IPv4 network.
-            ValueError: If the value has an invalid netmask.
-
-        Returns:
-            IPv4Network: IPv4 network.
         """
         try:
-            return IPv4Network(address=value)
+            self._internal_network_object = IPv4Network(address=value)
 
-        except NetmaskValueError as error:
-            raise ValueError(f'Ipv4NetworkValueObject value <<<{value}>>> has an invalid netmask.') from error
+        except NetmaskValueError:
+            self._raise_value_has_not_a_valid_netmask(value=value)
 
-        except (AddressValueError, ValueError) as error:
-            raise ValueError(f'Ipv4NetworkValueObject value <<<{value}>>> is not a valid IPv4 network.') from error
+        except Exception:
+            self._raise_value_is_not_ipv4_network(value=value)
+
+    def _raise_value_has_not_a_valid_netmask(self, value: str) -> NoReturn:
+        """
+        Raises a ValueError if the value does not have a valid netmask.
+
+        Args:
+            value (str): The provided value.
+
+        Raises:
+            ValueError: If the value does not have a valid netmask.
+        """
+        raise ValueError(f'Ipv4NetworkValueObject value <<<{value}>>> has an invalid netmask.')
+
+    def _raise_value_is_not_ipv4_network(self, value: str) -> NoReturn:
+        """
+        Raises a TypeError if the value is not a valid IPv4 network.
+
+        Args:
+            value (str): The provided value.
+
+        Raises:
+            TypeError: If the value is not a valid IPv4 network.
+        """
+        raise ValueError(f'Ipv4NetworkValueObject value <<<{value}>>> is not a valid IPv4 network.')
+
+    def hosts(self) -> Generator[Ipv4AddressValueObject, None, None]:  # noqa: UP043
+        """
+        Returns an iterator over the addresses of the given IPv4 network excluding the network and broadcast addresses.
+        If you want to iterate over all the addresses including the network and broadcast addresses, use the
+        `all_addresses` method.
+
+        Returns:
+            Generator[Ipv4AddressValueObject, None, None]: Iterator of IP addresses.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import Ipv4NetworkValueObject
+
+        network = Ipv4NetworkValueObject(value='192.168.10.0/24')
+        for address in network.hosts():
+            print(repr(address))
+        # >>> Ipv4AddressValueObject(value='192.168.10.1')
+        # >>> Ipv4AddressValueObject(value='192.168.10.2')
+        # >>> ...
+        # >>> Ipv4AddressValueObject(value='192.168.10.253')
+        # >>> Ipv4AddressValueObject(value='192.168.10.254')
+        ```
+        """
+        for address in self._internal_network_object.hosts():
+            yield Ipv4AddressValueObject(value=str(object=address))
+
+    def all_addresses(self) -> Generator[Ipv4AddressValueObject, None, None]:  # noqa: UP043
+        """
+        Returns an iterator over all the addresses of the given IPv4 network, including the network and broadcast
+        addresses. If you want to iterate over the addresses excluding the network and broadcast addresses,
+        use the `hosts` method.
+
+        Returns:
+            Generator[Ipv4AddressValueObject, None, None]: Iterator of IP addresses.
+
+        Example:
+        ```python
+        from value_object_pattern.usables.internet import Ipv4NetworkValueObject
+
+        network = Ipv4NetworkValueObject(value='192.168.10.0/24')
+        for address in network.all_addresses():
+            print(repr(address))
+        # >>> Ipv4AddressValueObject(value='192.168.10.0')
+        # >>> Ipv4AddressValueObject(value='192.168.10.1')
+        # >>> ...
+        # >>> Ipv4AddressValueObject(value='192.168.10.254')
+        # >>> Ipv4AddressValueObject(value='192.168.10.255')
+        ```
+        """
+        for address in self._internal_network_object:
+            yield Ipv4AddressValueObject(value=str(address))
 
     def get_network(self) -> Ipv4AddressValueObject:
         """
@@ -90,13 +152,12 @@ class Ipv4NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         ```python
         from value_object_pattern.usables.internet import Ipv4NetworkValueObject
 
-        ip = Ipv4NetworkValueObject(value='192.168.10.0/24').get_network()
-
-        print(repr(ip))
+        network = Ipv4NetworkValueObject(value='192.168.10.0/24')
+        print(repr(network.get_network()))
         # >>> Ipv4AddressValueObject(value=192.168.10.0)
         ```
         """
-        return Ipv4AddressValueObject(value=str(object=self._ipv4_network_validate(value=self.value).network_address))
+        return Ipv4AddressValueObject(value=str(object=self._internal_network_object.network_address))
 
     def get_broadcast(self) -> Ipv4AddressValueObject:
         """
@@ -112,13 +173,12 @@ class Ipv4NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         ```python
         from value_object_pattern.usables.internet import Ipv4NetworkValueObject
 
-        ip = Ipv4NetworkValueObject(value='192.168.10.0/24').get_broadcast()
-
-        print(repr(ip))
+        network = Ipv4NetworkValueObject(value='192.168.10.0/24')
+        print(repr(network.get_broadcast()))
         # >>> Ipv4AddressValueObject(value=192.168.10.255)
         ```
         """
-        return Ipv4AddressValueObject(value=str(object=self._ipv4_network_validate(value=self.value).broadcast_address))
+        return Ipv4AddressValueObject(value=str(object=self._internal_network_object.broadcast_address))
 
     def get_mask(self) -> int:
         """
@@ -134,13 +194,12 @@ class Ipv4NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         ```python
         from value_object_pattern.usables.internet import Ipv4NetworkValueObject
 
-        mask = Ipv4NetworkValueObject(value='192.168.10.0/24').get_mask()
-
-        print(mask)
+        network = Ipv4NetworkValueObject(value='192.168.10.0/24')
+        print(network.get_mask())
         # >>> 24
         ```
         """
-        return self._ipv4_network_validate(value=self.value).prefixlen
+        return self._internal_network_object.prefixlen
 
     def get_number_addresses(self) -> int:
         """
@@ -156,10 +215,9 @@ class Ipv4NetworkValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         ```python
         from value_object_pattern.usables.internet import Ipv4NetworkValueObject
 
-        addresses = Ipv4NetworkValueObject(value='192.168.10.0/24').get_number_addresses()
-
-        print(addresses)
+        network = Ipv4NetworkValueObject(value='192.168.10.0/24')
+        print(network.get_number_addresses())
         # >>> 256
         ```
         """
-        return self._ipv4_network_validate(value=self.value).num_addresses
+        return self._internal_network_object.num_addresses

@@ -5,7 +5,7 @@ Ipv4AddressValueObject value object.
 
 from __future__ import annotations
 
-from ipaddress import AddressValueError, IPv4Address
+from ipaddress import IPv4Address
 
 from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
@@ -20,11 +20,12 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
     from value_object_pattern.usables.internet import Ipv4AddressValueObject
 
     ip = Ipv4AddressValueObject(value='66.162.207.81')
-
     print(repr(ip))
     # >>> Ipv4AddressValueObject(value=66.162.207.81)
     ```
     """
+
+    _internal_ip_object: IPv4Address
 
     @process(order=0)
     def _ensure_value_is_normalized(self, value: str) -> str:
@@ -37,7 +38,9 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         Returns:
             str: Value with the normalized IPv4 address.
         """
-        value = self._ipv4_address_normalize(value=value)
+        if '/' in value and value.endswith('/32'):
+            value = value[:-3]
+
         return str(object=IPv4Address(address=value))
 
     @validation(order=0)
@@ -51,44 +54,25 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         Raises:
             ValueError: If the value is not a valid IPv4 address.
         """
-        value = self._ipv4_address_normalize(value=value)
-        self._ipv4_address_validate(value=value)
+        processed_value = self._ensure_value_is_normalized(value=value)
 
-    @classmethod
-    def _ipv4_address_normalize(cls, value: str) -> str:
+        try:
+            self._internal_ip_object = IPv4Address(address=processed_value)
+
+        except Exception:
+            self._raise_value_is_not_valid_ipv4_address(value=value)
+
+    def _raise_value_is_not_valid_ipv4_address(self, value: str) -> None:
         """
-        Normalizes the given IPv4 address.
+        Raises a ValueError if the value is not a valid IPv4 address.
 
         Args:
-            value (str): IPv4 address.
-
-        Returns:
-            str: Normalized IPv4 address.
-        """
-        if '/' in value and value.endswith('/32'):
-            value = value[:-3]
-
-        return value
-
-    @classmethod
-    def _ipv4_address_validate(cls, value: str) -> IPv4Address:
-        """
-        Validates the given IPv4 address.
-
-        Args:
-            value (str): IPv4 address.
+            value (str): Value.
 
         Raises:
             ValueError: If the value is not a valid IPv4 address.
-
-        Returns:
-            IPv4Address: IPv4 address.
         """
-        try:
-            return IPv4Address(address=value)
-
-        except AddressValueError as error:
-            raise ValueError(f'Ipv4AddressValueObject value <<<{value}>>> is not a valid IPv4 address.') from error
+        raise ValueError(f'Ipv4AddressValueObject value <<<{value}>>> is not a valid IPv4 address.')
 
     def is_reserved(self) -> bool:
         """
@@ -104,13 +88,12 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         ```python
         from value_object_pattern.usables.internet import Ipv4AddressValueObject
 
-        is_reserved = Ipv4AddressValueObject(value='240.0.0.0').is_reserved()
-
-        print(is_reserved)
+        ip = Ipv4AddressValueObject(value='240.0.0.0')
+        print(ip.is_reserved())
         # >>> True
         ```
         """
-        return self._ipv4_address_validate(value=self.value).is_reserved
+        return self._internal_ip_object.is_reserved
 
     def is_private(self) -> bool:
         """
@@ -126,13 +109,12 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         ```python
         from value_object_pattern.usables.internet import Ipv4AddressValueObject
 
-        is_private = Ipv4AddressValueObject(value='192.168.10.4').is_private()
-
-        print(is_private)
+        ip = Ipv4AddressValueObject(value='192.168.10.4')
+        print(ip.is_private())
         # >>> True
         ```
         """
-        return self._ipv4_address_validate(value=self.value).is_private
+        return self._internal_ip_object.is_private
 
     def is_global(self) -> bool:
         """
@@ -148,13 +130,12 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         ```python
         from value_object_pattern.usables.internet import Ipv4AddressValueObject
 
-        is_global = Ipv4AddressValueObject(value='66.162.207.81').is_global()
-
-        print(is_global)
+        ip = Ipv4AddressValueObject(value='66.162.207.81')
+        print(ip.is_global())
         # >>> True
         ```
         """
-        return self._ipv4_address_validate(value=self.value).is_global
+        return self._internal_ip_object.is_global
 
     def is_multicast(self) -> bool:
         """
@@ -170,13 +151,12 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         ```python
         from value_object_pattern.usables.internet import Ipv4AddressValueObject
 
-        is_multicast = Ipv4AddressValueObject(value='224.0.0.1').is_multicast()
-
-        print(is_multicast)
+        ip = Ipv4AddressValueObject(value='224.0.0.1')
+        print(ip.is_multicast())
         # >>> True
         ```
         """
-        return self._ipv4_address_validate(value=self.value).is_multicast
+        return self._internal_ip_object.is_multicast
 
     def is_unspecified(self) -> bool:
         """
@@ -192,13 +172,12 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         ```python
         from value_object_pattern.usables.internet import Ipv4AddressValueObject
 
-        is_unspecified = Ipv4AddressValueObject(value='0.0.0.0').is_unspecified()
-
-        print(is_unspecified)
+        ip = Ipv4AddressValueObject(value='0.0.0.0')
+        print(ip.is_unspecified())
         # >>> True
         ```
         """
-        return self._ipv4_address_validate(value=self.value).is_unspecified
+        return self._internal_ip_object.is_unspecified
 
     def is_loopback(self) -> bool:
         """
@@ -214,13 +193,12 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         ```python
         from value_object_pattern.usables.internet import Ipv4AddressValueObject
 
-        is_loopback = Ipv4AddressValueObject(value='127.0.0.1').is_loopback()
-
-        print(is_loopback)
+        ip = Ipv4AddressValueObject(value='127.0.0.1')
+        print(ip.is_loopback())
         # >>> True
         ```
         """
-        return self._ipv4_address_validate(value=self.value).is_loopback
+        return self._internal_ip_object.is_loopback
 
     def is_link_local(self) -> bool:
         """
@@ -236,13 +214,12 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         ```python
         from value_object_pattern.usables.internet import Ipv4AddressValueObject
 
-        is_link_local = Ipv4AddressValueObject(value='169.254.0.0').is_link_local()
-
-        print(is_link_local)
+        ip = Ipv4AddressValueObject(value='169.254.0.0')
+        print(ip.is_link_local())
         # >>> True
         ```
         """
-        return self._ipv4_address_validate(value=self.value).is_link_local
+        return self._internal_ip_object.is_link_local
 
     @classmethod
     def UNSPECIFIED(cls) -> Ipv4AddressValueObject:
@@ -257,7 +234,6 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         from value_object_pattern.usables.internet import Ipv4AddressValueObject
 
         ip = Ipv4AddressValueObject.UNSPECIFIED()
-
         print(repr(ip))
         # >>> Ipv4AddressValueObject(value=0.0.0.0)
         ```
@@ -277,7 +253,6 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         from value_object_pattern.usables.internet import Ipv4AddressValueObject
 
         ip = Ipv4AddressValueObject.LOOPBACK()
-
         print(repr(ip))
         # >>> Ipv4AddressValueObject(value=127.0.0.1)
         ```
@@ -297,7 +272,6 @@ class Ipv4AddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject
         from value_object_pattern.usables.internet import Ipv4AddressValueObject
 
         ip = Ipv4AddressValueObject.BROADCAST()
-
         print(repr(ip))
         # >>> Ipv4AddressValueObject(value=255.255.255.255)
         ```
