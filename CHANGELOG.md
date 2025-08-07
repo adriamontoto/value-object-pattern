@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v1.6.0 (2025-08-07)
+
+### ✨ Features
+
+- Pass processed value to control letter validation methods
+  ([`d601c3d`](https://github.com/adriamontoto/value-object-pattern/commit/d601c3d6ed9abcb3901376093f16afd84d7537e8))
+
+- **domain**: Enhance validation methods to utilize processed values and improve error handling
+  ([`203434e`](https://github.com/adriamontoto/value-object-pattern/commit/203434ed7a55fa88ea9e46fa89e5281eb0bb30a3))
+
+
 ## v1.5.0 (2025-08-07)
 
 ### ✨ Features
