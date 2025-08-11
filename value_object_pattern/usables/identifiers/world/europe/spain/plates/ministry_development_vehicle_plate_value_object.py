@@ -29,6 +29,7 @@ class MinistryDevelopmentVehiclePlateValueObject(NotEmptyStringValueObject, Trim
     ```
     """  # noqa: E501  # fmt: skip
 
+    _VALIDATION_REGEX: Pattern[str] = re_compile(pattern=r'MMA[0-9]{5}[A-Z]')
     _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([mM][mM][aA])[\s-]?([0-9]{5})[\s-]?([a-zA-Z])')  # noqa: E501  # fmt: skip
 
     @process(order=0)
@@ -71,6 +72,21 @@ class MinistryDevelopmentVehiclePlateValueObject(NotEmptyStringValueObject, Trim
         if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_ministry_development_plate(value=value)
 
+    @validation(order=1, early_process=True)
+    def _ensure_value_follows_validation_regex(self, value: str, processed_value: str) -> None:
+        """
+        Ensures the value object `value` follows the validation regex.
+
+        Args:
+            value (str): The provided value.
+            processed_value (str): The early processed value.
+
+        Raises:
+            ValueError: If the `value` does not follow the validation regex.
+        """
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=processed_value):
+            self._raise_value_is_not_ministry_development_plate(value=value)
+
     def _raise_value_is_not_ministry_development_plate(self, value: str) -> NoReturn:
         """
         Raises a ValueError if the value object `value` is not a valid Spanish ministry of development plate.
@@ -84,11 +100,21 @@ class MinistryDevelopmentVehiclePlateValueObject(NotEmptyStringValueObject, Trim
         raise ValueError(f'MinistryDevelopmentVehiclePlateValueObject value <<<{value}>>> is not a valid Spanish ministry of development plate.')  # noqa: E501  # fmt: skip
 
     @classmethod
-    def regex(cls) -> Pattern[str]:
+    def identification_regex(cls) -> Pattern[str]:
         """
-        Returns a list of regex patterns used for validation.
+        Returns the regex pattern used for identification.
 
         Returns:
-            Pattern[str]: List of regex patterns.
+            Pattern[str]: Regex pattern.
         """
         return cls._IDENTIFICATION_REGEX
+
+    @classmethod
+    def validation_regex(cls) -> Pattern[str]:
+        """
+        Returns the regex pattern used for validation.
+
+        Returns:
+            Pattern[str]: Regex pattern.
+        """
+        return cls._VALIDATION_REGEX

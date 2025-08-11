@@ -29,6 +29,7 @@ class OrdinaryTruckVehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStr
     ```
     """  # noqa: E501  # fmt: skip
 
+    _VALIDATION_REGEX: Pattern[str] = re_compile(pattern=r'R[0-9]{4}[BCDFGHJKLMNPQRSTVWXYZ]{3}')
     _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([rR])[-\s]?([0-9]{4})[-\s]?([bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]{3})')  # noqa: E501  # fmt: skip
 
     @process(order=0)
@@ -71,6 +72,21 @@ class OrdinaryTruckVehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStr
         if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_ordinary_truck_plate(value=value)
 
+    @validation(order=1, early_process=True)
+    def _ensure_value_follows_validation_regex(self, value: str, processed_value: str) -> None:
+        """
+        Ensures the value object `value` follows the validation regex.
+
+        Args:
+            value (str): The provided value.
+            processed_value (str): The early processed value.
+
+        Raises:
+            ValueError: If the `value` does not follow the validation regex.
+        """
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=processed_value):
+            self._raise_value_is_not_ordinary_truck_plate(value=value)
+
     def _raise_value_is_not_ordinary_truck_plate(self, value: str) -> NoReturn:
         """
         Raises a ValueError if the value object `value` is not a valid Spanish ordinary truck plate.
@@ -84,11 +100,21 @@ class OrdinaryTruckVehiclePlateValueObject(NotEmptyStringValueObject, TrimmedStr
         raise ValueError(f'OrdinaryTruckVehiclePlateValueObject value <<<{value}>>> is not a valid Spanish ordinary truck plate.')  # noqa: E501  # fmt: skip
 
     @classmethod
-    def regex(cls) -> Pattern[str]:
+    def identification_regex(cls) -> Pattern[str]:
         """
-        Returns a list of regex patterns used for validation.
+        Returns the regex pattern used for identification.
 
         Returns:
-            Pattern[str]: List of regex patterns.
+            Pattern[str]: Regex pattern.
         """
         return cls._IDENTIFICATION_REGEX
+
+    @classmethod
+    def validation_regex(cls) -> Pattern[str]:
+        """
+        Returns the regex pattern used for validation.
+
+        Returns:
+            Pattern[str]: Regex pattern.
+        """
+        return cls._VALIDATION_REGEX

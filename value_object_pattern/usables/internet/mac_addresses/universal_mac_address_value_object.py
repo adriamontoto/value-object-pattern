@@ -32,6 +32,7 @@ class UniversalMacAddressValueObject(NotEmptyStringValueObject, TrimmedStringVal
     ```
     """
 
+    _VALIDATION_REGEX: Pattern[str] = re_compile(pattern=r'([0-9A-F]{2}:){5}[0-9A-F]{2}')
     _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}')
 
     @process(order=0)
@@ -59,6 +60,21 @@ class UniversalMacAddressValueObject(NotEmptyStringValueObject, TrimmedStringVal
             ValueError: If the `value` is not a valid universal MAC address.
         """
         if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
+            self._raise_value_is_not_universal_mac_address(value=value)
+
+    @validation(order=1, early_process=True)
+    def _ensure_value_follows_validation_regex(self, value: str, processed_value: str) -> None:
+        """
+        Ensures the value object `value` follows the validation regex.
+
+        Args:
+            value (str): The provided value.
+            processed_value (str): The early processed value.
+
+        Raises:
+            ValueError: If the `value` does not follow the validation regex.
+        """
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=processed_value):
             self._raise_value_is_not_universal_mac_address(value=value)
 
     def _raise_value_is_not_universal_mac_address(self, value: str) -> NoReturn:
@@ -163,11 +179,21 @@ class UniversalMacAddressValueObject(NotEmptyStringValueObject, TrimmedStringVal
         return SpaceMacAddressValueObject(value=space_value)
 
     @classmethod
-    def regex(cls) -> Pattern[str]:
+    def identification_regex(cls) -> Pattern[str]:
+        """
+        Returns the regex pattern used for identification.
+
+        Returns:
+            Pattern[str]: Regex pattern.
+        """
+        return cls._IDENTIFICATION_REGEX
+
+    @classmethod
+    def validation_regex(cls) -> Pattern[str]:
         """
         Returns the regex pattern used for validation.
 
         Returns:
             Pattern[str]: Regex pattern.
         """
-        return cls._IDENTIFICATION_REGEX
+        return cls._VALIDATION_REGEX

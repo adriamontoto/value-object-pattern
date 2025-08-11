@@ -30,6 +30,7 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
+    _VALIDATION_REGEX: Pattern[str] = re_compile(pattern=r'[A-Z]{2}[0-9]{2}[0-9A-Z]{1,30}')
     _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([a-zA-Z]{2})[\s\-]*([0-9]{2})[\s\-]*([0-9a-zA-Z](?:[\s\-]*[0-9a-zA-Z]){0,29})')  # noqa: E501  # fmt: skip
     _ALPHA_MAP: ClassVar[dict[str, str]] = {character: str(10 + i) for i, character in enumerate(iterable=ascii_uppercase)}  # noqa: E501  # fmt: skip
 
@@ -74,6 +75,21 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             self._raise_value_is_not_iban(value=value)
 
     @validation(order=1, early_process=True)
+    def _ensure_value_follows_validation_regex(self, value: str, processed_value: str) -> None:
+        """
+        Ensures the value object `value` follows the validation regex.
+
+        Args:
+            value (str): The provided value.
+            processed_value (str): The early processed value.
+
+        Raises:
+            ValueError: If the `value` does not follow the validation regex.
+        """
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=processed_value):
+            self._raise_value_is_not_iban(value=value)
+
+    @validation(order=2, early_process=True)
     def _ensure_value_country_code_is_valid(self, value: str, processed_value: str) -> None:
         """
         Ensures the country code is valid.
@@ -95,7 +111,7 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         if len(processed_value) != expected_length:
             self._raise_value_is_not_iban(value=value)
 
-    @validation(order=2, early_process=True)
+    @validation(order=3, early_process=True)
     def _ensure_value_follows_mod97_algorithm(self, value: str, processed_value: str) -> None:
         """
         Ensures the value object `value` follows the MOD-97 algorithm.
@@ -138,11 +154,21 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         raise ValueError(f'IbanValueObject value <<<{value}>>> is not a valid International Bank Account Number.')
 
     @classmethod
-    def regex(cls) -> Pattern[str]:
+    def identification_regex(cls) -> Pattern[str]:
         """
-        Returns a list of regex patterns used for validation.
+        Returns the regex pattern used for identification.
 
         Returns:
-            Pattern[str]: List of regex patterns.
+            Pattern[str]: Regex pattern.
         """
         return cls._IDENTIFICATION_REGEX
+
+    @classmethod
+    def validation_regex(cls) -> Pattern[str]:
+        """
+        Returns the regex pattern used for validation.
+
+        Returns:
+            Pattern[str]: Regex pattern.
+        """
+        return cls._VALIDATION_REGEX

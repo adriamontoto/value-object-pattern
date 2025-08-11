@@ -12,7 +12,7 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 class PassportValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     PassportValueObject value object ensures the provided value is a valid Spanish passport.
-    A Spanish passport is a string with 9 characters. The first 3 characters are letters
+    A Spanish passport is a string with 9 characters. The first 2 or 3 characters are letters
     and the last 6 characters are numbers.
 
     Example:
@@ -26,7 +26,8 @@ class PassportValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
-    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([a-zA-Z]{2,3})[-\s]?([0-9]{6})')
+    _VALIDATION_REGEX: Pattern[str] = re_compile(pattern=r'[A-Z]{2,3}[0-9]{6}')
+    _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([a-zA-Z]{2,3})([0-9]{6})')
 
     @process(order=0)
     def _ensure_value_is_upper(self, value: str) -> str:
@@ -68,6 +69,21 @@ class PassportValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_passport(value=value)
 
+    @validation(order=1, early_process=True)
+    def _ensure_value_follows_validation_regex(self, value: str, processed_value: str) -> None:
+        """
+        Ensures the value object `value` follows the validation regex.
+
+        Args:
+            value (str): The provided value.
+            processed_value (str): The early processed value.
+
+        Raises:
+            ValueError: If the `value` does not follow the validation regex.
+        """
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=processed_value):
+            self._raise_value_is_not_passport(value=value)
+
     def _raise_value_is_not_passport(self, value: str) -> NoReturn:
         """
         Raises a ValueError if the value object `value` is not a Spanish passport.
@@ -81,11 +97,21 @@ class PassportValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         raise ValueError(f'PassportValueObject value <<<{value}>>> is not a valid Spanish passport.')
 
     @classmethod
-    def regex(cls) -> Pattern[str]:
+    def identification_regex(cls) -> Pattern[str]:
         """
-        Returns a list of regex patterns used for validation.
+        Returns the regex pattern used for identification.
 
         Returns:
-            Pattern[str]: List of regex patterns.
+            Pattern[str]: Regex pattern.
         """
         return cls._IDENTIFICATION_REGEX
+
+    @classmethod
+    def validation_regex(cls) -> Pattern[str]:
+        """
+        Returns the regex pattern used for validation.
+
+        Returns:
+            Pattern[str]: Regex pattern.
+        """
+        return cls._VALIDATION_REGEX

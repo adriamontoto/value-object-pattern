@@ -31,6 +31,7 @@ class ProvincialSystemVehiclePlateValueObject(NotEmptyStringValueObject, Trimmed
     ```
     """  # noqa: E501  # fmt: skip
 
+    _VALIDATION_REGEX: Pattern[str] = re_compile(pattern=r'[A-Z]{1,2}[0-9]{4}[A-Z]{1,2}')
     _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'([a-zA-Z]{1,2})[-\s]?([0-9]{4})[-\s]?([a-zA-Z]{1,2})')  # noqa: E501  # fmt: skip
 
     @process(order=0)
@@ -70,11 +71,39 @@ class ProvincialSystemVehiclePlateValueObject(NotEmptyStringValueObject, Trimmed
         Raises:
             ValueError: If the `value` does not follow the identification regex.
         """
-        match = self._IDENTIFICATION_REGEX.fullmatch(string=value)
-        if not match:
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=value):
             self._raise_value_is_not_provincial_system_plate(value=value)
 
-        province_code, _, _ = match.groups()
+    @validation(order=1, early_process=True)
+    def _ensure_value_follows_validation_regex(self, value: str, processed_value: str) -> None:
+        """
+        Ensures the value object `value` follows the validation regex.
+
+        Args:
+            value (str): The provided value.
+            processed_value (str): The early processed value.
+
+        Raises:
+            ValueError: If the `value` does not follow the validation regex.
+        """
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=processed_value):
+            self._raise_value_is_not_provincial_system_plate(value=value)
+
+    @validation(order=2, early_process=True)
+    def _ensure_value_has_invalid_provincial_code(self, value: str, processed_value: str) -> None:
+        """
+        Ensures the value object `value` has an invalid provincial code.
+
+        Args:
+            value (str): The provided value.
+            processed_value (str): The early processed value.
+
+        Raises:
+            ValueError: If the `value` has an invalid provincial code.
+        """
+        match = self._IDENTIFICATION_REGEX.fullmatch(string=value)
+
+        province_code, _, _ = match.groups()  # type: ignore[union-attr]
         if province_code.upper() not in get_provincial_plate_codes():
             self._raise_value_is_not_provincial_system_plate(value=value)
 
@@ -91,11 +120,21 @@ class ProvincialSystemVehiclePlateValueObject(NotEmptyStringValueObject, Trimmed
         raise ValueError(f'ProvincialSystemVehiclePlateValueObject value <<<{value}>>> is not a valid Spanish provincial system plate.')  # noqa: E501  # fmt: skip
 
     @classmethod
-    def regex(cls) -> Pattern[str]:
+    def identification_regex(cls) -> Pattern[str]:
         """
-        Returns a list of regex patterns used for validation.
+        Returns the regex pattern used for identification.
 
         Returns:
-            Pattern[str]: List of regex patterns.
+            Pattern[str]: Regex pattern.
         """
         return cls._IDENTIFICATION_REGEX
+
+    @classmethod
+    def validation_regex(cls) -> Pattern[str]:
+        """
+        Returns the regex pattern used for validation.
+
+        Returns:
+            Pattern[str]: Regex pattern.
+        """
+        return cls._VALIDATION_REGEX

@@ -27,6 +27,7 @@ class ImeiValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     ```
     """
 
+    _VALIDATION_REGEX: Pattern[str] = re_compile(pattern=r'[0-9]{15}')
     _IDENTIFICATION_REGEX: Pattern[str] = re_compile(pattern=r'(?:[0-9][\s\-\.]?){14}[0-9]')
 
     @process(order=0)
@@ -57,6 +58,21 @@ class ImeiValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             self._raise_value_is_not_imei(value=value)
 
     @validation(order=1, early_process=True)
+    def _ensure_value_follows_validation_regex(self, value: str, processed_value: str) -> None:
+        """
+        Ensures the value object `value` follows the validation regex.
+
+        Args:
+            value (str): The provided value.
+            processed_value (str): The early processed value.
+
+        Raises:
+            ValueError: If the `value` does not follow the validation regex.
+        """
+        if not self._IDENTIFICATION_REGEX.fullmatch(string=processed_value):
+            self._raise_value_is_not_imei(value=value)
+
+    @validation(order=2, early_process=True)
     def _ensure_value_follows_luhn_algorithm(self, value: str, processed_value: str) -> None:
         """
         Ensures the value object `value` follows the Luhn algorithm.
@@ -110,11 +126,21 @@ class ImeiValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         raise ValueError(f'ImeiValueObject value <<<{value}>>> is not a valid International Mobile Equipment Identity.')
 
     @classmethod
-    def regex(cls) -> Pattern[str]:
+    def identification_regex(cls) -> Pattern[str]:
         """
-        Returns a list of regex patterns used for validation.
+        Returns the regex pattern used for identification.
 
         Returns:
-            Pattern[str]: List of regex patterns.
+            Pattern[str]: Regex pattern.
         """
         return cls._IDENTIFICATION_REGEX
+
+    @classmethod
+    def validation_regex(cls) -> Pattern[str]:
+        """
+        Returns the regex pattern used for validation.
+
+        Returns:
+            Pattern[str]: Regex pattern.
+        """
+        return cls._VALIDATION_REGEX
