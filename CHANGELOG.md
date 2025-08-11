@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.7.0 (2025-08-11)
+
+### 🐛 Bug Fixes
+
+- Correct file anchor path for provincial plate codes retrieval
+  ([`bad5641`](https://github.com/adriamontoto/value-object-pattern/commit/bad564154d098eb99b6fad3b5ef260c6267a7ee1))
+
+### ✨ Features
+
+- Implement validation regex and its methods
+  ([`c348745`](https://github.com/adriamontoto/value-object-pattern/commit/c348745b8172d9e2b6db737a04137cf0e4a444f6))
+
+
 ## v1.6.0 (2025-08-07)
 
 ### ✨ Features
