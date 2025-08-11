@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.8.0 (2025-08-11)
+
+### ✨ Features
+
+- **nuss**: Implement province code validation
+  ([`721785d`](https://github.com/adriamontoto/value-object-pattern/commit/721785d2569f7bef9cbe1637eb5d1bc1333e909b))
+
+
 ## v1.7.0 (2025-08-11)
 
 ### 🐛 Bug Fixes
