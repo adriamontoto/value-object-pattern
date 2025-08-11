@@ -11,7 +11,7 @@ def get_provincial_plate_codes() -> tuple[str, ...]:
         tuple[str, ...]: The provincial plate codes in upper case.
     """
     with (
-        files(anchor='value_object_pattern.usables.identifiers.world.continents.countries.spain.plates.utils')
+        files(anchor='value_object_pattern.usables.identifiers.world.europe.spain.plates.utils')
         .joinpath('provincial_plate_codes.txt')
         .open(mode='r') as file
     ):
