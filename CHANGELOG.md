@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.10.0 (2025-08-20)
+
+### ✨ Features
+
+- Implement IpAddressValueObject that is a mix of IPv4 and IPv6
+  ([`e183c6c`](https://github.com/adriamontoto/value-object-pattern/commit/e183c6c7fdc2048506cdced58800168db31a07ac))
+
+
 ## v1.9.0 (2025-08-20)
 
 ### ✨ Features
