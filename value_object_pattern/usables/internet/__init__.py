@@ -1,5 +1,6 @@
 from .aws_cloud_region_value_object import AwsCloudRegionValueObject
 from .domain_value_object import DomainValueObject
+from .email_address_value_object import EmailAddressValueObject
 from .host_value_object import HostValueObject
 from .ip_address_value_object import IpAddressValueObject
 from .ipv4_address_value_object import Ipv4AddressValueObject
@@ -13,6 +14,7 @@ from .uri import HttpHttpsUrlValueObject, HttpUrlValueObject, HttpsUrlValueObjec
 __all__ = (
     'AwsCloudRegionValueObject',
     'DomainValueObject',
+    'EmailAddressValueObject',
     'HostValueObject',
     'HttpHttpsUrlValueObject',
     'HttpUrlValueObject',
