@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.11.0 (2025-08-20)
+
+### ✨ Features
+
+- Implement EmailAddressValueObject for validating email addresses
+  ([`7282c17`](https://github.com/adriamontoto/value-object-pattern/commit/7282c17c78e8b52c2228ec303e87d42dee98fdbd))
+
+
 ## v1.10.0 (2025-08-20)
 
 ### ✨ Features
