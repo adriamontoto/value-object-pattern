@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.9.0 (2025-08-20)
+
+### ✨ Features
+
+- Implement date and datetime value objects improvement
+  ([`97dcdf6`](https://github.com/adriamontoto/value-object-pattern/commit/97dcdf69d774175b33fb47aeffa9a4247ae48d55))
+
+
 ## v1.8.0 (2025-08-11)
 
 ### ✨ Features
