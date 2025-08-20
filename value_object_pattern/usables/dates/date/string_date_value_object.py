@@ -2,7 +2,8 @@
 StringDateValueObject value object.
 """
 
-from datetime import UTC, date, datetime
+from datetime import date
+from typing import NoReturn
 
 from dateutil.parser import ParserError, parse
 from dateutil.relativedelta import relativedelta
@@ -25,9 +26,11 @@ class StringDateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
     date = StringDateValueObject(value=now)
 
     print(repr(date))
-    # >>> StringDateValueObject(value=1900-01-01)
+    # >>> StringDateValueObject(value='1900-01-01')
     ```
     """
+
+    _internal_date_object: date
 
     @process(order=0)
     def _ensure_value_is_normalized(self, value: str) -> str:
@@ -40,7 +43,7 @@ class StringDateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         Returns:
             str: Value with the normalized date string.
         """
-        return self._date_normalize(value=value).isoformat()
+        return self._internal_date_object.isoformat()
 
     @validation(order=0)
     def _ensure_value_is_date(self, value: str) -> None:
@@ -53,42 +56,33 @@ class StringDateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         Raises:
             ValueError: If the value is not a date.
         """
-        self._date_normalize(value=value)
+        try:
+            self._internal_date_object = parse(timestr=value).date()
 
-    @classmethod
-    def _date_normalize(cls, value: str) -> date:
+        except ParserError:
+            self._raise_value_is_not_valid_date(value=value)
+
+    def _raise_value_is_not_valid_date(self, value: str) -> NoReturn:
         """
-        Normalizes the given date.
+        Raises a ValueError indicating the provided value is not a valid date.
 
         Args:
-            value (str): Date.
+            value (str): The invalid date value.
 
         Raises:
-            TypeError: If the value is not a string.
             ValueError: If the value is not a valid date.
-
-        Returns:
-            str: Normalized date.
         """
-        if type(value) is not str:
-            raise TypeError(f'StringDateValueObject value <<<{value}>>> must be a string. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
+        raise ValueError(f'StringDateValueObject value <<<{value}>>> is not a valid date.')
 
-        try:
-            return parse(timestr=value).date()
-
-        except ParserError as error:
-            raise ValueError(f'StringDateValueObject value <<<{value}>>> is not a valid date.') from error
-
-    def is_today(self, *, reference_date: date | None = None) -> bool:
+    def is_today(self, *, reference_date: date) -> bool:
         """
         Determines whether the stored date value is today's date.
 
         Args:
-            reference_date (date | None, optional): The date to compare against. If None, the current date (UTC) is
-            used.
+            reference_date (date): The date to compare against.
 
         Raises:
-            TypeError: If the reference_date is not a date.
+            TypeError: If the `reference_date` is not a date.
 
         Returns:
             bool: True if the stored date matches today's date, False otherwise.
@@ -107,26 +101,53 @@ class StringDateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         # >>> True
         ```
         """
-        if reference_date is None:
-            reference_date = datetime.now(tz=UTC).date()
+        DateValueObject(value=reference_date, title='StringDateValueObject', parameter='reference_date')
 
-        date_value = self._date_normalize(value=self.value)
-        DateValueObject(value=reference_date)
+        return self._internal_date_object == reference_date
 
-        return date_value == reference_date
+    def is_later_than(self, *, reference_date: date) -> bool:
+        """
+        Determines whether the stored date value is later than the specified date.
+
+        Args:
+            reference_date (date): The date to compare against.
+
+        Raises:
+            TypeError: If the `reference_date` is not a date.
+
+        Returns:
+            bool: True if the stored date is later than the reference_date, False otherwise.
+
+        Example:
+        ```python
+        from datetime import date
+
+        from value_object_pattern.usables.dates import StringDateValueObject
+
+        now = '1900-01-01'
+        reference_date = date(year=1899, month=12, day=31)
+        is_later_than = StringDateValueObject(value=now).is_later_than(reference_date=reference_date)
+
+        print(is_later_than)
+        # >>> True
+        ```
+        """
+        DateValueObject(value=reference_date, title='StringDateValueObject', parameter='reference_date')
+
+        return self._internal_date_object > reference_date
 
     def is_in_range(self, *, start_date: date, end_date: date) -> bool:
         """
-        Determines whether the stored date value falls within the specified date range.
+        Determines whether the stored date value falls within the specified date range (both included).
 
         Args:
-            start_date (date): The beginning of the date range (inclusive).
-            end_date (date): The end of the date range (inclusive).
+            start_date (date): The beginning of the date range.
+            end_date (date): The end of the date range.
 
         Raises:
-            TypeError: If start_date is not a date.
-            TypeError: If end_date is not a date.
-            ValueError: If start_date is later than end_date.
+            TypeError: If the `start_date` is not a date.
+            TypeError: If the `end_date` is not a date.
+            ValueError: If the `start_date` is later than the `end_date`.
 
         Returns:
             bool: True if the stored date is within the range, False otherwise.
@@ -151,26 +172,37 @@ class StringDateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         # >>> True
         ```
         """
-        date_value = self._date_normalize(value=self.value)
-        DateValueObject(value=start_date)
-        DateValueObject(value=end_date)
+        DateValueObject(value=start_date, title='StringDateValueObject', parameter='start_date')
+        DateValueObject(value=end_date, title='StringDateValueObject', parameter='end_date')
 
         if start_date > end_date:
-            raise ValueError(f'StringDateValueObject start_date <<<{start_date.isoformat()}>>> must be earlier than or equal to end_date <<<{end_date.isoformat()}>>>.')  # noqa: E501  # fmt: skip
+            self._raise_start_date_is_later_than_end_date(start_date=start_date, end_date=end_date)
 
-        return start_date <= date_value <= end_date
+        return start_date <= self._internal_date_object <= end_date
 
-    def calculate_age(self, *, reference_date: date | None = None) -> int:
+    def _raise_start_date_is_later_than_end_date(self, *, start_date: date, end_date: date) -> NoReturn:
+        """
+        Raises a ValueError if the start date is later than the end date.
+
+        Args:
+            start_date (date): The start date.
+            end_date (date): The end date.
+
+        Raises:
+            ValueError: If the `start_date` is later than the `end_date`.
+        """
+        raise ValueError(f'StringDateValueObject start_date <<<{start_date.isoformat()}>>> must be earlier than or equal to end_date <<<{end_date.isoformat()}>>>.')  # noqa: E501  # fmt: skip
+
+    def calculate_age(self, *, reference_date: date) -> int:
         """
         Calculates the age of the stored date value.
 
         Args:
-            reference_date (date | None, optional): The date to calculate the age from. If None, the current date (UTC)
-            is used.
+            reference_date (date): The date to calculate the age from.
 
         Raises:
-            TypeError: If the reference_date is not a date.
-            ValueError: If the stored date is later than the reference_date.
+            TypeError: If the `reference_date` is not a date.
+            ValueError: If the stored date is later than the `reference_date`.
 
         Returns:
             int: The age in years of the stored date.
@@ -189,13 +221,12 @@ class StringDateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
         # >>> 100
         ```
         """
-        if reference_date is None:
-            reference_date = datetime.now(tz=UTC).date()
+        DateValueObject(value=reference_date, title='StringDateValueObject', parameter='reference_date')
 
-        date_value = self._date_normalize(value=self.value)
-        DateValueObject(value=reference_date)
+        if self._internal_date_object > reference_date:
+            self._raise_start_date_is_later_than_end_date(
+                start_date=self._internal_date_object,
+                end_date=reference_date,
+            )
 
-        if date_value > reference_date:
-            raise ValueError(f'StringDateValueObject value <<<{date_value.isoformat()}>>> must be earlier than or equal to reference_date <<<{reference_date.isoformat()}>>>.')  # noqa: E501  # fmt: skip
-
-        return relativedelta(dt1=reference_date, dt2=date_value).years
+        return relativedelta(dt1=reference_date, dt2=self._internal_date_object).years
