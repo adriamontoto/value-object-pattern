@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.12.0 (2025-08-25)
+
+### ✨ Features
+
+- Implement type method to ValueObject for retrieving value object primitive type
+  ([`8d072cb`](https://github.com/adriamontoto/value-object-pattern/commit/8d072cbc7a4925f1cf47d4ab0cb17a73de32b234))
+
+
 ## v1.11.0 (2025-08-20)
 
 ### ✨ Features
