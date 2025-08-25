@@ -11,7 +11,7 @@ else:
 
 from abc import ABC
 from collections import deque
-from typing import Any, Callable, Generic, TypeVar
+from typing import Any, Callable, Generic, TypeVar, get_args
 
 T = TypeVar('T')
 
@@ -465,3 +465,22 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         ```
         """
         return self._parameter
+
+    @classmethod
+    def type(cls) -> type[T]:
+        """
+        Returns the value object type.
+
+        Returns:
+            type[T]: The value object type.
+        """
+        for base in cls.__orig_bases__:  # type: ignore[attr-defined]
+            if hasattr(base, '__origin__') and base.__origin__ is Generic:
+                continue
+
+            if hasattr(base, '__origin__') and issubclass(base.__origin__, ValueObject):
+                args = get_args(base)
+                if args:
+                    return args[0]  # type: ignore[no-any-return]
+
+        return Any  # type: ignore[return-value]
