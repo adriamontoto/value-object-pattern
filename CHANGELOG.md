@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.14.1 (2025-09-09)
+
+### 🐛 Bug Fixes
+
+- Implement custom type hints to classproperty decorator
+  ([`ad93afe`](https://github.com/adriamontoto/value-object-pattern/commit/ad93afee3168ea2c07371fe89639154e9332e10a))
+
+
 ## v1.12.0 (2025-08-25)
 
 ### ✨ Features
