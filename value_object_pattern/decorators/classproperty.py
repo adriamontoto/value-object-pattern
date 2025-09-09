@@ -5,10 +5,12 @@ classproperty module.
 from __future__ import annotations
 
 from contextlib import suppress as suppress_exception
-from typing import Any, Callable
+from typing import Any, Callable, Generic, TypeVar
+
+R = TypeVar('R')
 
 
-class classproperty:  # noqa: N801
+class classproperty(Generic[R]):  # noqa: N801, UP046
     """
     A read-only descriptor that behaves like @property but for classes.
 
@@ -21,8 +23,8 @@ class classproperty:  # noqa: N801
         _name = 'foo'
 
         @classproperty
-        def name(cls) -> str:
-            return cls._name
+        def name(self) -> str:
+            return self._name
 
 
     print(Foo.name, Foo().name)
@@ -30,12 +32,12 @@ class classproperty:  # noqa: N801
     ```
     """
 
-    def __init__(self, function: Callable[[Any], str]) -> None:
+    def __init__(self, function: Callable[..., R]) -> None:
         """
         Initialize a classproperty.
 
         Args:
-            function (Callable[[Any], str]): The getter function for the property.
+            function (Callable[..., R]): The getter function for the property.
 
         Raises:
             TypeError: If `function` is not callable.
@@ -48,15 +50,15 @@ class classproperty:  # noqa: N801
         with suppress_exception(AttributeError):
             self.__doc__ = getattr(function, '__doc__', None)
 
-    def __get__(self, obj: Any, owner: type) -> str:
+    def __get__(self, obj: Any, owner: type[Any]) -> R:
         """
         Get the value of the class property.
 
         Args:
             obj (Any): The instance of the class (ignored).
-            owner (type): The class itself.
+            owner (type[Any]): The class itself.
 
         Returns:
-            str: The value of the class property.
+            R: The value of the class property.
         """
         return self._function(owner)
