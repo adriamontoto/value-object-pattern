@@ -60,7 +60,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
                 _type, *_ = get_args(tp=base)
 
                 if isinstance(_type, TypeVar):
-                    cls._type = _type
+                    cls._type = _type  # type: ignore[assignment]
                     return
 
                 if type(_type) is not type and not isclass(object=_type) and get_origin(tp=_type) is None:
