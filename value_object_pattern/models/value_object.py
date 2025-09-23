@@ -2,6 +2,8 @@
 ValueObject module.
 """
 
+from __future__ import annotations
+
 from sys import version_info
 
 if version_info >= (3, 12):
@@ -11,6 +13,7 @@ else:
 
 from abc import ABC
 from collections import deque
+from copy import deepcopy
 from typing import Any, Callable, Generic, TypeVar, get_args
 
 T = TypeVar('T')
@@ -243,6 +246,51 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
             raise AttributeError(f'Cannot modify attribute "{public_key}" of immutable instance.')
 
         raise AttributeError(f'{self.__class__.__name__} object has no attribute "{key}".')
+
+    def __copy__(self) -> ValueObject[T]:
+        """
+        Return a new instance of the same subclass with the same value.
+
+        Returns:
+            ValueObject[T]: A shallow clone of the value object.
+
+        Example:
+        ```python
+        # TODO:
+        ```
+        """
+        return self.__class__(
+            value=self._value,
+            title=self._title,
+            parameter=self._parameter,
+        )
+
+    def __deepcopy__(self, memo: dict[int, Any]) -> ValueObject[T]:
+        """
+        Return a deep clone, recursively copying the wrapped value.
+
+        Args:
+            memo (dict[str, Any]): Dictionary of id's to already copied objects to avoid infinite recursion.
+
+        Returns:
+            ValueObject[T]: A deep clone of the value object.
+
+        Example:
+        ```python
+        # TODO:
+        ```
+        """
+        if id(self) in memo:
+            return memo[id(self)]  # type: ignore[no-any-return]
+
+        clone = self.__class__(
+            value=deepcopy(self._value, memo),
+            title=deepcopy(self._title, memo),
+            parameter=deepcopy(self._parameter, memo),
+        )
+        memo[id(self)] = clone
+
+        return clone
 
     def _process(self, value: T) -> T:
         """
