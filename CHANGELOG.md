@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.15.1 (2025-09-25)
+
+### 🐛 Bug Fixes
+
+- Remove uppercase conversion in StringTimezoneValueObject because timezones are case-sensitive
+  ([`d0db365`](https://github.com/adriamontoto/value-object-pattern/commit/d0db365c85732468b68cafcfd488e9c989463d9d))
+
+
 ## v1.15.0 (2025-09-23)
 
 ### 🐛 Bug Fixes
