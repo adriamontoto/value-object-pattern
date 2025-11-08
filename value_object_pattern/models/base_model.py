@@ -2,6 +2,8 @@
 BaseModel module.
 """
 
+from __future__ import annotations
+
 from sys import version_info
 
 if version_info >= (3, 12):
@@ -10,6 +12,7 @@ else:
     from typing_extensions import override  # pragma: no cover
 
 from abc import ABC, abstractmethod
+from copy import deepcopy
 from enum import Enum
 from inspect import Parameter, _empty, signature
 from typing import Any, NoReturn, Self
@@ -229,6 +232,51 @@ class BaseModel(ABC):
             return NotImplemented
 
         return self._to_dict(ignore_private=True) == other._to_dict(ignore_private=True)
+
+    def __copy__(self) -> BaseModel:
+        """
+        Return a new instance of the same class, with all attributes copied.
+
+        Returns:
+            BaseModel: A shallow clone of the instance.
+
+        Example:
+        ```python
+        # TODO:
+        ```
+        """
+        cls = self.__class__
+        clone = cls.__new__(cls)
+        for key, value in self.__dict__.items():
+            object.__setattr__(clone, key, value)
+
+        return clone
+
+    def __deepcopy__(self, memo: dict[int, Any]) -> BaseModel:
+        """
+        Return a deep clone, recursively copying the wrapped value.
+
+        Args:
+            memo (dict[str, Any]): Dictionary of id's to already copied objects to avoid infinite recursion.
+
+        Returns:
+            BaseModel: A deep clone of the instance.
+
+        Example:
+        ```python
+        # TODO:
+        ```
+        """
+        if id(self) in memo:
+            return memo[id(self)]  # type: ignore[no-any-return]
+
+        cls = self.__class__
+        clone = cls.__new__(cls)
+        memo[id(self)] = clone
+        for key, value in self.__dict__.items():
+            object.__setattr__(clone, key, deepcopy(value, memo))
+
+        return clone
 
     def _to_dict(self, *, ignore_private: bool = True) -> dict[str, Any]:
         """
