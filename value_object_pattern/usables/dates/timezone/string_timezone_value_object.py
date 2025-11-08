@@ -5,7 +5,7 @@ StringTimezoneValueObject value object.
 from typing import Any, NoReturn
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from value_object_pattern.decorators import process, validation
+from value_object_pattern.decorators import validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
 
@@ -23,19 +23,6 @@ class StringTimezoneValueObject(NotEmptyStringValueObject, TrimmedStringValueObj
     # >>> StringTimezoneValueObject(value='UTC')
     ```
     """
-
-    @process(order=0)
-    def _ensure_value_is_normalized(self, value: str) -> str:
-        """
-        Ensures the value object `value` is normalized timezone string (uppercase).
-
-        Args:
-            value (str): The provided value.
-
-        Returns:
-            str: The normalized timezone string.
-        """
-        return value.upper()
 
     @validation(order=0)
     def _ensure_value_is_timezone(self, value: str) -> None:

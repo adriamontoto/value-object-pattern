@@ -2,6 +2,27 @@
 
 <!-- version list -->
 
+## v1.15.1 (2025-09-25)
+
+### 🐛 Bug Fixes
+
+- Remove uppercase conversion in StringTimezoneValueObject because timezones are case-sensitive
+  ([`d0db365`](https://github.com/adriamontoto/value-object-pattern/commit/d0db365c85732468b68cafcfd488e9c989463d9d))
+
+
+## v1.15.0 (2025-09-23)
+
+### 🐛 Bug Fixes
+
+- Add type ignore comments for assignment in ListValueObject and EnumerationValueObject classes
+  ([`d26ad0c`](https://github.com/adriamontoto/value-object-pattern/commit/d26ad0cb2984aad785b66c126b3ce681e875dbe6))
+
+### ✨ Features
+
+- Implement __copy__ and __deepcopy__ methods in ValueObject and BaseModel
+  ([`e5e5af6`](https://github.com/adriamontoto/value-object-pattern/commit/e5e5af6ca46f58b2c17723727180b2871609d0fa))
+
+
 ## v1.14.1 (2025-09-09)
 
 ### 🐛 Bug Fixes
