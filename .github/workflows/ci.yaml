@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - name: 🛡️ Harden runner
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
 
@@ -46,7 +46,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6 # v6.6.1
+        uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41 # v7.1.2
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: false
@@ -89,7 +89,7 @@ jobs:
 
     steps:
       - name: 🛡️ Harden runner
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
 
@@ -104,7 +104,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6 # v6.6.1
+        uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41 # v7.1.2
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: false
@@ -162,7 +162,7 @@ jobs:
 
     steps:
       - name: 🛡️ Harden runner
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
 
@@ -177,7 +177,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6 # v6.6.1
+        uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41 # v7.1.2
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: false
@@ -220,7 +220,7 @@ jobs:
 
     steps:
       - name: 🛡️ Harden runner
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
 
@@ -266,7 +266,7 @@ jobs:
 
     steps:
       - name: 🛡️ Harden runner
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
 
@@ -281,7 +281,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6 # v6.6.1
+        uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41 # v7.1.2
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: false
@@ -317,7 +317,7 @@ jobs:
 
     steps:
       - name: 🛡️ Harden runner
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
 
@@ -332,7 +332,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6 # v6.6.1
+        uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41 # v7.1.2
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: false
@@ -360,7 +360,7 @@ jobs:
 
     steps:
       - name: 🛡️ Harden runner
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
 
@@ -398,7 +398,7 @@ jobs:
 
     steps:
       - name: 🛡️ Harden runner
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
 
@@ -414,7 +414,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6 # v6.6.1
+        uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41 # v7.1.2
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: false
@@ -440,7 +440,7 @@ jobs:
 
     steps:
       - name: 🛡️ Harden runner
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
 
@@ -455,7 +455,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6 # v6.6.1
+        uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41 # v7.1.2
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: false
@@ -479,7 +479,7 @@ jobs:
 
     steps:
       - name: 🛡️ Harden runner
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
 
@@ -509,7 +509,7 @@ jobs:
 
     steps:
       - name: 🛡️ Harden runner
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
 
@@ -520,7 +520,7 @@ jobs:
 
       - name: 🔖 Semantic Release
         id: released
-        uses: python-semantic-release/python-semantic-release@5b9d941d5b29da138b933660ce1a9df75b54ce25 # v10.3.1
+        uses: python-semantic-release/python-semantic-release@4d4cb0ab842247caea1963132c242c62aab1e4d5 # v10.4.1
         with:
           build: false
           push: true
@@ -557,7 +557,7 @@ jobs:
 
     steps:
       - name: 🛡️ Harden runner
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
 
@@ -573,7 +573,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6 # v6.6.1
+        uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41 # v7.1.2
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: false
