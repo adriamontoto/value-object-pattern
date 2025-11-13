@@ -15,7 +15,7 @@ from abc import ABC, abstractmethod
 from copy import deepcopy
 from enum import Enum
 from inspect import Parameter, _empty, signature
-from typing import Any, NoReturn, Self
+from typing import Any, NoReturn
 
 from .value_object import ValueObject
 
@@ -307,7 +307,7 @@ class BaseModel(ABC):
         return dictionary
 
     @classmethod
-    def from_primitives(cls, primitives: dict[str, Any]) -> Self:
+    def from_primitives(cls, primitives: dict[str, Any]) -> BaseModel:
         """
         Create an instance of the class with a dictionary of its primitives.
 
@@ -319,7 +319,7 @@ class BaseModel(ABC):
             ValueError: If the `primitives` does not have all the required attributes.
 
         Returns:
-            Self: Instance of the class.
+            BaseModel: Instance of the class.
 
         Example:
         ```python
