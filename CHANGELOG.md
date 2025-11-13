@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.16.0 (2025-11-13)
+
+### 🐛 Bug Fixes
+
+- Update return type hint in from_primitives method to BaseModel for clarity
+  ([`abc5ad1`](https://github.com/adriamontoto/value-object-pattern/commit/abc5ad11339345c4be352c9201a69fdf1ba2ce56))
+
+### ✨ Features
+
+- Implement methods for adding, extending, and deleting items in ListValueObject
+  ([`8ef1028`](https://github.com/adriamontoto/value-object-pattern/commit/8ef1028b581620c149ba0b5127eab82ea67bcb21))
+
+
 ## v1.15.1 (2025-09-25)
 
 ### 🐛 Bug Fixes
