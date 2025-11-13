@@ -2,6 +2,8 @@
 ListValueObject module.
 """
 
+from __future__ import annotations
+
 from sys import version_info
 
 if version_info >= (3, 12):
@@ -12,7 +14,7 @@ else:
 from collections.abc import Iterator
 from enum import Enum
 from inspect import isclass
-from typing import Any, Generic, NoReturn, Self, TypeVar, get_args, get_origin
+from typing import Any, Generic, NoReturn, TypeVar, get_args, get_origin
 
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import BaseModel, ValueObject
@@ -350,8 +352,324 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         """
         return not self._value
 
+    def add(self, *, item: T) -> ListValueObject[T]:
+        """
+        Returns a new ListValueObject with the item added to the end.
+
+        Args:
+            item (T): The item to add.
+
+        Returns:
+            ListValueObject[T]: A new ListValueObject with the item added.
+
+        Example:
+        ```python
+        from value_object_pattern.models.collections import ListValueObject
+
+
+        class IntListValueObject(ListValueObject[int]):
+            pass
+
+
+        sequence = IntListValueObject(value=[1, 2, 3])
+        new_sequence = sequence.add(item=4)
+        print(new_sequence)
+        print(id(sequence) == id(new_sequence))
+        # >>> [1, 2, 3, 4]
+        # >>> False
+        ```
+        """
+        return self.__class__(value=[*self._value, item])
+
+    def add_from_primitives(self, *, item: Any) -> ListValueObject[T]:
+        """
+        Returns a new ListValueObject with the item created from a primitives added to the end.
+
+        Args:
+            item (Any): The primitives item to convert and add.
+
+        Returns:
+            ListValueObject[T]: A new ListValueObject with the item added.
+
+        Example:
+        ```python
+        from value_object_pattern.models import ValueObject
+        from value_object_pattern.models.collections import ListValueObject
+
+
+        class Age(ValueObject[int]):
+            pass
+
+
+        class AgeListValueObject(ListValueObject[Age]):
+            pass
+
+
+        sequence = AgeListValueObject(value=[Age(value=10), Age(value=20)])
+        new_sequence = sequence.add_from_primitives(item=30)
+        print(new_sequence)
+        print(id(sequence) == id(new_sequence))
+        # >>> [10, 20, 30]
+        # >>> False
+        ```
+        """
+        item = self._convert_from_primitives(value=item)
+
+        return self.add(item=item)
+
+    def extend(self, *, items: list[T]) -> ListValueObject[T]:
+        """
+        Returns a new ListValueObject with multiple items added to the end.
+
+        Args:
+            items (list[T]): The items to add.
+
+        Returns:
+            ListValueObject[T]: A new ListValueObject with the items added.
+
+        Example:
+        ```python
+        from value_object_pattern.models.collections import ListValueObject
+
+
+        class IntListValueObject(ListValueObject[int]):
+            pass
+
+
+        sequence = IntListValueObject(value=[1, 2, 3])
+        new_sequence = sequence.extend(items=[4, 5, 6])
+        print(new_sequence)
+        print(id(sequence) == id(new_sequence))
+        # >>> [1, 2, 3, 4, 5, 6]
+        # >>> False
+        ```
+        """
+        return self.__class__(value=self._value + items)
+
+    def extend_from_primitives(self, *, items: list[Any]) -> ListValueObject[T]:
+        """
+        Returns a new ListValueObject with multiple items created from primitives added to the end.
+
+        Args:
+            items (list[Any]): The primitive items to convert and add.
+
+        Returns:
+            ListValueObject[T]: A new ListValueObject with the items added.
+
+        Example:
+        ```python
+        from value_object_pattern.models import ValueObject
+        from value_object_pattern.models.collections import ListValueObject
+
+
+        class Age(ValueObject[int]):
+            pass
+
+
+        class AgeListValueObject(ListValueObject[Age]):
+            pass
+
+
+        sequence = AgeListValueObject(value=[Age(value=10)])
+        new_sequence = sequence.extend_from_primitives(items=[20, 30])
+        print(new_sequence)
+        print(id(sequence) == id(new_sequence))
+        # >>> [10, 20, 30]
+        # >>> False
+        ```
+        """
+        items = [self._convert_from_primitives(value=item) for item in items]
+
+        return self.extend(items=items)
+
+    def delete(self, *, item: T) -> ListValueObject[T]:
+        """
+        Returns a new ListValueObject with the first occurrence of the item deleted.
+
+        Args:
+            item (T): The item to delete.
+
+        Raises:
+            ValueError: If the item is not in the list.
+
+        Returns:
+            ListValueObject[T]: A new ListValueObject with the item deleted.
+
+        Example:
+        ```python
+        from value_object_pattern.models.collections import ListValueObject
+
+
+        class IntListValueObject(ListValueObject[int]):
+            pass
+
+
+        sequence = IntListValueObject(value=[1, 2, 3, 2])
+        new_sequence = sequence.delete(item=2)
+        print(new_sequence)
+        print(id(sequence) == id(new_sequence))
+        # >>> [1, 3, 2]
+        # >>> False
+        ```
+        """
+        items = self._value.copy()
+
+        try:
+            items.remove(item)
+
+        except ValueError:
+            self._raise_value_not_found_when_deleting(value=item)
+
+        return self.__class__(value=items)
+
+    def _raise_value_not_found_when_deleting(self, value: Any) -> NoReturn:
+        """
+        Raises a ValueError if the item to be deleted is not found.
+
+        Args:
+            value (Any): The item to be deleted.
+
+        Raises:
+            ValueError: If the item is not found.
+        """
+        raise ValueError(f'ListValueObject item <<<{value}>>> not found in thelist when attempting to delete it.')
+
+    def delete_from_primitives(self, *, item: Any) -> ListValueObject[T]:
+        """
+        Returns a new ListValueObject with the first occurrence of an item matching the primitive deleted.
+
+        Args:
+            item (Any): The primitive value to convert and delete.
+
+        Raises:
+            ValueError: If the item is not in the list.
+
+        Returns:
+            ListValueObject[T]: A new ListValueObject with the item deleted.
+
+        Example:
+        ```python
+        from value_object_pattern.models import ValueObject
+        from value_object_pattern.models.collections import ListValueObject
+
+
+        class Age(ValueObject[int]):
+            pass
+
+
+        class AgeListValueObject(ListValueObject[Age]):
+            pass
+
+
+        sequence = AgeListValueObject(value=[Age(value=10), Age(value=20)])
+        new_sequence = sequence.delete_from_primitives(item=10)
+        print(new_sequence)
+        print(id(sequence) == id(new_sequence))
+        # >>> [20]
+        # >>> False
+        ```
+        """
+        item = self._convert_from_primitives(value=item)
+
+        return self.delete(item=item)
+
+    def delete_all(self, *, items: list[T]) -> ListValueObject[T]:
+        """
+        Returns a new ListValueObject with all occurrences of the specified items deleted.
+
+        Args:
+            items (list[T]): The items to delete.
+
+        Raises:
+            ValueError: If any item is not in the list.
+
+        Returns:
+            ListValueObject[T]: A new ListValueObject with the items deleted.
+
+        Example:
+        ```python
+        from value_object_pattern.models.collections import ListValueObject
+
+
+        class IntListValueObject(ListValueObject[int]):
+            pass
+
+
+        sequence = IntListValueObject(value=[1, 2, 3, 2, 4])
+        new_sequence = sequence.delete_all(items=[2, 4])
+        print(new_sequence)
+        print(id(sequence) == id(new_sequence))
+        # >>> [1, 3]
+        # >>> False
+        ```
+        """
+        new_list = [item for item in self._value if item not in items]
+
+        for item in items:
+            if item not in self._value:
+                self._raise_value_not_found_when_deleting(value=item)
+
+        return self.__class__(value=new_list)
+
+    def delete_all_from_primitives(self, *, items: list[Any]) -> ListValueObject[T]:
+        """
+        Returns a new ListValueObject with all occurrences of items matching the primitives deleted.
+
+        Args:
+            items (list[Any]): The primitive values to convert and delete.
+
+        Raises:
+            ValueError: If any item is not in the list.
+
+        Returns:
+            ListValueObject[T]: A new ListValueObject with the items deleted.
+
+        Example:
+        ```python
+        from value_object_pattern.models.collections import ListValueObject
+        from value_object_pattern.models import ValueObject
+
+
+        class Age(ValueObject[int]):
+            pass
+
+
+        class AgeListValueObject(ListValueObject[Age]):
+            pass
+
+
+        sequence = AgeListValueObject(value=[Age(value=10), Age(value=20), Age(value=30)])
+        new_sequence = sequence.delete_all_from_primitives(items=[10, 30])
+        print(new_sequence)
+        print(id(sequence) == id(new_sequence))
+        # >>> [20]
+        # >>> False
+        ```
+        """
+        items = [self._convert_from_primitives(value=item) for item in items]
+
+        return self.delete_all(items=items)
+
+    def _convert_from_primitives(self, *, value: Any) -> T:
+        """
+        Converts a primitive value to the appropriate type T.
+
+        Args:
+            value (Any): The primitive value to convert.
+
+        Returns:
+            T: The converted value.
+        """
+        if hasattr(self._type, 'from_primitives'):
+            return self._type.from_primitives(value)  # type: ignore[no-any-return]
+
+        if hasattr(self._type, 'value'):
+            return self._type(value=value)  # type: ignore[no-any-return]
+
+        return value  # type: ignore[no-any-return]
+
     @classmethod
-    def from_primitives(cls, value: list[Any]) -> Self:
+    def from_primitives(cls, value: list[Any]) -> ListValueObject[T]:
         """
         Creates a ListValueObject from a list of primitives.
 
@@ -359,18 +677,18 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
             value (list[Any]): The list of primitives.
 
         Returns:
-            Self: The created ListValueObject.
+            ListValueObject[T]: The created ListValueObject.
         """
         items: list[Any] = []
 
-        for primitive in value:
+        for item in value:
             if hasattr(cls._type, 'from_primitives'):
-                items.append(cls._type.from_primitives(primitive))  # BaseModel
+                items.append(cls._type.from_primitives(item))  # BaseModel
 
             elif hasattr(cls._type, 'value'):
-                items.append(cls._type(value=primitive))  # ValueObject
+                items.append(cls._type(value=item))  # ValueObject
 
             else:
-                items.append(primitive)
+                items.append(item)
 
         return cls(value=items)
