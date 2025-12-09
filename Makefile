@@ -164,3 +164,12 @@ clean: # It cleans up the project, removing the virtual environment and some fil
 	$(call quiet, rm --force --recursive htmlcov)
 
 	@echo -e "\n✅ Run 'deactivate' to deactivate the virtual environment.\n"
+
+
+.PHONY: update-lists
+update-lists: # It updates content lists
+	@echo -e "\n⌛ Updating content lists...\n"
+
+	@$(PYTHON_BIN) update_lists.py
+
+	@echo -e "\n✅ Content lists updated correctly.\n"
