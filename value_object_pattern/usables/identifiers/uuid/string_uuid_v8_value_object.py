@@ -3,8 +3,7 @@ StringUuidV8ValueObject value object.
 """
 
 from typing import NoReturn
-
-from uuid6 import UUID
+from uuid import UUID
 
 from value_object_pattern.decorators import validation
 

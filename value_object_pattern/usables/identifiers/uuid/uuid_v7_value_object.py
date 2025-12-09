@@ -16,7 +16,7 @@ class UuidV7ValueObject(UuidValueObject):
 
     Example:
     ```python
-    from uuid6 import uuid7
+    from uuid import uuid7
 
     from value_object_pattern.usables.identifiers import UuidV7ValueObject
 
