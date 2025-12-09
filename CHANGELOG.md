@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.18.0 (2025-12-09)
+
+### ✨ Features
+
+- Support python 3.14
+  ([`e93c052`](https://github.com/adriamontoto/value-object-pattern/commit/e93c052c0ed2a6b0f7a28d55fbb848eafcfa8b4c))
+
+
 ## v1.17.0 (2025-12-09)
 
 ### ✨ Features
