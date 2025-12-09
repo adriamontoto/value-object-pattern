@@ -1,4 +1,4 @@
-# This file was automatically updated using "update_lists.py" on 2025-04-13T18:00:09.855219+00:00
+# This file was automatically updated using "update_lists.py" on 2025-12-09T16:29:57.625046+00:00
 
 us-east-1
 us-east-2
@@ -11,10 +11,12 @@ ap-southeast-3
 ap-southeast-5
 ap-southeast-4
 ap-south-1
+ap-southeast-6
 ap-northeast-3
 ap-northeast-2
 ap-southeast-1
 ap-southeast-2
+ap-east-2
 ap-southeast-7
 ap-northeast-1
 ca-central-1
