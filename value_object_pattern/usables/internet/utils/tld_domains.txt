@@ -1,4 +1,4 @@
-# This file was automatically updated using "update_lists.py" on 2025-04-13T18:00:10.014595+00:00
+# This file was automatically updated using "update_lists.py" on 2025-12-09T16:29:57.669510+00:00
 
 aaa
 aarp
@@ -119,7 +119,6 @@ be
 beats
 beauty
 beer
-bentley
 berlin
 best
 bestbuy
@@ -346,7 +345,6 @@ download
 drive
 dtv
 dubai
-dunlop
 dupont
 durban
 dvag
@@ -659,7 +657,6 @@ la
 lacaixa
 lamborghini
 lamer
-lancaster
 land
 landrover
 lanxess
@@ -915,7 +912,6 @@ politie
 porn
 post
 pr
-pramerica
 praxi
 press
 prime
@@ -949,7 +945,6 @@ realtor
 realty
 recipes
 red
-redstone
 redumbrella
 rehab
 reise
