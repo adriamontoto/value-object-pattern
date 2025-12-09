@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.17.0 (2025-12-09)
+
+### ✨ Features
+
+- Implement Uuid1ValueObject, Uuid3ValueObject, Uuid5ValueObject, Uuid6ValueObject, Uuid7ValueObject
+  Uuid8ValueObject and its tests
+  ([`e790a07`](https://github.com/adriamontoto/value-object-pattern/commit/e790a077dd80127c3df8ab99884895e02fff41bf))
+
+
 ## v1.16.0 (2025-11-13)
 
 ### 🐛 Bug Fixes
