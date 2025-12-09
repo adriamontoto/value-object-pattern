@@ -359,6 +359,9 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         Args:
             item (T): The item to add.
 
+        Raises:
+            TypeError: If the item is not of type T.
+
         Returns:
             ListValueObject[T]: A new ListValueObject with the item added.
 
@@ -387,6 +390,9 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
 
         Args:
             item (Any): The primitives item to convert and add.
+
+        Raises:
+            TypeError: If the item is not of type T.
 
         Returns:
             ListValueObject[T]: A new ListValueObject with the item added.
@@ -424,6 +430,9 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         Args:
             items (list[T]): The items to add.
 
+        Raises:
+            TypeError: If the items are not of the correct type.
+
         Returns:
             ListValueObject[T]: A new ListValueObject with the items added.
 
@@ -452,6 +461,9 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
 
         Args:
             items (list[Any]): The primitive items to convert and add.
+
+        Raises:
+            TypeError: If the items are not of the correct type.
 
         Returns:
             ListValueObject[T]: A new ListValueObject with the items added.
