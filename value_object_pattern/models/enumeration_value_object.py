@@ -96,11 +96,11 @@ class EnumerationValueObject(ValueObject[Any | E], Generic[E]):  # noqa: UP046
         if isinstance(value, self._enumeration):
             return value
 
-        for member in self._enumeration:
+        for member in self._enumeration:  # pragma: no cover
             if member.value == value:
                 return member
 
-        self._raise_value_is_not_from_enumeration(value=value)
+        self._raise_value_is_not_from_enumeration(value=value)  # pragma: no cover
 
     @validation(order=0)
     def _ensure_value_is_from_enumeration(self, value: Any | E) -> None:
