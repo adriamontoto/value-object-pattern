@@ -17,10 +17,9 @@ class StringUuidValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
     ```python
     from value_object_pattern.usables.identifiers import StringUuidValueObject
 
-    uuid = StringUuidValueObject(value='9908bb2d-54b4-426f-bef0-b09aa978ed21')
-
+    uuid = StringUuidValueObject(value='3e9e0f3a-64a3-474f-9127-368e723f389f')
     print(repr(uuid))
-    # >>> StringUuidValueObject(value=9908bb2d-54b4-426f-bef0-b09aa978ed21)
+    # >>> StringUuidValueObject(value=3e9e0f3a-64a3-474f-9127-368e723f389f)
     ```
     """
 
@@ -49,7 +48,7 @@ class StringUuidValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
             ValueError: If the `value` is not a UUID.
         """
         try:
-            UUID(hex=value)
+            UUID(value)
 
         except ValueError:
             self._raise_value_is_not_uuid(value=value)

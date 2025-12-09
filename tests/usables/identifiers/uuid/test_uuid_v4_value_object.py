@@ -2,12 +2,12 @@
 Test UuidV4ValueObject value object.
 """
 
-from uuid import UUID, uuid1
+from uuid import UUID
 
-from object_mother_pattern.mothers.identifiers import UuidV4Mother
+from object_mother_pattern.mothers.identifiers import UuidMother, UuidV4Mother
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern.usables.identifiers.uuid import UuidV4ValueObject
+from value_object_pattern.usables.identifiers import UuidV4ValueObject
 
 
 @mark.unit_testing
@@ -42,4 +42,4 @@ def test_uuid4_value_object_invalid_version() -> None:
         expected_exception=ValueError,
         match=r'UuidV4ValueObject value <<<.*>>> must be a UUID version 4. Got version <<<.*>>>.',
     ):
-        UuidV4ValueObject(value=uuid1())
+        UuidV4ValueObject(value=UuidMother.create(exclude_versions={4}))

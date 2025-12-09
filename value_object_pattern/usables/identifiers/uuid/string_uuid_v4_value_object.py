@@ -18,10 +18,9 @@ class StringUuidV4ValueObject(StringUuidValueObject):
     ```python
     from value_object_pattern.usables.identifiers import StringUuidV4ValueObject
 
-    uuid = StringUuidV4ValueObject(value='9908bb2d-54b4-426f-bef0-b09aa978ed21')
-
+    uuid = StringUuidV4ValueObject(value='3e9e0f3a-64a3-474f-9127-368e723f389f')
     print(repr(uuid))
-    # >>> StringUuidV4ValueObject(value=9908bb2d-54b4-426f-bef0-b09aa978ed21)
+    # >>> StringUuidV4ValueObject(value=3e9e0f3a-64a3-474f-9127-368e723f389f)
     ```
     """
 
@@ -36,7 +35,7 @@ class StringUuidV4ValueObject(StringUuidValueObject):
         Raises:
             ValueError: If the `value` is not a UUID version 4.
         """
-        uuid_object = UUID(hex=value)
+        uuid_object = UUID(value)
         if uuid_object.version != 4:
             self._raise_value_is_not_uuid4(value=value)
 
@@ -50,4 +49,4 @@ class StringUuidV4ValueObject(StringUuidValueObject):
         Raises:
             ValueError: If the `value` is not a UUID version 4.
         """
-        raise ValueError(f'StringUuidV4ValueObject value <<<{value}>>> must be a UUID version 4. Got version <<<{UUID(hex=value).version}>>>.')  # noqa: E501  # fmt: skip
+        raise ValueError(f'StringUuidV4ValueObject value <<<{value}>>> must be a UUID version 4. Got version <<<{UUID(value).version}>>>.')  # noqa: E501  # fmt: skip

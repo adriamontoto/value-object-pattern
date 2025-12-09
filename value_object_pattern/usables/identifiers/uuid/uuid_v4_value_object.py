@@ -21,9 +21,8 @@ class UuidV4ValueObject(UuidValueObject):
     from value_object_pattern.usables.identifiers import UuidV4ValueObject
 
     uuid = UuidV4ValueObject(value=uuid4())
-
     print(repr(uuid))
-    # >>> UuidV4ValueObject(value=9908bb2d-54b4-426f-bef0-b09aa978ed21)
+    # >>> UuidV4ValueObject(value=3e9e0f3a-64a3-474f-9127-368e723f389f)
     ```
     """
 

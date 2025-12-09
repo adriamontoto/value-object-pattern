@@ -17,7 +17,7 @@ def test_uuid_value_object_happy_path() -> None:
     """
     uuid_value = UuidValueObject(value=UuidMother.create())
 
-    assert type(uuid_value.value) is UUID
+    assert isinstance(uuid_value.value, UUID)
 
 
 @mark.unit_testing
