@@ -10,7 +10,7 @@ else:
     from typing_extensions import override  # pragma: no cover
 
 from enum import Enum
-from typing import Any, TypeVar
+from typing import Any, ForwardRef, TypeVar
 
 from object_mother_pattern import IntegerMother
 from object_mother_pattern.models import BaseMother
@@ -35,6 +35,24 @@ class Age(ValueObject[int]):
 class AgeListValueObject(ListValueObject[Age]):
     """
     List value object storing Age instances.
+    """
+
+
+class IntStrListValueObject(ListValueObject[int | str]):
+    """
+    List value object storing ints or strings.
+    """
+
+
+class AnyOrIntListValueObject(ListValueObject[int | Any]):
+    """
+    List value object storing ints or anything (exercises union with Any).
+    """
+
+
+class ObjOrIntListValueObject(ListValueObject[int | object]):
+    """
+    List value object storing ints or any object (used to exercise union conversion path).
     """
 
 
@@ -239,6 +257,83 @@ def test_list_value_object_str_cover_all_item_kinds() -> None:
     )
 
     assert str(sequence) == str(['Tag(name=bug)', 'red', '42', 'blue', 'x', '(1, 2)', 'PlainObjectStr'])
+
+
+@mark.unit_testing
+def test_list_value_object_accepts_union_type() -> None:
+    """
+    Test that ListValueObject accepts union element types (int | str).
+    """
+    sequence = IntStrListValueObject(value=[1, 'a', 2])
+
+    assert list(sequence) == [1, 'a', 2]
+
+
+@mark.unit_testing
+def test_list_value_object_union_add_and_extend() -> None:
+    """
+    Test that add/extend work with union element types.
+    """
+    sequence = IntStrListValueObject(value=[1])
+
+    updated = sequence.add(item='a').extend(items=[2, 'b'])
+
+    assert updated.value == [1, 'a', 2, 'b']
+    assert sequence.value == [1]
+
+
+@mark.unit_testing
+def test_list_value_object_union_rejects_out_of_union_type() -> None:
+    """
+    Test that union-typed ListValueObject rejects items outside the union.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'.* value <<<.*>>> must be of type <<<int \| str>>> type\. Got <<<.*>>> type\.',
+    ):
+        IntStrListValueObject(value=[1, IntegerMother.invalid_type(remove_types=(bool, str))])
+
+
+@mark.unit_testing
+def test_list_value_object_union_with_any_allows_anything() -> None:
+    """
+    Test that union containing Any returns early in validation.
+    """
+    value = BaseMother.invalid_type(remove_types=(int, bool))
+    instance = AnyOrIntListValueObject(value=[value, 1])
+
+    assert value in instance
+
+
+@mark.unit_testing
+def test_list_value_object_union_convert_from_primitives_returns_value_unchanged() -> None:
+    """
+    Test that _convert_from_primitives returns raw value for unions.
+    """
+    value = BaseMother.invalid_type(remove_types=(int, bool))
+    sequence = ObjOrIntListValueObject(value=[1])
+
+    updated = sequence.add_from_primitives(item=value)
+
+    assert updated.value[-1] is value
+
+
+@mark.unit_testing
+def test_list_value_object_type_label_formats_union_with_any() -> None:
+    """
+    Test that _type_label formats union containing Any.
+    """
+    label = AnyOrIntListValueObject(value=[1])._type_label()
+
+    assert label == 'int | Any'
+
+
+@mark.unit_testing
+def test_list_value_object_format_single_type_handles_forward_ref() -> None:
+    """
+    Test that _format_single_type covers branch without __name__.
+    """
+    assert AnyListValueObject._format_single_type(type=ForwardRef('SomeType')) == "ForwardRef('SomeType')"
 
 
 @mark.unit_testing

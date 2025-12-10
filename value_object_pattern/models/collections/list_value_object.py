@@ -14,7 +14,8 @@ else:
 from collections.abc import Iterator
 from enum import Enum
 from inspect import isclass
-from typing import Any, Generic, NoReturn, TypeVar, get_args, get_origin
+from types import UnionType
+from typing import Any, Generic, NoReturn, TypeVar, Union, get_args, get_origin
 
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import BaseModel, ValueObject
@@ -312,7 +313,23 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         if self._type is Any:
             return
 
-        expected_type = get_origin(tp=self._type) or self._type
+        origin = get_origin(tp=self._type)
+        if origin in (Union, UnionType):
+            allowed_types: list[type[Any] | UnionType] = []
+            for allowed in get_args(self._type):
+                if allowed is Any:
+                    return
+
+                allowed_origin = get_origin(tp=allowed)
+                allowed_types.append(allowed_origin or allowed)
+
+            for item in value:
+                if not any(isinstance(item, allowed) for allowed in allowed_types):
+                    self._raise_value_is_not_of_type(value=item)
+
+            return
+
+        expected_type = origin or self._type
         for item in value:
             if not isinstance(item, expected_type):
                 self._raise_value_is_not_of_type(value=item)
@@ -327,7 +344,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         Raises:
             TypeError: If the `value` is not of type `T`.
         """
-        raise TypeError(f'ListValueObject value <<<{value}>>> must be of type <<<{self._type.__name__}>>> type. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
+        raise TypeError(f'ListValueObject value <<<{value}>>> must be of type <<<{self._type_label()}>>> type. Got <<<{type(value).__name__}>>> type.')  # fmt: skip  # noqa: E501
 
     def is_empty(self) -> bool:
         """
@@ -675,10 +692,46 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         if hasattr(self._type, 'from_primitives'):
             return self._type.from_primitives(value)  # type: ignore[no-any-return]
 
+        if get_origin(tp=self._type) in (Union, UnionType):
+            return value  # type: ignore[no-any-return]
+
         if hasattr(self._type, 'value'):
             return self._type(value=value)  # type: ignore[no-any-return]
 
         return value  # type: ignore[no-any-return]
+
+    def _type_label(self) -> str:
+        """
+        Returns a readable label for the configured type, including unions.
+
+        Returns:
+            str: The type label.
+        """
+        origin = get_origin(tp=self._type)
+        if origin in (Union, UnionType):
+            parts = [self._format_single_type(type=type) for type in get_args(self._type)]
+            return ' | '.join(parts)
+
+        return self._format_single_type(type=self._type)
+
+    @staticmethod
+    def _format_single_type(*, type: Any) -> str:
+        """
+        Formats a single type for error messages.
+
+        Args:
+            type (Any): The type to format.
+
+        Returns:
+            str: The formatted type.
+        """
+        if type is Any:
+            return 'Any'
+
+        if hasattr(type, '__name__'):
+            return type.__name__  # type: ignore[no-any-return]
+
+        return str(type).replace('typing.', '')
 
     @classmethod
     def from_primitives(cls, value: list[Any]) -> ListValueObject[T]:
