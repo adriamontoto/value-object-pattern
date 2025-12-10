@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.19.0 (2025-12-10)
+
+### ✨ Features
+
+- List value object can handle union types properly
+  ([`33ba09a`](https://github.com/adriamontoto/value-object-pattern/commit/33ba09a78d1f933178257e4c9a87a258a438917e))
+
+
 ## v1.18.0 (2025-12-09)
 
 ### ✨ Features
