@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.22.0 (2025-12-10)
+
+### ✨ Features
+
+- Implement NegativeOrZeroFloatValueObject and PositiveOrZeroFloatValueObject
+  ([`297d8d5`](https://github.com/adriamontoto/value-object-pattern/commit/297d8d524ef6b93c61e0e9079293b8a59f89d99f))
+
+
 ## v1.21.0 (2025-12-10)
 
 ### 🐛 Bug Fixes
