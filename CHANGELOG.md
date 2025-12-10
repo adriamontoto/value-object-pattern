@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.21.0 (2025-12-10)
+
+### 🐛 Bug Fixes
+
+- Update return types to Self in ListValueObject methods
+  ([`fa79db2`](https://github.com/adriamontoto/value-object-pattern/commit/fa79db2a3f59c87aea1d43d7f9961c8cc4c89bbf))
+
+### ✨ Features
+
+- Implement NegativeOrZeroIntegerValueObject and PositiveOrZeroIntegerValueObject
+  ([`1b03de8`](https://github.com/adriamontoto/value-object-pattern/commit/1b03de848736741758ea552e644a165e9603bb58))
+
+
 ## v1.20.0 (2025-12-10)
 
 ### ✨ Features
