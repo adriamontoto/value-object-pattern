@@ -122,34 +122,77 @@ class PlainObject:
 
 
 @mark.unit_testing
-def test_list_value_object_happy_path_and_collection_protocols() -> None:
+def test_list_value_object_contains_existing_item() -> None:
     """
-    Test that ListValueObject behaves like a sequence and keeps primitives untouched.
+    Test that __contains__ returns True for existing items.
     """
-    values = [IntegerMother.create(), IntegerMother.create(), IntegerMother.create()]
+    values = [IntegerMother.create()]
 
-    sequence = IntListValueObject(value=values)
-
-    assert values[0] in sequence
-    assert list(sequence) == values
-    assert len(sequence) == 3
-    assert list(reversed(sequence)) == list(reversed(values))
-    assert str(sequence) == str(values)
-    assert repr(sequence) == repr(values)
+    assert values[0] in IntListValueObject(value=values)
 
 
 @mark.unit_testing
-def test_list_value_object_is_empty_and_is_empty() -> None:
+def test_list_value_object_iter_returns_items() -> None:
     """
-    Test that is_empty reports whether the underlying list is empty.
+    Test that __iter__ returns the underlying items.
+    """
+    values = [IntegerMother.create(), IntegerMother.create()]
+
+    assert list(IntListValueObject(value=values)) == values
+
+
+@mark.unit_testing
+def test_list_value_object_len_counts_items() -> None:
+    """
+    Test that __len__ returns the list length.
+    """
+    values = [IntegerMother.create(), IntegerMother.create(), IntegerMother.create()]
+
+    assert len(IntListValueObject(value=values)) == 3
+
+
+@mark.unit_testing
+def test_list_value_object_reversed_returns_reversed_items() -> None:
+    """
+    Test that __reversed__ yields items in reverse order.
+    """
+    values = [1, 2, 3]
+
+    assert list(reversed(IntListValueObject(value=values))) == [3, 2, 1]
+
+
+@mark.unit_testing
+def test_list_value_object_str_matches_underlying_list() -> None:
+    """
+    Test that __str__ mirrors the underlying list.
+    """
+    values = [1, 2, 3]
+
+    assert str(IntListValueObject(value=values)) == str(values)
+
+
+@mark.unit_testing
+def test_list_value_object_repr_matches_underlying_list() -> None:
+    """
+    Test that __repr__ mirrors the underlying list.
+    """
+    values = [1, 2]
+
+    assert repr(IntListValueObject(value=values)) == repr(values)
+
+
+@mark.unit_testing
+def test_list_value_object_is_empty_returns_true_for_empty_list() -> None:
+    """
+    Test that is_empty returns True for an empty list.
     """
     assert IntListValueObject(value=[]).is_empty()
 
 
 @mark.unit_testing
-def test_list_value_object_is_empty_and_is_not_empty() -> None:
+def test_list_value_object_is_empty_returns_false_for_non_empty_list() -> None:
     """
-    Test that is_empty reports whether the underlying list is empty.
+    Test that is_empty returns False for a non-empty list.
     """
     assert not IntListValueObject(value=[IntegerMother.create(value=1)]).is_empty()
 
@@ -270,7 +313,7 @@ def test_list_value_object_accepts_union_type() -> None:
 
 
 @mark.unit_testing
-def test_list_value_object_union_add_and_extend() -> None:
+def test_list_value_object_union_add_and_extend_updates_values() -> None:
     """
     Test that add/extend work with union element types.
     """
@@ -279,6 +322,16 @@ def test_list_value_object_union_add_and_extend() -> None:
     updated = sequence.add(item='a').extend(items=[2, 'b'])
 
     assert updated.value == [1, 'a', 2, 'b']
+
+
+@mark.unit_testing
+def test_list_value_object_union_add_and_extend_preserves_original_value() -> None:
+    """
+    Test that add/extend do not mutate the original instance.
+    """
+    sequence = IntStrListValueObject(value=[1])
+    sequence.add(item='a').extend(items=[2])
+
     assert sequence.value == [1]
 
 
@@ -313,9 +366,7 @@ def test_list_value_object_union_convert_from_primitives_returns_value_unchanged
     value = BaseMother.invalid_type(remove_types=(int, bool))
     sequence = ObjOrIntListValueObject(value=[1])
 
-    updated = sequence.add_from_primitives(item=value)
-
-    assert updated.value[-1] is value
+    assert sequence.add_from_primitives(item=value).value[-1] is value
 
 
 @mark.unit_testing
@@ -337,30 +388,55 @@ def test_list_value_object_format_single_type_handles_forward_ref() -> None:
 
 
 @mark.unit_testing
-def test_list_value_object_add_returns_new_instance_without_mutating_original() -> None:
+def test_list_value_object_add_appends_item_to_new_instance_value() -> None:
     """
-    Test that add returns a new value object instance and leaves the original untouched.
+    Test that add returns a new value object with the item appended.
     """
-    sequence = IntListValueObject(value=[1, 2])
-    updated_sequence = sequence.add(item=3)
+    updated_sequence = IntListValueObject(value=[1, 2]).add(item=3)
 
-    assert sequence.value == [1, 2]
     assert updated_sequence.value == [1, 2, 3]
-    assert updated_sequence is not sequence
 
 
 @mark.unit_testing
-def test_list_value_object_add_from_primitives_converts_value_object() -> None:
+def test_list_value_object_add_does_not_mutate_original_value() -> None:
+    """
+    Test that add leaves the original instance untouched.
+    """
+    sequence = IntListValueObject(value=[1, 2])
+    sequence.add(item=3)
+
+    assert sequence.value == [1, 2]
+
+
+@mark.unit_testing
+def test_list_value_object_add_returns_different_instance() -> None:
+    """
+    Test that add returns a different instance.
+    """
+    sequence = IntListValueObject(value=[1, 2])
+
+    assert sequence.add(item=3) is not sequence
+
+
+@mark.unit_testing
+def test_list_value_object_add_from_primitives_converts_value_object_values() -> None:
     """
     Test that add_from_primitives converts primitives to the underlying ValueObject type.
     """
     age_list = AgeListValueObject(value=[Age(value=10)])
 
-    updated_age_list = age_list.add_from_primitives(item=20)
+    assert [age.value for age in age_list.add_from_primitives(item=20)] == [10, 20]
+
+
+@mark.unit_testing
+def test_list_value_object_add_from_primitives_preserves_original_value() -> None:
+    """
+    Test that add_from_primitives does not mutate the original list.
+    """
+    age_list = AgeListValueObject(value=[Age(value=10)])
+    age_list.add_from_primitives(item=20)
 
     assert [age.value for age in age_list] == [10]
-    assert [age.value for age in updated_age_list] == [10, 20]
-    assert updated_age_list is not age_list
 
 
 @mark.unit_testing
@@ -392,45 +468,86 @@ def test_list_value_object_add_from_primitives_raises_type_error_on_wrong_item_t
 
 
 @mark.unit_testing
-def test_list_value_object_add_from_primitives_with_any_type_returns_value_unchanged() -> None:
+def test_list_value_object_add_from_primitives_with_any_type_adds_value() -> None:
     """
     Test that add_from_primitives returns the provided value unchanged when the type is Any.
     """
-    sequence = AnyListValueObject(value=[])
+    updated_sequence = AnyListValueObject(value=[]).add_from_primitives(item={'k': 1})
 
-    updated_sequence = sequence.add_from_primitives(item={'k': 1})
-
-    assert sequence.value == []
     assert updated_sequence.value == [{'k': 1}]
-    assert updated_sequence is not sequence
 
 
 @mark.unit_testing
-def test_list_value_object_extend_creates_new_sequence() -> None:
+def test_list_value_object_add_from_primitives_with_any_type_preserves_original_value() -> None:
     """
-    Test that extend returns a new value object with the items appended.
+    Test that add_from_primitives does not mutate the original when type is Any.
+    """
+    sequence = AnyListValueObject(value=[])
+    sequence.add_from_primitives(item={'k': 1})
+
+    assert sequence.value == []
+
+
+@mark.unit_testing
+def test_list_value_object_extend_appends_items() -> None:
+    """
+    Test that extend returns a new value object with items appended.
+    """
+    extended_sequence = IntListValueObject(value=[1]).extend(items=[2, 3])
+
+    assert extended_sequence.value == [1, 2, 3]
+
+
+@mark.unit_testing
+def test_list_value_object_extend_does_not_mutate_original_value() -> None:
+    """
+    Test that extend leaves the original instance untouched.
+    """
+    sequence = IntListValueObject(value=[1])
+    sequence.extend(items=[2, 3])
+
+    assert sequence.value == [1]
+
+
+@mark.unit_testing
+def test_list_value_object_extend_returns_new_instance() -> None:
+    """
+    Test that extend returns a different instance.
     """
     sequence = IntListValueObject(value=[1])
 
-    extended_sequence = sequence.extend(items=[2, 3])
-
-    assert sequence.value == [1]
-    assert extended_sequence.value == [1, 2, 3]
-    assert extended_sequence is not sequence
+    assert sequence.extend(items=[2]) is not sequence
 
 
 @mark.unit_testing
-def test_list_value_object_extend_from_primitives_converts_value_object() -> None:
+def test_list_value_object_extend_from_primitives_converts_value_object_values() -> None:
     """
     Test that extend_from_primitives converts primitives to the underlying ValueObject type.
     """
     age_list = AgeListValueObject(value=[Age(value=10)])
 
-    extended_age_list = age_list.extend_from_primitives(items=[20, 30])
+    assert [age.value for age in age_list.extend_from_primitives(items=[20, 30])] == [10, 20, 30]
+
+
+@mark.unit_testing
+def test_list_value_object_extend_from_primitives_preserves_original_value() -> None:
+    """
+    Test that extend_from_primitives does not mutate the original list.
+    """
+    age_list = AgeListValueObject(value=[Age(value=10)])
+    age_list.extend_from_primitives(items=[20, 30])
 
     assert [age.value for age in age_list] == [10]
-    assert [age.value for age in extended_age_list] == [10, 20, 30]
-    assert extended_age_list is not age_list
+
+
+@mark.unit_testing
+def test_list_value_object_extend_from_primitives_returns_new_instance() -> None:
+    """
+    Test that extend_from_primitives returns a different instance.
+    """
+    age_list = AgeListValueObject(value=[Age(value=10)])
+
+    assert age_list.extend_from_primitives(items=[20]) is not age_list
 
 
 @mark.unit_testing
@@ -440,11 +557,32 @@ def test_list_value_object_extend_from_primitives_builds_base_model_list() -> No
     """
     tag_list = TagListValueObject(value=[Tag(name='feature')])
 
-    extended_tag_list = tag_list.extend_from_primitives(items=[{'name': 'bug'}, {'name': 'chore'}])
+    assert [tag.name for tag in tag_list.extend_from_primitives(items=[{'name': 'bug'}, {'name': 'chore'}])] == [
+        'feature',
+        'bug',
+        'chore',
+    ]
+
+
+@mark.unit_testing
+def test_list_value_object_extend_from_primitives_base_model_preserves_original() -> None:
+    """
+    Test that extend_from_primitives with BaseModels does not mutate the original list.
+    """
+    tag_list = TagListValueObject(value=[Tag(name='feature')])
+    tag_list.extend_from_primitives(items=[{'name': 'bug'}])
 
     assert [tag.name for tag in tag_list] == ['feature']
-    assert [tag.name for tag in extended_tag_list] == ['feature', 'bug', 'chore']
-    assert extended_tag_list is not tag_list
+
+
+@mark.unit_testing
+def test_list_value_object_extend_from_primitives_base_model_returns_new_instance() -> None:
+    """
+    Test that extend_from_primitives with BaseModels returns a new instance.
+    """
+    tag_list = TagListValueObject(value=[Tag(name='feature')])
+
+    assert tag_list.extend_from_primitives(items=[{'name': 'bug'}]) is not tag_list
 
 
 @mark.unit_testing
@@ -476,16 +614,24 @@ def test_list_value_object_extend_from_primitives_raises_type_error_on_wrong_ite
 
 
 @mark.unit_testing
-def test_list_value_object_delete_removes_first_occurrence_and_preserves_original() -> None:
+def test_list_value_object_delete_removes_first_occurrence() -> None:
     """
-    Test that delete removes only the first matching item and does not mutate the original instance.
+    Test that delete removes only the first matching item.
+    """
+    updated_sequence = IntListValueObject(value=[1, 2, 2, 3]).delete(item=2)
+
+    assert updated_sequence.value == [1, 2, 3]
+
+
+@mark.unit_testing
+def test_list_value_object_delete_does_not_mutate_original_value() -> None:
+    """
+    Test that delete does not mutate the original list.
     """
     sequence = IntListValueObject(value=[1, 2, 2, 3])
-
-    updated_sequence = sequence.delete(item=2)
+    sequence.delete(item=2)
 
     assert sequence.value == [1, 2, 2, 3]
-    assert updated_sequence.value == [1, 2, 3]
 
 
 @mark.unit_testing
@@ -501,17 +647,34 @@ def test_list_value_object_delete_raises_when_item_missing() -> None:
 
 
 @mark.unit_testing
-def test_list_value_object_delete_from_primitives_removes_first_occurrence_and_preserves_original() -> None:
+def test_list_value_object_delete_from_primitives_removes_first_occurrence() -> None:
     """
-    Test that delete_from_primitives removes the first matching item and does not mutate the original instance.
+    Test that delete_from_primitives removes the first matching item.
     """
     age_list = AgeListValueObject(value=[Age(value=10), Age(value=20), Age(value=10)])
 
-    updated_age_list = age_list.delete_from_primitives(item=10)
+    assert [age.value for age in age_list.delete_from_primitives(item=10)] == [20, 10]
+
+
+@mark.unit_testing
+def test_list_value_object_delete_from_primitives_preserves_original_value() -> None:
+    """
+    Test that delete_from_primitives does not mutate the original list.
+    """
+    age_list = AgeListValueObject(value=[Age(value=10), Age(value=20), Age(value=10)])
+    age_list.delete_from_primitives(item=10)
 
     assert [age.value for age in age_list] == [10, 20, 10]
-    assert [age.value for age in updated_age_list] == [20, 10]
-    assert updated_age_list is not age_list
+
+
+@mark.unit_testing
+def test_list_value_object_delete_from_primitives_returns_new_instance() -> None:
+    """
+    Test that delete_from_primitives returns a new instance.
+    """
+    age_list = AgeListValueObject(value=[Age(value=10)])
+
+    assert age_list.delete_from_primitives(item=10) is not age_list
 
 
 @mark.unit_testing
@@ -531,12 +694,20 @@ def test_list_value_object_delete_all_removes_all_occurrences() -> None:
     """
     Test that delete_all removes every occurrence of the provided items.
     """
-    sequence = IntListValueObject(value=[1, 2, 3, 2, 4])
+    updated_sequence = IntListValueObject(value=[1, 2, 3, 2, 4]).delete_all(items=[2, 4])
 
-    updated_sequence = sequence.delete_all(items=[2, 4])
+    assert updated_sequence.value == [1, 3]
+
+
+@mark.unit_testing
+def test_list_value_object_delete_all_preserves_original_value() -> None:
+    """
+    Test that delete_all does not mutate the original list.
+    """
+    sequence = IntListValueObject(value=[1, 2, 3, 2, 4])
+    sequence.delete_all(items=[2])
 
     assert sequence.value == [1, 2, 3, 2, 4]
-    assert updated_sequence.value == [1, 3]
 
 
 @mark.unit_testing
@@ -556,13 +727,32 @@ def test_list_value_object_delete_all_from_primitives_removes_all_occurrences() 
     """
     Test that delete_all_from_primitives removes every matching item converted from primitives.
     """
-    age_list = AgeListValueObject(value=[Age(value=10), Age(value=20), Age(value=30), Age(value=20), Age(value=40)])
+    updated_age_list = AgeListValueObject(
+        value=[Age(value=10), Age(value=20), Age(value=30), Age(value=20), Age(value=40)]
+    ).delete_all_from_primitives(items=[20, 30])
 
-    updated_age_list = age_list.delete_all_from_primitives(items=[20, 30])
+    assert [age.value for age in updated_age_list] == [10, 40]
+
+
+@mark.unit_testing
+def test_list_value_object_delete_all_from_primitives_preserves_original_values() -> None:
+    """
+    Test that delete_all_from_primitives does not mutate the original list.
+    """
+    age_list = AgeListValueObject(value=[Age(value=10), Age(value=20), Age(value=30), Age(value=20), Age(value=40)])
+    age_list.delete_all_from_primitives(items=[20])
 
     assert [age.value for age in age_list] == [10, 20, 30, 20, 40]
-    assert [age.value for age in updated_age_list] == [10, 40]
-    assert updated_age_list is not age_list
+
+
+@mark.unit_testing
+def test_list_value_object_delete_all_from_primitives_returns_new_instance() -> None:
+    """
+    Test that delete_all_from_primitives returns a new instance.
+    """
+    age_list = AgeListValueObject(value=[Age(value=10)])
+
+    assert age_list.delete_all_from_primitives(items=[10]) is not age_list
 
 
 @mark.unit_testing
@@ -585,6 +775,15 @@ def test_list_value_object_from_primitives_builds_value_object_list() -> None:
     age_list = AgeListValueObject.from_primitives(value=[10, 20])
 
     assert [age.value for age in age_list] == [10, 20]
+
+
+@mark.unit_testing
+def test_list_value_object_from_primitives_creates_value_object_instances() -> None:
+    """
+    Test that from_primitives creates ValueObject instances.
+    """
+    age_list = AgeListValueObject.from_primitives(value=[10, 20])
+
     assert all(isinstance(age, Age) for age in age_list)
 
 
@@ -596,6 +795,15 @@ def test_list_value_object_from_primitives_builds_base_model_list() -> None:
     tag_list = TagListValueObject.from_primitives(value=[{'name': 'feature'}, {'name': 'bug'}])
 
     assert [tag.name for tag in tag_list] == ['feature', 'bug']
+
+
+@mark.unit_testing
+def test_list_value_object_from_primitives_creates_base_model_instances() -> None:
+    """
+    Test that from_primitives creates BaseModel instances.
+    """
+    tag_list = TagListValueObject.from_primitives(value=[{'name': 'feature'}])
+
     assert all(isinstance(tag, Tag) for tag in tag_list)
 
 
@@ -604,8 +812,6 @@ def test_list_value_object_from_primitives_with_any_type_returns_values_unchange
     """
     Test that from_primitives returns the provided primitives unchanged when the type is Any.
     """
-    values = [1, 'a', {'k': 2}]
+    values = [1, 'a', {True: 2}]
 
-    sequence = AnyListValueObject.from_primitives(value=values)
-
-    assert sequence.value == values
+    assert AnyListValueObject.from_primitives(value=values).value == values
