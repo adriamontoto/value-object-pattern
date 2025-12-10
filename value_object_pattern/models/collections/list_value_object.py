@@ -15,7 +15,7 @@ from collections.abc import Iterator
 from enum import Enum
 from inspect import isclass
 from types import UnionType
-from typing import Any, Generic, NoReturn, TypeVar, Union, get_args, get_origin
+from typing import Any, Generic, NoReturn, Self, TypeVar, Union, get_args, get_origin
 
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import BaseModel, ValueObject
@@ -369,7 +369,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         """
         return not self._value
 
-    def add(self, *, item: T) -> ListValueObject[T]:
+    def add(self, *, item: T) -> Self:
         """
         Returns a new ListValueObject with the item added to the end.
 
@@ -380,7 +380,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
             TypeError: If the item is not of type T.
 
         Returns:
-            ListValueObject[T]: A new ListValueObject with the item added.
+            Self: A new ListValueObject with the item added.
 
         Example:
         ```python
@@ -401,7 +401,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         """
         return self.__class__(value=[*self._value, item])
 
-    def add_from_primitives(self, *, item: Any) -> ListValueObject[T]:
+    def add_from_primitives(self, *, item: Any) -> Self:
         """
         Returns a new ListValueObject with the item created from a primitives added to the end.
 
@@ -412,7 +412,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
             TypeError: If the item is not of type T.
 
         Returns:
-            ListValueObject[T]: A new ListValueObject with the item added.
+            Self: A new ListValueObject with the item added.
 
         Example:
         ```python
@@ -440,7 +440,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
 
         return self.add(item=item)
 
-    def extend(self, *, items: list[T]) -> ListValueObject[T]:
+    def extend(self, *, items: list[T]) -> Self:
         """
         Returns a new ListValueObject with multiple items added to the end.
 
@@ -451,7 +451,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
             TypeError: If the items are not of the correct type.
 
         Returns:
-            ListValueObject[T]: A new ListValueObject with the items added.
+            Self: A new ListValueObject with the items added.
 
         Example:
         ```python
@@ -472,7 +472,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         """
         return self.__class__(value=self._value + items)
 
-    def extend_from_primitives(self, *, items: list[Any]) -> ListValueObject[T]:
+    def extend_from_primitives(self, *, items: list[Any]) -> Self:
         """
         Returns a new ListValueObject with multiple items created from primitives added to the end.
 
@@ -483,7 +483,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
             TypeError: If the items are not of the correct type.
 
         Returns:
-            ListValueObject[T]: A new ListValueObject with the items added.
+            Self: A new ListValueObject with the items added.
 
         Example:
         ```python
@@ -511,7 +511,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
 
         return self.extend(items=items)
 
-    def delete(self, *, item: T) -> ListValueObject[T]:
+    def delete(self, *, item: T) -> Self:
         """
         Returns a new ListValueObject with the first occurrence of the item deleted.
 
@@ -522,7 +522,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
             ValueError: If the item is not in the list.
 
         Returns:
-            ListValueObject[T]: A new ListValueObject with the item deleted.
+            Self: A new ListValueObject with the item deleted.
 
         Example:
         ```python
@@ -563,7 +563,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         """
         raise ValueError(f'ListValueObject item <<<{value}>>> not found in thelist when attempting to delete it.')
 
-    def delete_from_primitives(self, *, item: Any) -> ListValueObject[T]:
+    def delete_from_primitives(self, *, item: Any) -> Self:
         """
         Returns a new ListValueObject with the first occurrence of an item matching the primitive deleted.
 
@@ -574,7 +574,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
             ValueError: If the item is not in the list.
 
         Returns:
-            ListValueObject[T]: A new ListValueObject with the item deleted.
+            Self: A new ListValueObject with the item deleted.
 
         Example:
         ```python
@@ -602,7 +602,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
 
         return self.delete(item=item)
 
-    def delete_all(self, *, items: list[T]) -> ListValueObject[T]:
+    def delete_all(self, *, items: list[T]) -> Self:
         """
         Returns a new ListValueObject with all occurrences of the specified items deleted.
 
@@ -613,7 +613,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
             ValueError: If any item is not in the list.
 
         Returns:
-            ListValueObject[T]: A new ListValueObject with the items deleted.
+            Self: A new ListValueObject with the items deleted.
 
         Example:
         ```python
@@ -640,7 +640,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
 
         return self.__class__(value=new_list)
 
-    def delete_all_from_primitives(self, *, items: list[Any]) -> ListValueObject[T]:
+    def delete_all_from_primitives(self, *, items: list[Any]) -> Self:
         """
         Returns a new ListValueObject with all occurrences of items matching the primitives deleted.
 
@@ -651,7 +651,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
             ValueError: If any item is not in the list.
 
         Returns:
-            ListValueObject[T]: A new ListValueObject with the items deleted.
+            Self: A new ListValueObject with the items deleted.
 
         Example:
         ```python
@@ -734,7 +734,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         return str(type).replace('typing.', '')
 
     @classmethod
-    def from_primitives(cls, value: list[Any]) -> ListValueObject[T]:
+    def from_primitives(cls, value: list[Any]) -> Self:
         """
         Creates a ListValueObject from a list of primitives.
 
@@ -742,7 +742,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
             value (list[Any]): The list of primitives.
 
         Returns:
-            ListValueObject[T]: The created ListValueObject.
+            Self: The created ListValueObject.
         """
         items: list[Any] = []
 
