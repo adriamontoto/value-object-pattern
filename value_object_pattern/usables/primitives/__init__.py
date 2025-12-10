@@ -5,8 +5,10 @@ from .integer import (
     EvenIntegerValueObject,
     IntegerValueObject,
     NegativeIntegerValueObject,
+    NegativeOrZeroIntegerValueObject,
     OddIntegerValueObject,
     PositiveIntegerValueObject,
+    PositiveOrZeroIntegerValueObject,
 )
 from .none import NoneValueObject, NotNoneValueObject
 from .string import (
@@ -34,12 +36,14 @@ __all__ = (
     'LowercaseStringValueObject',
     'NegativeFloatValueObject',
     'NegativeIntegerValueObject',
+    'NegativeOrZeroIntegerValueObject',
     'NoneValueObject',
     'NotEmptyStringValueObject',
     'NotNoneValueObject',
     'OddIntegerValueObject',
     'PositiveFloatValueObject',
     'PositiveIntegerValueObject',
+    'PositiveOrZeroIntegerValueObject',
     'PrintableStringValueObject',
     'StringValueObject',
     'TrimmedStringValueObject',
