@@ -1,6 +1,12 @@
 from .boolean import BooleanValueObject, FalseValueObject, TrueValueObject
 from .bytes import BytesValueObject
-from .float import FloatValueObject, NegativeFloatValueObject, PositiveFloatValueObject
+from .float import (
+    FloatValueObject,
+    NegativeFloatValueObject,
+    NegativeOrZeroFloatValueObject,
+    PositiveFloatValueObject,
+    PositiveOrZeroFloatValueObject,
+)
 from .integer import (
     EvenIntegerValueObject,
     IntegerValueObject,
@@ -36,6 +42,7 @@ __all__ = (
     'LowercaseStringValueObject',
     'NegativeFloatValueObject',
     'NegativeIntegerValueObject',
+    'NegativeOrZeroFloatValueObject',
     'NegativeOrZeroIntegerValueObject',
     'NoneValueObject',
     'NotEmptyStringValueObject',
@@ -43,6 +50,7 @@ __all__ = (
     'OddIntegerValueObject',
     'PositiveFloatValueObject',
     'PositiveIntegerValueObject',
+    'PositiveOrZeroFloatValueObject',
     'PositiveOrZeroIntegerValueObject',
     'PrintableStringValueObject',
     'StringValueObject',
