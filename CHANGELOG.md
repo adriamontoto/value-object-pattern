@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.20.0 (2025-12-10)
+
+### ✨ Features
+
+- Implement DictValueObject
+  ([`8509f50`](https://github.com/adriamontoto/value-object-pattern/commit/8509f50d3d63d8f40b16786782f5915c9a9f107f))
+
+
 ## v1.19.0 (2025-12-10)
 
 ### ✨ Features
