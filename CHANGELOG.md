@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.22.1 (2025-12-12)
+
+### 🐛 Bug Fixes
+
+- To primitives method not working in dict and list value object
+  ([`16dc43b`](https://github.com/adriamontoto/value-object-pattern/commit/16dc43b8c000a6436359a8457bb1a4c39e0469b7))
+
+
 ## v1.22.0 (2025-12-10)
 
 ### ✨ Features
