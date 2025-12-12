@@ -121,6 +121,73 @@ class PlainObject:
         return 'PlainObjectRepr'
 
 
+class CustomObj:
+    """
+    Custom object for testing.
+    """
+
+    @override
+    def __repr__(self) -> str:
+        """
+        Custom representation.
+        """
+        return 'custom-object'
+
+
+class CustomObjectList(ListValueObject[CustomObj]):
+    """
+    List value object storing CustomObj instances.
+    """
+
+
+class NestedListValueObject(ListValueObject[list[int]]):
+    """
+    List value object storing lists of integers.
+    """
+
+
+class MixedValueObjectList(ListValueObject[int | Age | Tag]):
+    """
+    List value object storing mixed types.
+    """
+
+
+class NoneableListValueObject(ListValueObject[int | None]):
+    """
+    List value object that can store None.
+    """
+
+
+class BytesListValueObject(ListValueObject[bytes]):
+    """
+    List value object storing bytes.
+    """
+
+
+class EnumList(ListValueObject[Color]):
+    """
+    List value object storing Enum instances.
+    """
+
+
+class BoolListValueObject(ListValueObject[bool]):
+    """
+    List value object storing booleans.
+    """
+
+
+class FloatListValueObject(ListValueObject[float]):
+    """
+    List value object storing floats.
+    """
+
+
+class StrListValueObject(ListValueObject[str]):
+    """
+    List value object storing strings.
+    """
+
+
 @mark.unit_testing
 def test_list_value_object_contains_existing_item() -> None:
     """
@@ -815,3 +882,173 @@ def test_list_value_object_from_primitives_with_any_type_returns_values_unchange
     values = [1, 'a', {True: 2}]
 
     assert AnyListValueObject.from_primitives(value=values).value == values
+
+
+@mark.unit_testing
+def test_list_value_object_to_primitives_with_primitive_types() -> None:
+    """
+    Test to_primitives with primitive types (int, float, str, bool, None).
+    """
+    list_vo = IntListValueObject(value=[1, 2, 3, 4, 5])
+
+    primitives = list_vo.to_primitives()
+
+    assert primitives == [1, 2, 3, 4, 5]
+    assert isinstance(primitives, list)
+
+
+@mark.unit_testing
+def test_list_value_object_to_primitives_with_value_objects() -> None:
+    """
+    Test to_primitives correctly extracts values from ValueObject instances.
+    """
+    list_vo = AgeListValueObject(value=[Age(value=10), Age(value=20), Age(value=30)])
+
+    primitives = list_vo.to_primitives()
+
+    assert primitives == [10, 20, 30]
+
+
+@mark.unit_testing
+def test_list_value_object_to_primitives_with_base_models() -> None:
+    """
+    Test to_primitives correctly converts BaseModel instances to their primitive dictionaries.
+    """
+    list_vo = TagListValueObject(value=[Tag(name='feature'), Tag(name='bugfix'), Tag(name='hotfix')])
+
+    primitives = list_vo.to_primitives()
+
+    assert primitives == [{'name': 'feature'}, {'name': 'bugfix'}, {'name': 'hotfix'}]
+
+
+@mark.unit_testing
+def test_list_value_object_to_primitives_with_custom_objects() -> None:
+    """
+    Test to_primitives converts unknown objects to strings.
+    """
+    list_vo = CustomObjectList(value=[CustomObj(), CustomObj()])
+
+    primitives = list_vo.to_primitives()
+
+    assert primitives == ['custom-object', 'custom-object']
+
+
+@mark.unit_testing
+def test_list_value_object_to_primitives_with_nested_collections() -> None:
+    """
+    Test to_primitives handles nested collections (lists, dicts, tuples).
+    """
+    list_vo = NestedListValueObject(value=[[1, 2], [3, 4], [5, 6]])
+
+    primitives = list_vo.to_primitives()
+
+    assert primitives == [[1, 2], [3, 4], [5, 6]]
+
+
+@mark.unit_testing
+def test_list_value_object_to_primitives_with_mixed_types() -> None:
+    """
+    Test to_primitives handles mixed types including primitives, ValueObjects, and BaseModels.
+    """
+    list_vo = MixedValueObjectList(value=[1, Age(value=2), Tag(name='test')])
+
+    primitives = list_vo.to_primitives()
+
+    assert primitives == [1, 2, {'name': 'test'}]
+
+
+@mark.unit_testing
+def test_list_value_object_to_primitives_with_empty_list() -> None:
+    """
+    Test to_primitives returns an empty list when the value object is empty.
+    """
+    list_vo = IntListValueObject(value=[])
+
+    primitives = list_vo.to_primitives()
+
+    assert primitives == []
+    assert isinstance(primitives, list)
+
+
+@mark.unit_testing
+def test_list_value_object_to_primitives_with_none_values() -> None:
+    """
+    Test to_primitives correctly handles None values in the list.
+    """
+    list_vo = NoneableListValueObject(value=[1, None, 3, None, 5])
+
+    primitives = list_vo.to_primitives()
+
+    assert primitives == [1, None, 3, None, 5]
+
+
+@mark.unit_testing
+def test_list_value_object_to_primitives_with_bytes() -> None:
+    """
+    Test to_primitives correctly handles bytes values.
+    """
+    list_vo = BytesListValueObject(value=[b'hello', b'world'])
+
+    primitives = list_vo.to_primitives()
+
+    assert primitives == [b'hello', b'world']
+
+
+@mark.unit_testing
+def test_list_value_object_to_primitives_preserves_order() -> None:
+    """
+    Test to_primitives preserves the order of items in the list.
+    """
+    list_vo = IntListValueObject(value=[5, 3, 1, 4, 2])
+
+    primitives = list_vo.to_primitives()
+
+    assert primitives == [5, 3, 1, 4, 2]
+
+
+@mark.unit_testing
+def test_list_value_object_to_primitives_with_enums() -> None:
+    """
+    Test to_primitives correctly extracts values from Enum instances directly.
+    """
+    list_vo = EnumList(value=[Color.RED, Color.BLUE, Color.RED])
+
+    primitives = list_vo.to_primitives()
+
+    assert primitives == ['red', 'blue', 'red']
+
+
+@mark.unit_testing
+def test_list_value_object_to_primitives_with_booleans() -> None:
+    """
+    Test to_primitives correctly handles boolean values.
+    """
+    list_vo = BoolListValueObject(value=[True, False, True, True, False])
+
+    primitives = list_vo.to_primitives()
+
+    assert primitives == [True, False, True, True, False]
+
+
+@mark.unit_testing
+def test_list_value_object_to_primitives_with_floats() -> None:
+    """
+    Test to_primitives correctly handles float values.
+    """
+    list_vo = FloatListValueObject(value=[1.1, 2.2, 3.3, 4.4])
+
+    primitives = list_vo.to_primitives()
+
+    assert primitives == [1.1, 2.2, 3.3, 4.4]
+
+
+@mark.unit_testing
+def test_list_value_object_to_primitives_with_strings() -> None:
+    """
+    Test to_primitives correctly handles string values.
+    """
+    list_vo = StrListValueObject(value=['hello', 'world', 'test'])
+
+    primitives = list_vo.to_primitives()
+
+    assert primitives == ['hello', 'world', 'test']
