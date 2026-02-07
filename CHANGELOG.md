@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.23.0 (2026-02-07)
+
+### ✨ Features
+
+- Implement StrictStringIdentifierValueObject with validation and tests
+  ([`1a16507`](https://github.com/adriamontoto/value-object-pattern/commit/1a165079e5f9da5f0be905d143425ee8b7481733))
+
+
 ## v1.22.1 (2025-12-12)
 
 ### 🐛 Bug Fixes
