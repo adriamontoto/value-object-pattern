@@ -2,12 +2,21 @@
 Test DictValueObject value object.
 """
 
+from sys import version_info
+
+if version_info >= (3, 12):
+    from typing import override  # pragma: no cover
+else:
+    from typing_extensions import override  # pragma: no cover
+
+from enum import Enum
 from typing import Any, ForwardRef, TypeVar
 
 from object_mother_pattern import IntegerMother
 from object_mother_pattern.models import BaseMother
 from pytest import mark, raises as assert_raises
 
+from value_object_pattern import BaseModel, ValueObject
 from value_object_pattern.models.collections import DictValueObject
 
 
@@ -56,6 +65,189 @@ class AnyOrIntKeyDictValueObject(DictValueObject[int | Any, int]):
 class StrIntOrAnyValueDictValueObject(DictValueObject[str, int | Any]):
     """
     Dict value object storing string keys and any or int values.
+    """
+
+
+class SimpleValueObject(ValueObject[int]):
+    """
+    Simple integer value object.
+    """
+
+
+class StrValueObjectDict(DictValueObject[str, SimpleValueObject]):
+    """
+    Dict value object storing string keys and SimpleValueObject values.
+    """
+
+
+class NestedModel(BaseModel):
+    """
+    Nested BaseModel used to check recursive conversion.
+    """
+
+    def __init__(self, code: int) -> None:
+        """
+        Nested model constructor.
+        """
+        self.code = code
+
+
+class StrNestedModelDict(DictValueObject[str, NestedModel]):
+    """
+    Dict value object storing string keys and NestedModel values.
+    """
+
+
+class CustomObject:
+    """
+    Helper object used to exercise the string conversion branch.
+    """
+
+    @override
+    def __repr__(self) -> str:
+        """
+        Custom representation.
+        """
+        return 'custom-object'
+
+
+class StrCustomObjectDict(DictValueObject[str, CustomObject]):
+    """
+    Dict value object storing string keys and CustomObject values.
+    """
+
+
+class ValueObjectIntDict(DictValueObject[SimpleValueObject, int]):
+    """
+    Dict value object with ValueObject keys.
+    """
+
+
+class DummyEnum(Enum):
+    """
+    Enumeration used in DictValueObject tests.
+    """
+
+    ADMIN = 'admin'
+    USER = 'user'
+
+
+class EnumIntDict(DictValueObject[DummyEnum, int]):
+    """
+    Dict value object with Enum keys.
+    """
+
+
+class Status(Enum):
+    """
+    Status enumeration used in DictValueObject tests.
+    """
+
+    ACTIVE = 'active'
+    INACTIVE = 'inactive'
+
+
+class StrEnumDict(DictValueObject[str, Status]):
+    """
+    Dict value object with Enum values.
+    """
+
+
+class CustomKeyWithToPrimitives:
+    """
+    Custom key class that has to_primitives method but doesn't inherit from BaseModel.
+    """
+
+    def __init__(self, value: str) -> None:
+        """
+        Initialize CustomKeyWithToPrimitives.
+        """
+        self.value = value
+
+    def to_primitives(self) -> str:
+        """
+        Convert to primitive representation.
+        """
+        return f'custom-{self.value}'
+
+    @override
+    def __hash__(self) -> int:
+        return hash(self.value)
+
+    @override
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, CustomKeyWithToPrimitives) and self.value == other.value
+
+
+class CustomKeyWithToPrimitivesIntDict(DictValueObject[CustomKeyWithToPrimitives, int]):
+    """
+    Dict value object with custom key type that has to_primitives.
+    """
+
+
+class CustomValueWithToPrimitives:
+    """
+    Custom value class that has to_primitives method but doesn't inherit from BaseModel.
+    """
+
+    def __init__(self, data: str) -> None:
+        """
+        Initialize CustomValueWithToPrimitives.
+        """
+        self.data = data
+
+    def to_primitives(self) -> str:
+        """
+        Convert to primitive representation.
+        """
+        return f'custom-{self.data}'
+
+
+class StrCustomValueDict(DictValueObject[str, CustomValueWithToPrimitives]):
+    """
+    Dict value object with custom value type.
+    """
+
+
+class StatusValueObject(ValueObject[Status]):
+    """
+    Value object wrapping Status enum.
+    """
+
+
+class StatusValueObjectIntDict(DictValueObject[StatusValueObject, int]):
+    """
+    Dict value object with ValueObject keys that contain enums.
+    """
+
+
+class CustomKey:
+    """
+    Custom key class without to_primitives.
+    """
+
+    def __init__(self, name: str) -> None:
+        """
+        Initialize CustomKey.
+        """
+        self.name = name
+
+    @override
+    def __repr__(self) -> str:
+        return f'CustomKey({self.name})'
+
+    @override
+    def __hash__(self) -> int:
+        return hash(self.name)
+
+    @override
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, CustomKey) and self.name == other.name
+
+
+class CustomKeyIntDict(DictValueObject[CustomKey, int]):
+    """
+    Dict value object with custom key type without to_primitives.
     """
 
 
@@ -478,3 +670,281 @@ def test_dict_value_object_type_label_formats_union_with_any_for_values() -> Non
     mapping = StrIntOrAnyValueDictValueObject(value={'a': 1})
 
     assert mapping._type_label(type=mapping._value_type) == 'int | Any'
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_primitive_types() -> None:
+    """
+    Test to_primitives with primitive types (int, float, str, bool, None).
+    """
+    dict_value_object = StrIntDictValueObject(value={'a': 1, 'b': 2, 'c': 3})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'a': 1, 'b': 2, 'c': 3}
+    assert isinstance(primitives, dict)
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_value_object_values() -> None:
+    """
+    Test to_primitives correctly extracts values from ValueObject instances.
+    """
+    dict_value_object = StrValueObjectDict(value={'x': SimpleValueObject(value=10), 'y': SimpleValueObject(value=20)})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'x': 10, 'y': 20}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_base_model_values() -> None:
+    """
+    Test to_primitives correctly converts BaseModel values to their primitive dictionaries.
+    """
+    dict_value_object = StrNestedModelDict(value={'first': NestedModel(code=1), 'second': NestedModel(code=2)})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'first': {'code': 1}, 'second': {'code': 2}}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_custom_object_values() -> None:
+    """
+    Test to_primitives converts unknown object values to strings.
+    """
+    dict_value_object = StrCustomObjectDict(value={'obj1': CustomObject(), 'obj2': CustomObject()})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'obj1': 'custom-object', 'obj2': 'custom-object'}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_value_object_keys() -> None:
+    """
+    Test to_primitives correctly extracts values from ValueObject keys.
+    """
+    dict_value_object = ValueObjectIntDict(value={SimpleValueObject(value=1): 10, SimpleValueObject(value=2): 20})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {1: 10, 2: 20}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_enum_keys() -> None:
+    """
+    Test to_primitives correctly extracts values from Enum keys.
+    """
+    dict_value_object = EnumIntDict(value={DummyEnum.ADMIN: 1, DummyEnum.USER: 2})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'admin': 1, 'user': 2}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_enum_values() -> None:
+    """
+    Test to_primitives correctly extracts values from Enum values.
+    """
+    dict_value_object = StrEnumDict(value={'user1': Status.ACTIVE, 'user2': Status.INACTIVE})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'user1': 'active', 'user2': 'inactive'}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_nested_collections() -> None:
+    """
+    Test to_primitives handles nested collections (lists, dicts) as values.
+    """
+    dict_value_object = AnyValueDictValueObject(value={'nums1': [1, 2, 3], 'nums2': [4, 5, 6]})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'nums1': [1, 2, 3], 'nums2': [4, 5, 6]}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_empty_dict() -> None:
+    """
+    Test to_primitives returns an empty dict when the value object is empty.
+    """
+    dict_value_object = StrIntDictValueObject(value={})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {}
+    assert isinstance(primitives, dict)
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_none_values() -> None:
+    """
+    Test to_primitives correctly handles None values.
+    """
+    dict_value_object = AnyValueDictValueObject(value={'a': 1, 'b': None, 'c': 3})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'a': 1, 'b': None, 'c': 3}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_bytes_values() -> None:
+    """
+    Test to_primitives correctly handles bytes values.
+    """
+    dict_value_object = AnyValueDictValueObject(value={'data1': b'hello', 'data2': b'world'})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'data1': b'hello', 'data2': b'world'}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_preserves_all_entries() -> None:
+    """
+    Test to_primitives preserves all key-value pairs.
+    """
+    dict_value_object = StrIntDictValueObject(value={'z': 26, 'a': 1, 'm': 13})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'z': 26, 'a': 1, 'm': 13}
+    assert len(primitives) == 3
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_boolean_values() -> None:
+    """
+    Test to_primitives correctly handles boolean values.
+    """
+    dict_value_object = AnyValueDictValueObject(value={'active': True, 'deleted': False, 'enabled': True})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'active': True, 'deleted': False, 'enabled': True}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_float_values() -> None:
+    """
+    Test to_primitives correctly handles float values.
+    """
+    dict_value_object = AnyValueDictValueObject(value={'pi': 3.14, 'e': 2.71, 'phi': 1.61})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'pi': 3.14, 'e': 2.71, 'phi': 1.61}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_string_keys_and_values() -> None:
+    """
+    Test to_primitives correctly handles string keys and values.
+    """
+    dict_value_object = AnyValueDictValueObject(value={'hello': 'world', 'foo': 'bar', 'key': 'value'})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'hello': 'world', 'foo': 'bar', 'key': 'value'}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_integer_keys() -> None:
+    """
+    Test to_primitives correctly handles integer keys.
+    """
+    dict_value_object = AnyDictValueObject(value={1: 'one', 2: 'two', 3: 'three'})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {1: 'one', 2: 'two', 3: 'three'}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_non_base_model_having_to_primitives_as_key() -> None:
+    """
+    Test to_primitives calls to_primitives on keys that have the method but aren't BaseModel.
+    """
+    key1 = CustomKeyWithToPrimitives(value='a')
+    key2 = CustomKeyWithToPrimitives(value='b')
+    dict_value_object = CustomKeyWithToPrimitivesIntDict(value={key1: 1, key2: 2})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'custom-a': 1, 'custom-b': 2}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_non_base_model_having_to_primitives_as_value() -> None:
+    """
+    Test to_primitives calls to_primitives on values that have the method but aren't BaseModel.
+    """
+    dict_value_object = StrCustomValueDict(
+        value={'a': CustomValueWithToPrimitives(data='x'), 'b': CustomValueWithToPrimitives(data='y')}
+    )
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'a': 'custom-x', 'b': 'custom-y'}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_value_object_key_containing_enum() -> None:
+    """
+    Test to_primitives extracts enum value when key is ValueObject containing an Enum.
+    """
+    dict_value_object = StatusValueObjectIntDict(
+        value={StatusValueObject(value=Status.ACTIVE): 1, StatusValueObject(value=Status.INACTIVE): 2}
+    )
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'active': 1, 'inactive': 2}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_value_object_value_containing_enum() -> None:
+    """
+    Test to_primitives extracts enum value when value is ValueObject containing an Enum.
+    """
+    # Reuse Status enum with ValueObject inline
+    status_vo1 = StatusValueObject(value=Status.ACTIVE)
+    status_vo2 = StatusValueObject(value=Status.INACTIVE)
+    dict_value_object = AnyValueDictValueObject(value={'task1': status_vo1, 'task2': status_vo2})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'task1': 'active', 'task2': 'inactive'}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_collection_keys() -> None:
+    """
+    Test to_primitives preserves collection type keys as-is.
+    """
+    dict_value_object = AnyKeyDictValueObject(value={(1, 2): 10, (3, 4): 20})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {(1, 2): 10, (3, 4): 20}
+
+
+@mark.unit_testing
+def test_dict_value_object_to_primitives_with_custom_object_keys() -> None:
+    """
+    Test to_primitives converts unknown object keys to strings.
+    """
+    key1 = CustomKey(name='alpha')
+    key2 = CustomKey(name='beta')
+    dict_value_object = CustomKeyIntDict(value={key1: 1, key2: 2})
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'CustomKey(alpha)': 1, 'CustomKey(beta)': 2}
