@@ -2,6 +2,30 @@
 
 <!-- version list -->
 
+## v1.23.0 (2026-02-07)
+
+### ✨ Features
+
+- Implement StrictStringIdentifierValueObject with validation and tests
+  ([`1a16507`](https://github.com/adriamontoto/value-object-pattern/commit/1a165079e5f9da5f0be905d143425ee8b7481733))
+
+
+## v1.22.1 (2025-12-12)
+
+### 🐛 Bug Fixes
+
+- To primitives method not working in dict and list value object
+  ([`16dc43b`](https://github.com/adriamontoto/value-object-pattern/commit/16dc43b8c000a6436359a8457bb1a4c39e0469b7))
+
+
+## v1.22.0 (2025-12-10)
+
+### ✨ Features
+
+- Implement NegativeOrZeroFloatValueObject and PositiveOrZeroFloatValueObject
+  ([`297d8d5`](https://github.com/adriamontoto/value-object-pattern/commit/297d8d524ef6b93c61e0e9079293b8a59f89d99f))
+
+
 ## v1.21.0 (2025-12-10)
 
 ### 🐛 Bug Fixes

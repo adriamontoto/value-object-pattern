@@ -113,7 +113,7 @@ jobs:
         run: make install GROUP=coverage CI=true VERBOSE=true
 
       - name: 📥 Download coverage files
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           merge-multiple: true
           pattern: coverage_*
@@ -186,7 +186,7 @@ jobs:
         run: make install GROUP=coverage CI=true VERBOSE=true
 
       - name: 📥 Download coverage files
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: coverage-html
           path: htmlcov
@@ -231,7 +231,7 @@ jobs:
           persist-credentials: false
 
       - name: 📥 Download coverage files
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: coverage-data
 
@@ -370,14 +370,14 @@ jobs:
           persist-credentials: false
 
       - name: ▶️ CodeQL Initialization
-        uses: github/codeql-action/init@0499de31b99561a6d14a36a5f662c2a54f91beee # v3.29.5
+        uses: github/codeql-action/init@1b168cd39490f61582a9beae412bb7057a6b2c4e # v3.29.5
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
           queries: +security-extended,security-and-quality
 
       - name: 🔬 CodeQL Analysis
-        uses: github/codeql-action/analyze@0499de31b99561a6d14a36a5f662c2a54f91beee # v3.29.5
+        uses: github/codeql-action/analyze@1b168cd39490f61582a9beae412bb7057a6b2c4e # v3.29.5
         with:
           category: '/language:${{ matrix.language }}'
 
@@ -520,7 +520,7 @@ jobs:
 
       - name: 🔖 Semantic Release
         id: released
-        uses: python-semantic-release/python-semantic-release@4d4cb0ab842247caea1963132c242c62aab1e4d5 # v10.4.1
+        uses: python-semantic-release/python-semantic-release@350c48fcb3ffcdfd2e0a235206bc2ecea6b69df0 # v10.5.3
         with:
           build: false
           push: true
