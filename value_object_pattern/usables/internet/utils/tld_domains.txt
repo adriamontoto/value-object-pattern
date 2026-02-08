@@ -1,4 +1,4 @@
-# This file was automatically updated using "update_lists.py" on 2025-12-09T16:29:57.669510+00:00
+# This file was automatically updated using "update_lists.py" on 2026-02-08T04:02:47.690274+00:00
 
 aaa
 aarp
@@ -487,7 +487,6 @@ godaddy
 gold
 goldpoint
 golf
-goo
 goodyear
 goog
 google
