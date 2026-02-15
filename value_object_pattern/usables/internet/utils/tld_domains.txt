@@ -1,4 +1,4 @@
-# This file was automatically updated using "update_lists.py" on 2026-02-08T04:02:47.690274+00:00
+# This file was automatically updated using "update_lists.py" on 2026-02-15T03:55:23.881612+00:00
 
 aaa
 aarp
@@ -1250,7 +1250,6 @@ windows
 wine
 winners
 wme
-wolterskluwer
 woodside
 work
 works
