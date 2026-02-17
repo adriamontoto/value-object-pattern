@@ -17,7 +17,7 @@ def test_key_value_object_happy_path() -> None:
     key = KeyValueObject(value='abc.123-def.ghi')
 
     assert type(key.value) is str
-    assert key.value == 'abc.123-def.ghi'
+    assert key.value == 'abc.123-def.ghi'  # gitleaks:allow
 
 
 # TODO: make it dynamic with object mother

@@ -2,7 +2,7 @@
 Test IntegerValueObject value object.
 """
 
-from object_mother_pattern import IntegerMother
+from object_mother_pattern import BooleanMother, IntegerMother
 from pytest import mark, raises as assert_raises
 
 from value_object_pattern.usables import IntegerValueObject
@@ -28,3 +28,15 @@ def test_integer_value_object_invalid_type() -> None:
         match=r'IntegerValueObject value <<<.*>>> must be an integer. Got <<<.*>>> type.',
     ):
         IntegerValueObject(value=IntegerMother.invalid_type())
+
+
+@mark.unit_testing
+def test_integer_value_object_rejects_bool_values() -> None:
+    """
+    Test IntegerValueObject value object raises TypeError when value is a boolean.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'IntegerValueObject value <<<.*>>> must be an integer. Got <<<bool>>> type.',
+    ):
+        IntegerValueObject(value=BooleanMother.create())

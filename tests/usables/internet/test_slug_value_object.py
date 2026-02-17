@@ -10,7 +10,7 @@ from value_object_pattern.usables.internet import SlugValueObject
 
 # TODO: make it dynamic with object mother
 @mark.unit_testing
-def test_strict_string_identifier_value_object_happy_path() -> None:
+def test_slug_value_object_happy_path() -> None:
     """
     Test SlugValueObject value object happy path.
     """
@@ -23,7 +23,7 @@ def test_strict_string_identifier_value_object_happy_path() -> None:
 # TODO: make it dynamic with object mother
 @mark.unit_testing
 @mark.parametrize(argnames='value', argvalues=['abc_123', 'Abc-123', '-abc-123', 'abc--123', 'abc-123-'])
-def test_strict_string_identifier_value_object_invalid_characters(value: str) -> None:
+def test_slug_value_object_invalid_characters(value: str) -> None:
     """
     Test SlugValueObject value object raises ValueError when value has invalid format.
     """
@@ -35,7 +35,7 @@ def test_strict_string_identifier_value_object_invalid_characters(value: str) ->
 
 
 @mark.unit_testing
-def test_strict_string_identifier_value_object_empty_value() -> None:
+def test_slug_value_object_empty_value() -> None:
     """
     Test SlugValueObject value object raises ValueError when value is empty.
     """
@@ -47,7 +47,7 @@ def test_strict_string_identifier_value_object_empty_value() -> None:
 
 
 @mark.unit_testing
-def test_strict_string_identifier_value_object_not_trimmed() -> None:
+def test_slug_value_object_not_trimmed() -> None:
     """
     Test SlugValueObject value object raises ValueError when value is not trimmed.
     """
@@ -59,7 +59,7 @@ def test_strict_string_identifier_value_object_not_trimmed() -> None:
 
 
 @mark.unit_testing
-def test_strict_string_identifier_value_object_invalid_type() -> None:
+def test_slug_value_object_invalid_type() -> None:
     """
     Test SlugValueObject value object raises TypeError when value is not a string.
     """
