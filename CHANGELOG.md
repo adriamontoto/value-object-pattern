@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.25.0 (2026-02-17)
+
+### ✨ Features
+
+- Implement KeyValueObject and SlugValueObject implementations
+  ([`9304576`](https://github.com/adriamontoto/value-object-pattern/commit/930457684b0e480e2c01775d6cd6b3df6b9af389))
+
+
 ## v1.24.0 (2026-02-17)
 
 ### ✨ Features
