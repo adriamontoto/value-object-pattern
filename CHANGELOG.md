@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.24.0 (2026-02-17)
+
+### ✨ Features
+
+- Implement from_primitives method to DictValueObject
+  ([`bb4301a`](https://github.com/adriamontoto/value-object-pattern/commit/bb4301adb1831ae0740f3b47a5c3b0ffdf0d870d))
+
+
 ## v1.23.0 (2026-02-07)
 
 ### ✨ Features
