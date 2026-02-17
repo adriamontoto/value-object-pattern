@@ -15,7 +15,7 @@ from collections.abc import Iterator
 from enum import Enum
 from inspect import isclass
 from types import UnionType
-from typing import Any, Generic, ItemsView, KeysView, NoReturn, TypeVar, Union, ValuesView, get_args, get_origin
+from typing import Any, Generic, ItemsView, KeysView, NoReturn, Self, TypeVar, Union, ValuesView, get_args, get_origin
 
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import BaseModel, ValueObject
@@ -524,6 +524,59 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
             return type.__name__  # type: ignore[no-any-return]
 
         return str(type).replace('typing.', '')
+
+    @classmethod
+    def from_primitives(cls, value: dict[Any, Any]) -> Self:
+        """
+        Creates a DictValueObject from a dictionary of primitives.
+
+        Args:
+            value (dict[Any, Any]): The dictionary of primitives.
+
+        Returns:
+            Self: The created DictValueObject.
+        """
+        items: dict[Any, Any] = {}
+
+        for key, item in value.items():
+            primitive_key = cls._convert_from_primitives(value=key, expected_type=cls._key_type)
+            primitive_value = cls._convert_from_primitives(value=item, expected_type=cls._value_type)
+            items[primitive_key] = primitive_value
+
+        return cls(value=items)
+
+    @classmethod
+    def _convert_from_primitives(cls, *, value: Any, expected_type: Any) -> Any:
+        """
+        Converts a primitive value to the expected type.
+
+        Args:
+            value (Any): The primitive value to convert.
+            expected_type (Any): The expected type.
+
+        Returns:
+            Any: The converted value.
+        """
+        if expected_type is Any:
+            return value
+
+        origin = get_origin(tp=expected_type)
+        if origin in (Union, UnionType):
+            return value
+
+        if hasattr(expected_type, 'from_primitives'):
+            return expected_type.from_primitives(value)
+
+        if isclass(expected_type) and issubclass(expected_type, Enum):
+            if isinstance(value, expected_type):
+                return value
+
+            return expected_type(value)
+
+        if hasattr(expected_type, 'value'):
+            return expected_type(value=value)
+
+        return value
 
     def to_primitives(self) -> dict[Any, Any]:  # noqa: C901
         """

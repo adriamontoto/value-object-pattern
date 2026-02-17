@@ -16,7 +16,7 @@ from object_mother_pattern import IntegerMother
 from object_mother_pattern.models import BaseMother
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern import BaseModel, ValueObject
+from value_object_pattern import BaseModel, EnumerationValueObject, ValueObject
 from value_object_pattern.models.collections import DictValueObject
 
 
@@ -65,6 +65,12 @@ class AnyOrIntKeyDictValueObject(DictValueObject[int | Any, int]):
 class StrIntOrAnyValueDictValueObject(DictValueObject[str, int | Any]):
     """
     Dict value object storing string keys and any or int values.
+    """
+
+
+class IntOrStrIntOrStrDictValueObject(DictValueObject[int | str, int | str]):
+    """
+    Dict value object storing int or str keys and int or str values.
     """
 
 
@@ -248,6 +254,36 @@ class CustomKey:
 class CustomKeyIntDict(DictValueObject[CustomKey, int]):
     """
     Dict value object with custom key type without to_primitives.
+    """
+
+
+class ModelValue(BaseModel):
+    """
+    BaseModel used as dict value in from_primitives tests.
+    """
+
+    def __init__(self, name: str) -> None:
+        """
+        Initialize ModelValue.
+        """
+        self.name = name
+
+
+class StatusEnumValueObject(EnumerationValueObject[Status]):
+    """
+    Enumeration value object used in from_primitives tests.
+    """
+
+
+class StrModelValueDict(DictValueObject[str, ModelValue]):
+    """
+    Dict value object using BaseModel for values.
+    """
+
+
+class StatusEnumValueObjectDict(DictValueObject[StatusEnumValueObject, StatusEnumValueObject]):
+    """
+    Dict value object using EnumerationValueObject for both keys and values.
     """
 
 
@@ -670,6 +706,127 @@ def test_dict_value_object_type_label_formats_union_with_any_for_values() -> Non
     mapping = StrIntOrAnyValueDictValueObject(value={'a': 1})
 
     assert mapping._type_label(type=mapping._value_type) == 'int | Any'
+
+
+@mark.unit_testing
+def test_dict_value_object_from_primitives_with_primitive_types_keeps_values() -> None:
+    """
+    Test from_primitives keeps primitive keys and values unchanged.
+    """
+    mapping = StrIntDictValueObject.from_primitives(value={'a': 1, 'b': 2})
+
+    assert mapping.value == {'a': 1, 'b': 2}
+
+
+@mark.unit_testing
+def test_dict_value_object_from_primitives_with_any_types_keeps_values() -> None:
+    """
+    Test from_primitives keeps values unchanged when key/value annotations are Any.
+    """
+    raw = {'a': [1, 2], 3: {'nested': 'value'}}
+
+    mapping = AnyDictValueObject.from_primitives(value=raw)
+
+    assert mapping.value == raw
+
+
+@mark.unit_testing
+def test_dict_value_object_from_primitives_with_value_object_values_builds_instances() -> None:
+    """
+    Test from_primitives creates ValueObject values.
+    """
+    mapping = StrValueObjectDict.from_primitives(value={'x': 10, 'y': 20})
+
+    assert all(isinstance(item, SimpleValueObject) for item in mapping.values())
+    assert {key: item.value for key, item in mapping.items()} == {'x': 10, 'y': 20}
+
+
+@mark.unit_testing
+def test_dict_value_object_from_primitives_with_value_object_keys_builds_instances() -> None:
+    """
+    Test from_primitives creates ValueObject keys.
+    """
+    mapping = ValueObjectIntDict.from_primitives(value={1: 10, 2: 20})
+
+    assert all(isinstance(key, SimpleValueObject) for key in mapping)
+    assert {key.value: value for key, value in mapping.items()} == {1: 10, 2: 20}
+
+
+@mark.unit_testing
+def test_dict_value_object_from_primitives_with_base_model_values_builds_instances() -> None:
+    """
+    Test from_primitives creates BaseModel values from dictionaries.
+    """
+    mapping = StrModelValueDict.from_primitives(value={'user': {'name': 'alice'}})
+
+    value = next(iter(mapping.values()))
+
+    assert isinstance(value, ModelValue)
+    assert value.name == 'alice'
+
+
+@mark.unit_testing
+def test_dict_value_object_from_primitives_with_enum_keys_builds_members() -> None:
+    """
+    Test from_primitives creates Enum keys from primitive values.
+    """
+    mapping = EnumIntDict.from_primitives(value={'admin': 1, 'user': 2})
+
+    assert mapping.value == {DummyEnum.ADMIN: 1, DummyEnum.USER: 2}
+
+
+@mark.unit_testing
+def test_dict_value_object_from_primitives_with_enum_values_builds_members() -> None:
+    """
+    Test from_primitives creates Enum values from primitive values.
+    """
+    mapping = StrEnumDict.from_primitives(value={'u1': 'active', 'u2': 'inactive'})
+
+    assert mapping.value == {'u1': Status.ACTIVE, 'u2': Status.INACTIVE}
+
+
+@mark.unit_testing
+def test_dict_value_object_from_primitives_with_enumeration_value_object_builds_instances() -> None:
+    """
+    Test from_primitives creates EnumerationValueObject keys and values from primitive values.
+    """
+    mapping = StatusEnumValueObjectDict.from_primitives(value={'active': 'inactive'})
+
+    key = next(iter(mapping.keys()))
+    value = next(iter(mapping.values()))
+
+    assert isinstance(key, StatusEnumValueObject)
+    assert isinstance(value, StatusEnumValueObject)
+    assert key.value == Status.ACTIVE
+    assert value.value == Status.INACTIVE
+
+
+@mark.unit_testing
+def test_dict_value_object_from_primitives_with_union_key_and_value_returns_raw_items() -> None:
+    """
+    Test from_primitives keeps raw data when union key/value annotations are used.
+    """
+    mapping = IntOrStrIntOrStrDictValueObject.from_primitives(value={1: 'a', 'b': 2})
+
+    assert mapping.value == {1: 'a', 'b': 2}
+
+
+@mark.unit_testing
+def test_dict_value_object_from_primitives_with_invalid_enum_key_raises_type_error() -> None:
+    """
+    Test from_primitives raises when an enum key primitive is invalid.
+    """
+    with assert_raises(expected_exception=ValueError):
+        EnumIntDict.from_primitives(value={'unknown': 1})
+
+
+@mark.unit_testing
+def test_dict_value_object_from_primitives_with_invalid_enum_value_raises_type_error() -> None:
+    """
+    Test from_primitives raises when an enum value primitive is invalid.
+    """
+    with assert_raises(expected_exception=ValueError):
+        StrEnumDict.from_primitives(value={'u1': 'unknown'})
 
 
 @mark.unit_testing
