@@ -256,7 +256,22 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
 
         Example:
         ```python
-        # TODO:
+        from copy import copy
+
+        from value_object_pattern import ValueObject
+
+
+        class IntegerValueObject(ValueObject[int]):
+            pass
+
+
+        value_object = IntegerValueObject(value=7)
+        clone = copy(value_object)
+
+        print(clone is value_object)
+        print(clone == value_object)
+        # >>> False
+        # >>> True
         ```
         """
         return self.__class__(
@@ -277,7 +292,22 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
 
         Example:
         ```python
-        # TODO:
+        from copy import deepcopy
+
+        from value_object_pattern import ValueObject
+
+
+        class ListValueObject(ValueObject[list[int]]):
+            pass
+
+
+        value_object = ListValueObject(value=[1, 2])
+        clone = deepcopy(value_object)
+
+        print(clone is value_object)
+        print(clone.value is value_object.value)
+        # >>> False
+        # >>> False
         ```
         """
         if id(self) in memo:

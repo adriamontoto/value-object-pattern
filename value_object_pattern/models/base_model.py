@@ -242,7 +242,23 @@ class BaseModel(ABC):
 
         Example:
         ```python
-        # TODO:
+        from copy import copy
+
+        from value_object_pattern import BaseModel
+
+
+        class User(BaseModel):
+            def __init__(self, tags: list[str]) -> None:
+                self.tags = tags
+
+
+        user = User(tags=['admin'])
+        clone = copy(user)
+
+        print(clone is user)
+        print(clone.tags is user.tags)
+        # >>> False
+        # >>> True
         ```
         """
         cls = self.__class__
@@ -264,7 +280,23 @@ class BaseModel(ABC):
 
         Example:
         ```python
-        # TODO:
+        from copy import deepcopy
+
+        from value_object_pattern import BaseModel
+
+
+        class User(BaseModel):
+            def __init__(self, tags: list[str]) -> None:
+                self.tags = tags
+
+
+        user = User(tags=['admin'])
+        clone = deepcopy(user)
+
+        print(clone is user)
+        print(clone.tags is user.tags)
+        # >>> False
+        # >>> False
         ```
         """
         if id(self) in memo:
