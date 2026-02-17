@@ -1,4 +1,3 @@
-from .strict_string_identifier_value_object import StrictStringIdentifierValueObject
 from .uuid import (
     StringUuidV1ValueObject,
     StringUuidV3ValueObject,
@@ -19,7 +18,6 @@ from .uuid import (
 )
 
 __all__ = (
-    'StrictStringIdentifierValueObject',
     'StringUuidV1ValueObject',
     'StringUuidV3ValueObject',
     'StringUuidV4ValueObject',

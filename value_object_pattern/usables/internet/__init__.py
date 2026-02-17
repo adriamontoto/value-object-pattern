@@ -7,8 +7,10 @@ from .ipv4_address_value_object import Ipv4AddressValueObject
 from .ipv4_network_value_object import Ipv4NetworkValueObject
 from .ipv6_address_value_object import Ipv6AddressValueObject
 from .ipv6_network_value_object import Ipv6NetworkValueObject
+from .key_value_object import KeyValueObject
 from .mac_address_value_object import MacAddressValueObject
 from .port_value_object import PortValueObject
+from .slug_value_object import SlugValueObject
 from .uri import HttpHttpsUrlValueObject, HttpUrlValueObject, HttpsUrlValueObject, UrlValueObject
 
 __all__ = (
@@ -24,7 +26,9 @@ __all__ = (
     'Ipv4NetworkValueObject',
     'Ipv6AddressValueObject',
     'Ipv6NetworkValueObject',
+    'KeyValueObject',
     'MacAddressValueObject',
     'PortValueObject',
+    'SlugValueObject',
     'UrlValueObject',
 )

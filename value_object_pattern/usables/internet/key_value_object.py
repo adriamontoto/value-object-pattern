@@ -1,5 +1,5 @@
 """
-StrictStringIdentifierValueObject value object.
+KeyValueObject value object.
 """
 
 from re import Pattern, compile as re_compile
@@ -9,14 +9,12 @@ from value_object_pattern.decorators import validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
 
-class StrictStringIdentifierValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
+class KeyValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    StrictStringIdentifierValueObject ensures the provided value is a strict identifier string.
-
-    The allowed characters are lower-case letters (`a-z`), digits (`0-9`), and hyphen (`-`).
+    KeyValueObject ensures the provided value is a valid key string.
     """
 
-    _VALIDATION_REGEX: Pattern[str] = re_compile(pattern=r'[a-z0-9-]+')
+    _VALIDATION_REGEX: Pattern[str] = re_compile(pattern=r'^[a-z0-9]+(?:[.-][a-z0-9]+)*$')
 
     @validation(order=0)
     def _ensure_value_follows_validation_regex(self, value: str) -> None:
@@ -42,4 +40,4 @@ class StrictStringIdentifierValueObject(NotEmptyStringValueObject, TrimmedString
         Raises:
             ValueError: If the `value` contains invalid characters.
         """
-        raise ValueError(f'StrictStringIdentifierValueObject value <<<{value}>>> contains invalid characters. Only a-z, 0-9, and - are allowed.')  # noqa: E501  # fmt: skip
+        raise ValueError(f'KeyValueObject value <<<{value}>>> has invalid format. Only lowercase letters and digits separated by single hyphens or dots are allowed.')  # noqa: E501  # fmt: skip
