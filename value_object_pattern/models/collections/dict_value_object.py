@@ -18,7 +18,8 @@ from types import UnionType
 from typing import Any, Generic, ItemsView, KeysView, NoReturn, Self, TypeVar, Union, ValuesView, get_args, get_origin
 
 from value_object_pattern.decorators import validation
-from value_object_pattern.models import BaseModel, ValueObject
+from value_object_pattern.models import ValueObject
+from value_object_pattern.models.primitive_conversion import to_primitive
 
 K = TypeVar('K', bound=Any)
 V = TypeVar('V', bound=Any)
@@ -578,7 +579,7 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
 
         return value
 
-    def to_primitives(self) -> dict[Any, Any]:  # noqa: C901
+    def to_primitives(self) -> dict[Any, Any]:
         """
         Returns the dictionary as a dictionary of primitives, recursively converting each key and value.
 
@@ -604,59 +605,10 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
         # >>> {'john': 30, 'jane': 25}
         ```
         """
-        primitive_types: tuple[type, ...] = (int, float, str, bool, bytes, bytearray, memoryview, type(None))
-        collection_types: tuple[type, ...] = (list, dict, tuple, set, frozenset)
-
-        primitives_dict: dict[Any, Any] = {}
+        dictionary: dict[Any, Any] = {}
         for key, value in self._value.items():
-            primitive_key = key
-            if isinstance(key, BaseModel) or hasattr(key, 'to_primitives'):
-                primitive_key = key.to_primitives()  # type: ignore[assignment]
+            primitive_key = to_primitive(value=key)
+            primitive_value = to_primitive(value=value)
+            dictionary[primitive_key] = primitive_value
 
-            elif isinstance(key, Enum):
-                primitive_key = key.value
-
-            elif isinstance(key, ValueObject) or hasattr(key, 'value'):
-                key_value = key.value
-
-                if isinstance(key_value, Enum):
-                    key_value = key_value.value
-
-                primitive_key = key_value
-
-            elif isinstance(key, primitive_types):  # noqa: SIM114
-                pass
-
-            elif isinstance(key, collection_types):
-                pass
-
-            else:
-                primitive_key = str(object=key)  # type: ignore[assignment]
-
-            primitive_value = value
-            if isinstance(value, BaseModel) or hasattr(value, 'to_primitives'):
-                primitive_value = value.to_primitives()  # type: ignore[assignment]
-
-            elif isinstance(value, Enum):
-                primitive_value = value.value
-
-            elif isinstance(value, ValueObject) or hasattr(value, 'value'):
-                val_value = value.value
-
-                if isinstance(val_value, Enum):
-                    val_value = val_value.value
-
-                primitive_value = val_value
-
-            elif isinstance(value, primitive_types):  # noqa: SIM114
-                pass
-
-            elif isinstance(value, collection_types):
-                pass
-
-            else:
-                primitive_value = str(object=value)  # type: ignore[assignment]
-
-            primitives_dict[primitive_key] = primitive_value
-
-        return primitives_dict
+        return dictionary

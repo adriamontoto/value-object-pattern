@@ -19,6 +19,7 @@ from typing import Any, Generic, NoReturn, Self, TypeVar, Union, get_args, get_o
 
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import BaseModel, ValueObject
+from value_object_pattern.models.primitive_conversion import to_primitive
 
 T = TypeVar('T', bound=Any)
 
@@ -784,32 +785,4 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         # >>> [10, 20]
         ```
         """
-        primitive_types: tuple[type, ...] = (int, float, str, bool, bytes, bytearray, memoryview, type(None))
-        collection_types: tuple[type, ...] = (list, dict, tuple, set, frozenset)
-
-        primitives_list: list[Any] = []
-        for item in self._value:
-            if isinstance(item, BaseModel) or hasattr(item, 'to_primitives'):
-                primitives_list.append(item.to_primitives())
-
-            elif isinstance(item, Enum):
-                primitives_list.append(item.value)
-
-            elif isinstance(item, ValueObject) or hasattr(item, 'value'):
-                value = item.value
-
-                if isinstance(value, Enum):
-                    value = value.value
-
-                primitives_list.append(value)
-
-            elif isinstance(item, primitive_types):  # noqa: SIM114
-                primitives_list.append(item)
-
-            elif isinstance(item, collection_types):
-                primitives_list.append(item)
-
-            else:
-                primitives_list.append(str(object=item))
-
-        return primitives_list
+        return [to_primitive(value=item) for item in self._value]

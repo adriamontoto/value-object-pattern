@@ -927,6 +927,23 @@ def test_dict_value_object_to_primitives_with_nested_collections() -> None:
 
 
 @mark.unit_testing
+def test_dict_value_object_to_primitives_recursively_converts_nested_value_objects_in_collections() -> None:
+    """
+    Test to_primitives recursively converts nested ValueObject values inside collections.
+    """
+    dict_value_object = AnyValueDictValueObject(
+        value={
+            'nums': [SimpleValueObject(value=1), SimpleValueObject(value=2)],
+            'nested': {'value': SimpleValueObject(value=3)},
+        }
+    )
+
+    primitives = dict_value_object.to_primitives()
+
+    assert primitives == {'nums': [1, 2], 'nested': {'value': 3}}
+
+
+@mark.unit_testing
 def test_dict_value_object_to_primitives_with_empty_dict() -> None:
     """
     Test to_primitives returns an empty dict when the value object is empty.

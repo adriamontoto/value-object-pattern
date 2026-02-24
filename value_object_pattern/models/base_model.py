@@ -17,6 +17,7 @@ from enum import Enum
 from inspect import Parameter, _empty, signature
 from typing import Any, NoReturn, Self
 
+from .primitive_conversion import to_primitive
 from .value_object import ValueObject
 
 
@@ -457,32 +458,8 @@ class BaseModel(ABC):
         # >>> {'name': 'John Doe', 'birthdate': '1900-01-01T00:00:00+00:00'}
         ```
         """
-        primitive_types: tuple[type, ...] = (int, float, str, bool, bytes, bytearray, memoryview, type(None))
-        collection_types: tuple[type, ...] = (list, dict, tuple, set, frozenset)
-
         dictionary = self._to_dict(ignore_private=True)
         for key, value in dictionary.items():
-            if isinstance(value, BaseModel) or hasattr(value, 'to_primitives'):
-                value = value.to_primitives()
-
-            elif isinstance(value, Enum):
-                value = value.value
-
-            elif isinstance(value, ValueObject) or hasattr(value, 'value'):
-                value = value.value
-
-                if isinstance(value, Enum):
-                    value = value.value
-
-            elif isinstance(value, primitive_types):  # noqa: SIM114
-                pass
-
-            elif isinstance(value, collection_types):
-                pass
-
-            else:
-                value = str(object=value)
-
-            dictionary[key] = value
+            dictionary[key] = to_primitive(value=value)
 
         return dictionary

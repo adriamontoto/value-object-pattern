@@ -946,6 +946,16 @@ def test_list_value_object_to_primitives_with_nested_collections() -> None:
 
 
 @mark.unit_testing
+def test_list_value_object_to_primitives_recursively_converts_nested_value_objects_in_collections() -> None:
+    """
+    Test to_primitives recursively converts nested ValueObject values inside collections.
+    """
+    list_vo = AnyListValueObject(value=[[Age(value=1), Age(value=2)], {'age': Age(value=3)}])
+
+    assert list_vo.to_primitives() == [[1, 2], {'age': 3}]
+
+
+@mark.unit_testing
 def test_list_value_object_to_primitives_with_mixed_types() -> None:
     """
     Test to_primitives handles mixed types including primitives, ValueObjects, and BaseModels.
