@@ -20,6 +20,7 @@ from typing import Any, Generic, NoReturn, Self, TypeVar, Union, get_args, get_o
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import BaseModel, ValueObject
 from value_object_pattern.models.primitive_conversion import from_primitive, to_primitive
+from value_object_pattern.models.type_matching import matches_expected_type
 
 T = TypeVar('T', bound=Any)
 
@@ -314,25 +315,8 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         if self._type is Any:
             return
 
-        origin = get_origin(tp=self._type)
-        if origin in (Union, UnionType):
-            allowed_types: list[type[Any] | UnionType] = []
-            for allowed in get_args(self._type):
-                if allowed is Any:
-                    return
-
-                allowed_origin = get_origin(tp=allowed)
-                allowed_types.append(allowed_origin or allowed)
-
-            for item in value:
-                if not any(isinstance(item, allowed) for allowed in allowed_types):
-                    self._raise_value_is_not_of_type(value=item)
-
-            return
-
-        expected_type = origin or self._type
         for item in value:
-            if not isinstance(item, expected_type):
+            if not matches_expected_type(value=item, expected_type=self._type):
                 self._raise_value_is_not_of_type(value=item)
 
     def _raise_value_is_not_of_type(self, value: Any) -> NoReturn:
@@ -723,6 +707,25 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
 
         Returns:
             Self: The created ListValueObject.
+
+        Example:
+        ```python
+        from value_object_pattern.models import ValueObject
+        from value_object_pattern.models.collections import ListValueObject
+
+
+        class Age(ValueObject[int]):
+            pass
+
+
+        class AgeListValueObject(ListValueObject[Age]):
+            pass
+
+
+        age_list = AgeListValueObject.from_primitives(value=[10, 20, 30])
+        print([age.value for age in age_list])
+        # >>> [10, 20, 30]
+        ```
         """
         return cls(value=[from_primitive(value=item, expected_type=cls._type) for item in value])
 

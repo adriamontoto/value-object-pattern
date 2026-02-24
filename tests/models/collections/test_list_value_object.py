@@ -74,6 +74,21 @@ class TagListValueObject(ListValueObject[Tag]):
     """
 
 
+class TagStatus(Enum):
+    """
+    Enum used to validate union conversion in list from_primitives.
+    """
+
+    OPEN = 'open'
+    CLOSED = 'closed'
+
+
+class TagOrStatusListValueObject(ListValueObject[Tag | TagStatus]):
+    """
+    List value object storing Tag models or TagStatus members.
+    """
+
+
 class AnyListValueObject(ListValueObject[Any]):
     """
     List value object storing any items (used for representation and conversion coverage).
@@ -415,6 +430,18 @@ def test_list_value_object_union_rejects_out_of_union_type() -> None:
 
 
 @mark.unit_testing
+def test_list_value_object_union_rejects_bool_when_union_contains_int() -> None:
+    """
+    Test that bool values are rejected for int | str unions.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'.* value <<<True>>> must be of type <<<int \| str>>> type\. Got <<<bool>>> type\.',
+    ):
+        IntStrListValueObject(value=[1, True])
+
+
+@mark.unit_testing
 def test_list_value_object_union_with_any_allows_anything() -> None:
     """
     Test that union containing Any returns early in validation.
@@ -434,6 +461,18 @@ def test_list_value_object_union_convert_from_primitives_returns_value_unchanged
     sequence = ObjOrIntListValueObject(value=[1])
 
     assert sequence.add_from_primitives(item=value).value[-1] is value
+
+
+@mark.unit_testing
+def test_list_value_object_from_primitives_converts_union_items_to_matching_candidates() -> None:
+    """
+    Test from_primitives converts each union item to the first matching candidate.
+    """
+    sequence = TagOrStatusListValueObject.from_primitives(value=[{'name': 'feature'}, 'open'])
+
+    assert isinstance(sequence.value[0], Tag)
+    assert sequence.value[0].name == 'feature'
+    assert sequence.value[1] is TagStatus.OPEN
 
 
 @mark.unit_testing

@@ -19,6 +19,7 @@ from typing import Any, Generic, ItemsView, KeysView, NoReturn, Self, TypeVar, U
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import ValueObject
 from value_object_pattern.models.primitive_conversion import from_primitive, to_primitive
+from value_object_pattern.models.type_matching import matches_expected_type
 
 K = TypeVar('K', bound=Any)
 V = TypeVar('V', bound=Any)
@@ -325,25 +326,8 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
         if self._key_type is Any:
             return
 
-        origin = get_origin(tp=self._key_type)
-        if origin in (Union, UnionType):
-            allowed_types: list[type[Any] | UnionType] = []
-            for allowed in get_args(self._key_type):
-                if allowed is Any:
-                    return
-
-                allowed_origin = get_origin(tp=allowed)
-                allowed_types.append(allowed_origin or allowed)
-
-            for key in value.keys():  # noqa: SIM118
-                if not any(isinstance(key, allowed) for allowed in allowed_types):
-                    self._raise_key_is_not_of_type(value=key)
-
-            return
-
-        expected_type = origin or self._key_type
         for key in value.keys():  # noqa: SIM118
-            if not isinstance(key, expected_type):
+            if not matches_expected_type(value=key, expected_type=self._key_type):
                 self._raise_key_is_not_of_type(value=key)
 
     def _raise_key_is_not_of_type(self, value: Any) -> NoReturn:
@@ -372,25 +356,8 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
         if self._value_type is Any:
             return
 
-        origin = get_origin(tp=self._value_type)
-        if origin in (Union, UnionType):
-            allowed_types: list[type[Any] | UnionType] = []
-            for allowed in get_args(self._value_type):
-                if allowed is Any:
-                    return
-
-                allowed_origin = get_origin(tp=allowed)
-                allowed_types.append(allowed_origin or allowed)
-
-            for item in value.values():
-                if not any(isinstance(item, allowed) for allowed in allowed_types):
-                    self._raise_value_is_not_of_type(value=item)
-
-            return
-
-        expected_type = origin or self._value_type
         for item in value.values():
-            if not isinstance(item, expected_type):
+            if not matches_expected_type(value=item, expected_type=self._value_type):
                 self._raise_value_is_not_of_type(value=item)
 
     def _raise_value_is_not_of_type(self, value: Any) -> NoReturn:
@@ -430,7 +397,7 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
         # >>> 3
         ```
         """
-        if default is not None and not self._is_instance_of_type(value=default, expected_type=self._value_type):
+        if default is not None and not matches_expected_type(value=default, expected_type=self._value_type):
             self._raise_value_is_not_of_type(value=default)
 
         return self._value.get(key, default)
@@ -457,36 +424,6 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
         ```
         """
         return not self._value
-
-    @staticmethod
-    def _is_instance_of_type(*, value: Any, expected_type: Any) -> bool:
-        """
-        Checks if the value matches the expected type, supporting unions and Any.
-
-        Args:
-            value (Any): The value to check.
-            expected_type (Any): The expected type or typing annotation.
-
-        Returns:
-            bool: True if the value matches the expected type, otherwise False.
-        """
-        if expected_type is Any:
-            return True
-
-        origin = get_origin(tp=expected_type)
-        if origin in (Union, UnionType):
-            for allowed in get_args(expected_type):
-                if allowed is Any:
-                    return True
-
-                allowed_origin = get_origin(tp=allowed) or allowed
-                if isinstance(value, allowed_origin):
-                    return True
-
-            return False
-
-        expected = origin or expected_type
-        return isinstance(value, expected)
 
     @staticmethod
     def _type_label(*, type: Any) -> str:
@@ -538,7 +475,21 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
 
         Example:
         ```python
-        TODO:
+        from value_object_pattern.models import ValueObject
+        from value_object_pattern.models.collections import DictValueObject
+
+
+        class Age(ValueObject[int]):
+            pass
+
+
+        class StrAgeDict(DictValueObject[str, Age]):
+            pass
+
+
+        dictionary = StrAgeDict.from_primitives(value={'john': 30, 'jane': 25})
+        print({key: age.value for key, age in dictionary.items()})
+        # >>> {'john': 30, 'jane': 25}
         ```
         """
         dictionary: dict[Any, Any] = {}

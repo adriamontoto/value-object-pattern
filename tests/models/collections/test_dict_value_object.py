@@ -281,6 +281,12 @@ class StrModelValueDict(DictValueObject[str, ModelValue]):
     """
 
 
+class StrModelValueOrStatusDict(DictValueObject[str, ModelValue | Status]):
+    """
+    Dict value object using a union of BaseModel and Enum for values.
+    """
+
+
 class StatusEnumValueObjectDict(DictValueObject[StatusEnumValueObject, StatusEnumValueObject]):
     """
     Dict value object using EnumerationValueObject for both keys and values.
@@ -607,6 +613,20 @@ def test_dict_value_object_get_rejects_default_outside_union_value_types() -> No
 
 
 @mark.unit_testing
+def test_dict_value_object_get_rejects_bool_default_when_union_contains_int() -> None:
+    """
+    Test that get rejects bool defaults for int | str unions.
+    """
+    mapping = StrIntOrStrValueDictValueObject(value={'a': 1})
+
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'DictValueObject value <<<True>>> must be of type <<<int \| str>>> type\. Got <<<bool>>> type\.',
+    ):
+        mapping.get(key='missing', default=True)
+
+
+@mark.unit_testing
 def test_dict_value_object_get_accepts_default_inside_union_value_types() -> None:
     """
     Test that get accepts default that matches the value union.
@@ -647,6 +667,18 @@ def test_dict_value_object_union_key_rejects_out_of_union_type() -> None:
 
 
 @mark.unit_testing
+def test_dict_value_object_union_key_rejects_bool_when_union_contains_int() -> None:
+    """
+    Test that bool keys are rejected for int | str unions.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'DictValueObject value <<<True>>> must be of type <<<int \| str>>> type\. Got <<<bool>>> type\.',
+    ):
+        IntOrStrKeyDictValueObject(value={True: 1})
+
+
+@mark.unit_testing
 def test_dict_value_object_accepts_union_value_types() -> None:
     """
     Test that DictValueObject accepts union value types (int | str).
@@ -666,6 +698,18 @@ def test_dict_value_object_union_value_rejects_out_of_union_type() -> None:
         match=r'DictValueObject value <<<.*>>> must be of type <<<int \| str>>> type\. Got <<<.*>>> type\.',
     ):
         StrIntOrStrValueDictValueObject(value={'a': 1, 'b': 2.5})  # type: ignore[dict-item]
+
+
+@mark.unit_testing
+def test_dict_value_object_union_value_rejects_bool_when_union_contains_int() -> None:
+    """
+    Test that bool values are rejected for int | str unions.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'DictValueObject value <<<True>>> must be of type <<<int \| str>>> type\. Got <<<bool>>> type\.',
+    ):
+        StrIntOrStrValueDictValueObject(value={'a': True})
 
 
 @mark.unit_testing
@@ -783,6 +827,18 @@ def test_dict_value_object_from_primitives_with_enum_values_builds_members() -> 
     mapping = StrEnumDict.from_primitives(value={'u1': 'active', 'u2': 'inactive'})
 
     assert mapping.value == {'u1': Status.ACTIVE, 'u2': Status.INACTIVE}
+
+
+@mark.unit_testing
+def test_dict_value_object_from_primitives_with_union_value_candidates_builds_matching_types() -> None:
+    """
+    Test from_primitives converts union values to the first matching candidate type.
+    """
+    mapping = StrModelValueOrStatusDict.from_primitives(value={'m': {'name': 'alice'}, 's': 'active'})
+
+    assert isinstance(mapping.value['m'], ModelValue)
+    assert mapping.value['m'].name == 'alice'
+    assert mapping.value['s'] is Status.ACTIVE
 
 
 @mark.unit_testing

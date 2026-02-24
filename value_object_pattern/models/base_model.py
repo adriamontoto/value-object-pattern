@@ -14,9 +14,11 @@ else:
 from abc import ABC, abstractmethod
 from copy import deepcopy
 from inspect import Parameter, _empty, signature
-from typing import Any, NoReturn, Self, get_type_hints
+from types import UnionType
+from typing import Any, NoReturn, Self, Union, get_args, get_origin, get_type_hints
 
 from .primitive_conversion import from_primitive, to_primitive
+from .type_matching import matches_expected_type
 
 
 class BaseModel(ABC):
@@ -393,10 +395,21 @@ class BaseModel(ABC):
                 continue
 
             expected_type = constructor_annotations.get(parameter_name, parameters[parameter_name].annotation)
-            converted_primitives[parameter_name] = from_primitive(
+            converted_value = from_primitive(
                 value=primitives[parameter_name],
                 expected_type=expected_type,
             )
+            if get_origin(tp=expected_type) in (Union, UnionType) and not matches_expected_type(
+                value=converted_value,
+                expected_type=expected_type,
+            ):
+                cls._raise_value_is_not_of_type(
+                    parameter=parameter_name,
+                    value=converted_value,
+                    expected_type=expected_type,
+                )
+
+            converted_primitives[parameter_name] = converted_value
 
         return cls(**converted_primitives)
 
@@ -413,6 +426,45 @@ class BaseModel(ABC):
 
         except Exception:
             return {}
+
+    @classmethod
+    def _raise_value_is_not_of_type(cls, *, parameter: str, value: Any, expected_type: Any) -> NoReturn:
+        """
+        Raises a TypeError when a primitive cannot be converted to the expected type.
+
+        Args:
+            parameter (str): Constructor parameter name.
+            value (Any): Converted value.
+            expected_type (Any): Expected type annotation.
+
+        Raises:
+            TypeError: When value is not of expected type.
+        """
+        raise TypeError(f'{cls.__name__} parameter <<<{parameter}>>> value <<<{value}>>> must be of type <<<{cls._type_label(type=expected_type)}>>> type. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
+
+    @staticmethod
+    def _type_label(*, type: Any) -> str:
+        """
+        Returns a readable label for the given type annotation.
+
+        Args:
+            type (Any): Type annotation.
+
+        Returns:
+            str: Formatted type label.
+        """
+        origin = get_origin(tp=type)
+        if origin in (Union, UnionType):
+            parts = [BaseModel._type_label(type=item) for item in get_args(type)]
+            return ' | '.join(parts)
+
+        if type is Any:
+            return 'Any'
+
+        if hasattr(type, '__name__'):
+            return type.__name__  # type: ignore[no-any-return]
+
+        return str(type).replace('typing.', '')
 
     @classmethod
     def _raise_value_is_not_dict_of_strings(cls, value: Any) -> NoReturn:

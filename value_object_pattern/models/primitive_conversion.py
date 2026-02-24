@@ -9,6 +9,7 @@ from inspect import _empty, isclass
 from types import UnionType
 from typing import Any, Union, get_args, get_origin
 
+from .type_matching import matches_expected_type
 from .value_object import ValueObject
 
 PRIMITIVE_TYPES: tuple[type, ...] = (int, float, str, bool, bytes, bytearray, memoryview, type(None))
@@ -149,9 +150,14 @@ def _convert_union_from_primitive(*, value: Any, expected_type: Any) -> Any:
     last_error: Exception | None = None
     for allowed_type in get_args(expected_type):
         try:
-            return from_primitive(value=value, expected_type=allowed_type)
+            converted_value = from_primitive(value=value, expected_type=allowed_type)
+
         except Exception as error:
             last_error = error
+            continue
+
+        if matches_expected_type(value=converted_value, expected_type=allowed_type):
+            return converted_value
 
     _ = last_error
     return value

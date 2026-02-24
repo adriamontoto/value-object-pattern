@@ -13,7 +13,7 @@ else:
 
 from enum import Enum
 
-from pytest import mark
+from pytest import mark, raises as assert_raises
 
 from value_object_pattern import BaseModel, UnionValueObject, ValueObject
 from value_object_pattern.models.collections import DictValueObject, ListValueObject
@@ -139,6 +139,30 @@ class TagOrStatus(UnionValueObject[Tag | Status]):
     """
     Union value object used in from_primitives tests.
     """
+
+
+class IntOrTagModel(BaseModel):
+    """
+    Base model with a union field used to test recursive union conversion.
+    """
+
+    def __init__(self, payload: int | Tag) -> None:
+        """
+        Constructor for union field model.
+        """
+        self.payload = payload
+
+
+class IntOrStrModel(BaseModel):
+    """
+    Base model with primitive union field used to validate strict union matching.
+    """
+
+    def __init__(self, mode: int | str) -> None:
+        """
+        Constructor for primitive union field model.
+        """
+        self.mode = mode
 
 
 class SecondaryStatus(Enum):
@@ -467,6 +491,40 @@ def test_union_value_object_from_primitives_builds_enum_candidate() -> None:
     union = TagOrStatus.from_primitives(value='on')
 
     assert union.value is Status.ON
+
+
+@mark.unit_testing
+def test_from_primitive_union_tries_next_candidate_when_previous_candidate_does_not_match() -> None:
+    """
+    Test union conversion keeps iterating when a candidate returns an unchanged, non-matching value.
+    """
+    converted = from_primitive(value={'name': 'feature'}, expected_type=int | Tag)
+
+    assert isinstance(converted, Tag)
+    assert converted.name == 'feature'
+
+
+@mark.unit_testing
+def test_base_model_from_primitives_converts_union_field_to_matching_candidate() -> None:
+    """
+    Test BaseModel.from_primitives converts union fields using the first matching candidate.
+    """
+    model = IntOrTagModel.from_primitives(primitives={'payload': {'name': 'fix'}})
+
+    assert isinstance(model.payload, Tag)
+    assert model.payload.name == 'fix'
+
+
+@mark.unit_testing
+def test_base_model_from_primitives_raises_when_union_field_matches_no_candidate() -> None:
+    """
+    Test BaseModel.from_primitives raises TypeError when a union field does not match any candidate.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'IntOrStrModel parameter <<<mode>>> value <<<1\.5>>> must be of type <<<int \| str>>> type\. Got <<<float>>> type\.',  # noqa: E501
+    ):
+        IntOrStrModel.from_primitives(primitives={'mode': 1.5})
 
 
 @mark.unit_testing
