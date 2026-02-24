@@ -4,11 +4,20 @@ Test primitive conversion helpers.
 
 from __future__ import annotations
 
+from sys import version_info
+
+if version_info >= (3, 12):
+    from typing import override  # pragma: no cover
+else:
+    from typing_extensions import override  # pragma: no cover
+
+from enum import Enum
+
 from pytest import mark
 
-from value_object_pattern import BaseModel, ValueObject
-from value_object_pattern.models.collections import ListValueObject
-from value_object_pattern.models.primitive_conversion import to_primitive
+from value_object_pattern import BaseModel, UnionValueObject, ValueObject
+from value_object_pattern.models.collections import DictValueObject, ListValueObject
+from value_object_pattern.models.primitive_conversion import from_primitive, to_primitive
 
 
 class SelfToPrimitives:
@@ -22,6 +31,7 @@ class SelfToPrimitives:
         """
         return self
 
+    @override
     def __str__(self) -> str:
         """
         Stable string representation.
@@ -40,6 +50,7 @@ class SelfValueAttribute:
         """
         self.value = self
 
+    @override
     def __str__(self) -> str:
         """
         Stable string representation.
@@ -89,6 +100,111 @@ class NumberList(ListValueObject[Number]):
     """
     List value object storing Number items.
     """
+
+
+class NumberMatrix(ListValueObject[list[Number]]):
+    """
+    List value object storing nested lists of Number items.
+    """
+
+
+class NestedNumberMap(DictValueObject[str, dict[str, Number]]):
+    """
+    Dict value object storing nested dictionaries of Number items.
+    """
+
+
+class Status(Enum):
+    """
+    Enumeration used in union from_primitives tests.
+    """
+
+    ON = 'on'
+    OFF = 'off'
+
+
+class Tag(BaseModel):
+    """
+    Simple model used in union from_primitives tests.
+    """
+
+    def __init__(self, name: str) -> None:
+        """
+        Tag model constructor.
+        """
+        self.name = name
+
+
+class TagOrStatus(UnionValueObject[Tag | Status]):
+    """
+    Union value object used in from_primitives tests.
+    """
+
+
+class SecondaryStatus(Enum):
+    """
+    Secondary enum used to exercise union fallback paths.
+    """
+
+    UP = 'up'
+    DOWN = 'down'
+
+
+class ClassWithValueAttribute:
+    """
+    Class exposing a class-level value descriptor and value constructor.
+    """
+
+    _value: str
+
+    def __init__(self, value: str) -> None:
+        """
+        Initialize class with value.
+        """
+        self._value = value
+
+    @property
+    def value(self) -> str:
+        """
+        Expose value as a property.
+        """
+        return self._value
+
+
+class ClassWithStrictFromPrimitives:
+    """
+    Class with strict from_primitives validation used to exercise fallback paths.
+    """
+
+    raw: dict[str, int]
+
+    def __init__(self, raw: dict[str, int]) -> None:
+        """
+        Initialize with validated raw payload.
+        """
+        self.raw = raw
+
+    @classmethod
+    def from_primitives(cls, value: dict[str, int]) -> ClassWithStrictFromPrimitives:
+        """
+        Accept only payloads with the key "ok".
+        """
+        if 'ok' not in value:
+            raise ValueError('Missing key "ok".')
+
+        return cls(raw=value)
+
+
+class ToPrimitivesInvalidPayload:
+    """
+    Helper object that produces invalid payload for ClassWithStrictFromPrimitives.
+    """
+
+    def to_primitives(self) -> dict[str, int]:
+        """
+        Return invalid payload to trigger conversion fallback.
+        """
+        return {'bad': 1}
 
 
 class LeafModel(BaseModel):
@@ -286,3 +402,248 @@ def test_base_model_roundtrip_with_four_nested_levels() -> None:
     assert isinstance(model.level2.level3.level4.code, Number)
     assert model.level2.level3.level4.code.value == 41
     assert model.to_primitives() == primitives
+
+
+@mark.unit_testing
+def test_from_primitive_recursively_converts_nested_list_annotation() -> None:
+    """
+    Test from_primitive recursively converts nested list annotations.
+    """
+    converted = from_primitive(value=[[1, 2], [3]], expected_type=list[list[Number]])
+
+    assert all(isinstance(item, list) for item in converted)
+    assert [[number.value for number in inner] for inner in converted] == [[1, 2], [3]]
+
+
+@mark.unit_testing
+def test_from_primitive_recursively_converts_nested_dict_annotation() -> None:
+    """
+    Test from_primitive recursively converts nested dict annotations.
+    """
+    converted = from_primitive(value={'group': {'a': 1, 'b': 2}}, expected_type=dict[str, dict[str, Number]])
+
+    assert isinstance(converted['group']['a'], Number)
+    assert {key: item.value for key, item in converted['group'].items()} == {'a': 1, 'b': 2}
+
+
+@mark.unit_testing
+def test_list_value_object_from_primitives_recursively_converts_nested_inner_types() -> None:
+    """
+    Test ListValueObject.from_primitives recursively converts nested inner items.
+    """
+    matrix = NumberMatrix.from_primitives(value=[[1, 2], [3]])
+
+    assert all(isinstance(number, Number) for row in matrix.value for number in row)
+    assert matrix.to_primitives() == [[1, 2], [3]]
+
+
+@mark.unit_testing
+def test_dict_value_object_from_primitives_recursively_converts_nested_inner_types() -> None:
+    """
+    Test DictValueObject.from_primitives recursively converts nested inner values.
+    """
+    mapping = NestedNumberMap.from_primitives(value={'group': {'a': 1, 'b': 2}})
+
+    assert isinstance(mapping.value['group']['a'], Number)
+    assert mapping.to_primitives() == {'group': {'a': 1, 'b': 2}}
+
+
+@mark.unit_testing
+def test_union_value_object_from_primitives_builds_base_model_candidate() -> None:
+    """
+    Test UnionValueObject.from_primitives builds the matching BaseModel candidate.
+    """
+    union = TagOrStatus.from_primitives(value={'name': 'feature'})
+
+    assert isinstance(union.value, Tag)
+    assert union.value.name == 'feature'
+
+
+@mark.unit_testing
+def test_union_value_object_from_primitives_builds_enum_candidate() -> None:
+    """
+    Test UnionValueObject.from_primitives builds the matching enum candidate.
+    """
+    union = TagOrStatus.from_primitives(value='on')
+
+    assert union.value is Status.ON
+
+
+@mark.unit_testing
+def test_from_primitive_union_returns_raw_value_when_all_candidates_fail() -> None:
+    """
+    Test union conversion fallback to raw value when every candidate raises.
+    """
+    converted = from_primitive(value='invalid', expected_type=Status | SecondaryStatus)
+
+    assert converted == 'invalid'
+
+
+@mark.unit_testing
+def test_from_primitive_returns_raw_value_for_unsupported_origin() -> None:
+    """
+    Test unsupported typing origins return the input value unchanged.
+    """
+    converted = from_primitive(value='x', expected_type=type[int])
+
+    assert converted == 'x'
+
+
+@mark.unit_testing
+def test_from_primitive_list_returns_raw_value_when_input_is_not_list() -> None:
+    """
+    Test list conversion branch returns raw value when input is not a list.
+    """
+    converted = from_primitive(value='x', expected_type=list[int])
+
+    assert converted == 'x'
+
+
+@mark.unit_testing
+def test_from_primitive_tuple_returns_raw_value_when_input_is_not_sequence() -> None:
+    """
+    Test tuple conversion returns raw value when input is not list/tuple.
+    """
+    converted = from_primitive(value='x', expected_type=tuple[int, ...])
+
+    assert converted == 'x'
+
+
+@mark.unit_testing
+def test_from_primitive_tuple_handles_ellipsis_annotation() -> None:
+    """
+    Test tuple conversion for variable-length tuple annotations.
+    """
+    converted = from_primitive(value=[1, 2, 3], expected_type=tuple[int, ...])
+
+    assert converted == (1, 2, 3)
+
+
+@mark.unit_testing
+def test_from_primitive_tuple_returns_sequence_when_length_mismatch() -> None:
+    """
+    Test tuple conversion returns raw tuple when fixed-length annotation does not match length.
+    """
+    converted = from_primitive(value=[1, 2], expected_type=tuple[int, str, bool])
+
+    assert converted == (1, 2)
+
+
+@mark.unit_testing
+def test_from_primitive_tuple_converts_fixed_length_tuple() -> None:
+    """
+    Test tuple conversion for fixed-length tuple annotations.
+    """
+    converted = from_primitive(value=[1, 'x'], expected_type=tuple[int, str])
+
+    assert converted == (1, 'x')
+
+
+@mark.unit_testing
+def test_from_primitive_set_converts_supported_sequence_inputs() -> None:
+    """
+    Test set conversion branch for sequence inputs.
+    """
+    converted = from_primitive(value=[1, 2, 2], expected_type=set[int])
+
+    assert converted == {1, 2}
+
+
+@mark.unit_testing
+def test_from_primitive_set_returns_raw_value_for_unsupported_input_type() -> None:
+    """
+    Test set conversion returns raw value when input type is unsupported.
+    """
+    converted = from_primitive(value='not-a-sequence', expected_type=set[int])
+
+    assert converted == 'not-a-sequence'
+
+
+@mark.unit_testing
+def test_from_primitive_frozenset_converts_supported_sequence_inputs() -> None:
+    """
+    Test frozenset conversion branch for sequence inputs.
+    """
+    converted = from_primitive(value=[1, 2, 2], expected_type=frozenset[int])
+
+    assert converted == frozenset({1, 2})
+
+
+@mark.unit_testing
+def test_from_primitive_frozenset_returns_raw_value_for_unsupported_input_type() -> None:
+    """
+    Test frozenset conversion returns raw value when input type is unsupported.
+    """
+    converted = from_primitive(value='not-a-sequence', expected_type=frozenset[int])
+
+    assert converted == 'not-a-sequence'
+
+
+@mark.unit_testing
+def test_from_primitive_dict_returns_raw_value_when_input_is_not_dict() -> None:
+    """
+    Test dict conversion branch returns raw value when input is not a dict.
+    """
+    converted = from_primitive(value=['not', 'a', 'dict'], expected_type=dict[str, int])
+
+    assert converted == ['not', 'a', 'dict']
+
+
+@mark.unit_testing
+def test_from_primitive_type_none_branch_handles_none_and_non_none_values() -> None:
+    """
+    Test type(None) conversion branch for both matching and non-matching values.
+    """
+    assert from_primitive(value=None, expected_type=type(None)) is None
+    assert from_primitive(value='x', expected_type=type(None)) == 'x'
+
+
+@mark.unit_testing
+def test_from_primitive_non_class_expected_type_returns_raw_value() -> None:
+    """
+    Test non-class expected types return the input value unchanged.
+    """
+    converted = from_primitive(value='x', expected_type='not-a-class')
+
+    assert converted == 'x'
+
+
+@mark.unit_testing
+def test_from_primitive_class_with_value_attribute_handles_instance_and_raw_value() -> None:
+    """
+    Test class-level value attribute branch for existing instances and raw values.
+    """
+    instance = ClassWithValueAttribute(value='ok')
+
+    assert from_primitive(value=instance, expected_type=ClassWithValueAttribute) is instance
+    converted = from_primitive(value='raw', expected_type=ClassWithValueAttribute)
+    assert isinstance(converted, ClassWithValueAttribute)
+    assert converted.value == 'raw'
+
+
+@mark.unit_testing
+def test_from_primitive_enum_branch_returns_existing_member() -> None:
+    """
+    Test enum conversion branch returns existing enum members unchanged.
+    """
+    assert from_primitive(value=Status.ON, expected_type=Status) is Status.ON
+
+
+@mark.unit_testing
+def test_from_primitive_value_object_branch_returns_existing_instance() -> None:
+    """
+    Test value object conversion branch returns existing instances unchanged.
+    """
+    number = Number(value=7)
+
+    assert from_primitive(value=number, expected_type=Number) is number
+
+
+@mark.unit_testing
+def test_from_primitive_to_primitives_fallback_returns_raw_value_when_conversion_fails() -> None:
+    """
+    Test fallback path returns raw value when to_primitives payload cannot be converted.
+    """
+    source = ToPrimitivesInvalidPayload()
+
+    assert from_primitive(value=source, expected_type=ClassWithStrictFromPrimitives) is source

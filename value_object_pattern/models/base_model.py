@@ -13,12 +13,10 @@ else:
 
 from abc import ABC, abstractmethod
 from copy import deepcopy
-from enum import Enum
 from inspect import Parameter, _empty, signature
-from typing import Any, NoReturn, Self
+from typing import Any, NoReturn, Self, get_type_hints
 
-from .primitive_conversion import to_primitive
-from .value_object import ValueObject
+from .primitive_conversion import from_primitive, to_primitive
 
 
 class BaseModel(ABC):
@@ -388,7 +386,33 @@ class BaseModel(ABC):
         if missing or extra:
             cls._raise_value_constructor_parameters_mismatch(primitives=set(primitives), missing=missing, extra=extra)
 
-        return cls(**primitives)
+        constructor_annotations = cls._get_constructor_annotations()
+        converted_primitives: dict[str, Any] = {}
+        for parameter_name in parameters:
+            if parameter_name not in primitives:
+                continue
+
+            expected_type = constructor_annotations.get(parameter_name, parameters[parameter_name].annotation)
+            converted_primitives[parameter_name] = from_primitive(
+                value=primitives[parameter_name],
+                expected_type=expected_type,
+            )
+
+        return cls(**converted_primitives)
+
+    @classmethod
+    def _get_constructor_annotations(cls) -> dict[str, Any]:
+        """
+        Returns resolved constructor annotations when available.
+
+        Returns:
+            dict[str, Any]: Mapping from constructor parameter names to annotations.
+        """
+        try:
+            return get_type_hints(cls.__init__)
+
+        except Exception:
+            return {}
 
     @classmethod
     def _raise_value_is_not_dict_of_strings(cls, value: Any) -> NoReturn:

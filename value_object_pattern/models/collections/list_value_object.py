@@ -19,7 +19,7 @@ from typing import Any, Generic, NoReturn, Self, TypeVar, Union, get_args, get_o
 
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import BaseModel, ValueObject
-from value_object_pattern.models.primitive_conversion import to_primitive
+from value_object_pattern.models.primitive_conversion import from_primitive, to_primitive
 
 T = TypeVar('T', bound=Any)
 
@@ -437,7 +437,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         # >>> False
         ```
         """
-        item = self._convert_from_primitives(value=item)
+        item = from_primitive(value=item, expected_type=self._type)
 
         return self.add(item=item)
 
@@ -508,7 +508,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         # >>> False
         ```
         """
-        items = [self._convert_from_primitives(value=item) for item in items]
+        items = [from_primitive(value=item, expected_type=self._type) for item in items]
 
         return self.extend(items=items)
 
@@ -599,7 +599,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         # >>> False
         ```
         """
-        item = self._convert_from_primitives(value=item)
+        item = from_primitive(value=item, expected_type=self._type)
 
         return self.delete(item=item)
 
@@ -676,30 +676,9 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         # >>> False
         ```
         """
-        items = [self._convert_from_primitives(value=item) for item in items]
+        items = [from_primitive(value=item, expected_type=self._type) for item in items]
 
         return self.delete_all(items=items)
-
-    def _convert_from_primitives(self, *, value: Any) -> T:
-        """
-        Converts a primitive value to the appropriate type T.
-
-        Args:
-            value (Any): The primitive value to convert.
-
-        Returns:
-            T: The converted value.
-        """
-        if hasattr(self._type, 'from_primitives'):
-            return self._type.from_primitives(value)  # type: ignore[no-any-return]
-
-        if get_origin(tp=self._type) in (Union, UnionType):
-            return value  # type: ignore[no-any-return]
-
-        if hasattr(self._type, 'value'):
-            return self._type(value=value)  # type: ignore[no-any-return]
-
-        return value  # type: ignore[no-any-return]
 
     def _type_label(self) -> str:
         """
@@ -745,19 +724,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         Returns:
             Self: The created ListValueObject.
         """
-        items: list[Any] = []
-
-        for item in value:
-            if hasattr(cls._type, 'from_primitives'):
-                items.append(cls._type.from_primitives(item))  # BaseModel
-
-            elif hasattr(cls._type, 'value'):
-                items.append(cls._type(value=item))  # ValueObject
-
-            else:
-                items.append(item)
-
-        return cls(value=items)
+        return cls(value=[from_primitive(value=item, expected_type=cls._type) for item in value])
 
     def to_primitives(self) -> list[Any]:
         """
