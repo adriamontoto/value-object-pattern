@@ -2,6 +2,22 @@
 
 <!-- version list -->
 
+## v1.26.0 (2026-02-24)
+
+### 🐛 Bug Fixes
+
+- Move recursive form primitive conversion logic to a dedicated helper function
+  ([`cbcca34`](https://github.com/adriamontoto/value-object-pattern/commit/cbcca341c218ac4e68fb7b705abc04406ad4d1a6))
+
+- Move recursive primitive conversion logic to a dedicated helper function
+  ([`62bf629`](https://github.com/adriamontoto/value-object-pattern/commit/62bf62961d5400c903a98f0e4b21fea245783192))
+
+### ✨ Features
+
+- Implement UnionValueObject for flexible type handling
+  ([`e01c15f`](https://github.com/adriamontoto/value-object-pattern/commit/e01c15feb9c5017205e906878f04dd1816cb881b))
+
+
 ## v1.25.0 (2026-02-17)
 
 ### ✨ Features
