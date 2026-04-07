@@ -12,6 +12,7 @@ from .mac_address_value_object import MacAddressValueObject
 from .port_value_object import PortValueObject
 from .slug_value_object import SlugValueObject
 from .uri import HttpHttpsUrlValueObject, HttpUrlValueObject, HttpsUrlValueObject, UrlValueObject
+from .user_agent_value_object import UserAgentValueObject
 
 __all__ = (
     'AwsCloudRegionValueObject',
@@ -31,4 +32,5 @@ __all__ = (
     'PortValueObject',
     'SlugValueObject',
     'UrlValueObject',
+    'UserAgentValueObject',
 )
