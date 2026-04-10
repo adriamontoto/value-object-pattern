@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v1.27.0 (2026-04-10)
+
+### ✨ Features
+
+- Implement snake_case, kebab-case, camelCase, and SCREAMING_SNAKE_CASE string value objects
+  ([`8b629ef`](https://github.com/adriamontoto/value-object-pattern/commit/8b629ef5c5028a05ca0fc237a494bd0ee0215852))
+
+- Implement user agent value object
+  ([`f9d8ef3`](https://github.com/adriamontoto/value-object-pattern/commit/f9d8ef3bfc8f68ac08dfb0b966ebdaa406333921))
+
+
 ## v1.26.0 (2026-02-24)
 
 ### 🐛 Bug Fixes
