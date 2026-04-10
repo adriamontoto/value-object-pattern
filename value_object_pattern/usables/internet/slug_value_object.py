@@ -12,6 +12,16 @@ from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStrin
 class SlugValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
     SlugValueObject ensures the provided value is a valid slug string.
+
+    Example:
+    ```python
+    from value_object_pattern.usables.internet import SlugValueObject
+
+    slug = SlugValueObject(value='summer-release-2026')
+
+    print(repr(slug))
+    # >>> SlugValueObject(value='summer-release-2026')
+    ```
     """
 
     _VALIDATION_REGEX: Pattern[str] = re_compile(pattern=r'^[a-z0-9]+(?:-[a-z0-9]+)*$')
