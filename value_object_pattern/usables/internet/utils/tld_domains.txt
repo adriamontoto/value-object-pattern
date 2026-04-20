@@ -1,4 +1,4 @@
-# This file was automatically updated using "update_lists.py" on 2026-02-15T03:55:23.881612+00:00
+# This file was automatically updated using "update_lists.py" on 2026-04-19T04:07:29.141154+00:00
 
 aaa
 aarp
@@ -742,6 +742,7 @@ meme
 memorial
 men
 menu
+merck
 merckmsd
 mg
 mh
