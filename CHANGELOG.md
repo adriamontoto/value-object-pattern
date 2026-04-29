@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.28.0 (2026-04-29)
+
+### ✨ Features
+
+- Implement PascalCaseStringValueObject for PascalCase validation
+  ([`08f79fd`](https://github.com/adriamontoto/value-object-pattern/commit/08f79fd2fe4a1ff06be4c22d4665ebf8f5fa31b3))
+
+
 ## v1.27.0 (2026-04-10)
 
 ### ✨ Features
