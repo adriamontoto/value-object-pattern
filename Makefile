@@ -132,7 +132,7 @@ build: # It builds the project
 audit: # It audits dependencies and source code
 	@echo -e "\n⌛ Running security audit...\n"
 
-	@$(PYTHON_BIN) -m pip_audit --progress-spinner off
+	@$(UV_BIN) audit
 
 	@echo -e "\n✅ Security audit completed correctly.\n"
 
@@ -152,16 +152,16 @@ clean: # It cleans up the project, removing the virtual environment and some fil
 
 	$(call quiet, $(PYTHON_BIN) -m pre_commit clean)
 	$(call quiet, $(PYTHON_BIN) -m pre_commit uninstall --hook-type pre-commit --hook-type commit-msg)
-	$(call quiet, rm --force --recursive $(PYTHON_VIRTUAL_ENVIRONMENT))
-	$(call quiet, rm --force --recursive `find . -type f -name '*.py[co]'`)
-	$(call quiet, rm --force --recursive `find . -name __pycache__`)
-	$(call quiet, rm --force --recursive `find . -name .ruff_cache`)
-	$(call quiet, rm --force --recursive `find . -name .mypy_cache`)
-	$(call quiet, rm --force --recursive `find . -name .pytest_cache`)
-	$(call quiet, rm --force --recursive .coverage)
-	$(call quiet, rm --force --recursive .coverage.*)
-	$(call quiet, rm --force --recursive coverage.xml)
-	$(call quiet, rm --force --recursive htmlcov)
+	$(call quiet, rm -fr $(PYTHON_VIRTUAL_ENVIRONMENT))
+	$(call quiet, rm -fr `find . -type f -name '*.py[co]'`)
+	$(call quiet, rm -fr `find . -name __pycache__`)
+	$(call quiet, rm -fr `find . -name .ruff_cache`)
+	$(call quiet, rm -fr `find . -name .mypy_cache`)
+	$(call quiet, rm -fr `find . -name .pytest_cache`)
+	$(call quiet, rm -fr .coverage)
+	$(call quiet, rm -fr .coverage.*)
+	$(call quiet, rm -fr coverage.xml)
+	$(call quiet, rm -fr htmlcov)
 
 	@echo -e "\n✅ Run 'deactivate' to deactivate the virtual environment.\n"
 
