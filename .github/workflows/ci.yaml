@@ -48,6 +48,7 @@ jobs:
       - name: 🛠️ Setup UV
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
+          version: 0.7.2
           python-version: ${{ matrix.python-version }}
           enable-cache: false
 
@@ -106,6 +107,7 @@ jobs:
       - name: 🛠️ Setup UV
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
+          version: 0.7.2
           python-version: ${{ matrix.python-version }}
           enable-cache: false
 
@@ -179,6 +181,7 @@ jobs:
       - name: 🛠️ Setup UV
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
+          version: 0.7.2
           python-version: ${{ matrix.python-version }}
           enable-cache: false
 
@@ -283,6 +286,7 @@ jobs:
       - name: 🛠️ Setup UV
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
+          version: 0.7.2
           python-version: ${{ matrix.python-version }}
           enable-cache: false
 
@@ -334,6 +338,7 @@ jobs:
       - name: 🛠️ Setup UV
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
+          version: 0.7.2
           python-version: ${{ matrix.python-version }}
           enable-cache: false
 
@@ -416,6 +421,7 @@ jobs:
       - name: 🛠️ Setup UV
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
+          version: 0.7.2
           python-version: ${{ matrix.python-version }}
           enable-cache: false
 
@@ -457,11 +463,9 @@ jobs:
       - name: 🛠️ Setup UV
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
+          version: 0.7.2
           python-version: ${{ matrix.python-version }}
           enable-cache: false
-
-      - name: 📦 Install dependencies
-        run: make install GROUP=audit CI=true VERBOSE=true
 
       - name: 🏃 Run audit
         run: make audit CI=true VERBOSE=true
@@ -575,6 +579,7 @@ jobs:
       - name: 🛠️ Setup UV
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
+          version: 0.7.2
           python-version: ${{ matrix.python-version }}
           enable-cache: false
 
