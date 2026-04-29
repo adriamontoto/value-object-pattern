@@ -5,6 +5,7 @@ from .digit_value_object import DigitStringValueObject
 from .kebab_case_string_value_object import KebabCaseStringValueObject
 from .lowercase_string_value_object import LowercaseStringValueObject
 from .non_empty_string_value_object import NotEmptyStringValueObject
+from .pascal_case_string_value_object import PascalCaseStringValueObject
 from .printable_string_value_object import PrintableStringValueObject
 from .screaming_snake_case_string_value_object import ScreamingSnakeCaseStringValueObject
 from .snake_case_string_value_object import SnakeCaseStringValueObject
@@ -20,6 +21,7 @@ __all__ = (
     'KebabCaseStringValueObject',
     'LowercaseStringValueObject',
     'NotEmptyStringValueObject',
+    'PascalCaseStringValueObject',
     'PrintableStringValueObject',
     'ScreamingSnakeCaseStringValueObject',
     'SnakeCaseStringValueObject',
