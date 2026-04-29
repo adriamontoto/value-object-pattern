@@ -467,9 +467,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           enable-cache: false
 
-      - name: 📦 Install dependencies
-        run: make install GROUP=audit CI=true VERBOSE=true
-
       - name: 🏃 Run audit
         run: make audit CI=true VERBOSE=true
 
