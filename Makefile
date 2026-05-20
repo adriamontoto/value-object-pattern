@@ -36,7 +36,7 @@ help: # It displays this help message
 	@printf "  %-40s %s\n" "CI=$(CI)"                       	  "Indicates if the script is running in a CI environment (true/false)"
 	@printf "  %-40s %s\n" "PYTHON_VERSION=$(PYTHON_VERSION)"     "Used python interpreter for creating the virtual environment"
 	@printf "  %-40s %s\n" "PYTHON_VIRTUAL_ENVIRONMENT=$(PYTHON_VIRTUAL_ENVIRONMENT)" "Name of the virtual environment folder"
-	@printf "  %-40s %s\n" "GROUP=$(GROUP)"                       "Group of dependencies to install (all, audit, coverage, format, lint, release, test, types)"
+	@printf "  %-40s %s\n" "GROUP=$(GROUP)"                       "Group of dependencies to install (all, coverage, format, lint, release, test, types)"
 	@printf "\n"
 
 
@@ -152,16 +152,16 @@ clean: # It cleans up the project, removing the virtual environment and some fil
 
 	$(call quiet, $(PYTHON_BIN) -m pre_commit clean)
 	$(call quiet, $(PYTHON_BIN) -m pre_commit uninstall --hook-type pre-commit --hook-type commit-msg)
-	$(call quiet, rm -fr $(PYTHON_VIRTUAL_ENVIRONMENT))
-	$(call quiet, rm -fr `find . -type f -name '*.py[co]'`)
-	$(call quiet, rm -fr `find . -name __pycache__`)
-	$(call quiet, rm -fr `find . -name .ruff_cache`)
-	$(call quiet, rm -fr `find . -name .mypy_cache`)
-	$(call quiet, rm -fr `find . -name .pytest_cache`)
-	$(call quiet, rm -fr .coverage)
-	$(call quiet, rm -fr .coverage.*)
-	$(call quiet, rm -fr coverage.xml)
-	$(call quiet, rm -fr htmlcov)
+	$(call quiet, rm -rf $(PYTHON_VIRTUAL_ENVIRONMENT))
+	$(call quiet, rm -rf `find . -type f -name '*.py[co]'`)
+	$(call quiet, rm -rf `find . -name __pycache__`)
+	$(call quiet, rm -rf `find . -name .ruff_cache`)
+	$(call quiet, rm -rf `find . -name .mypy_cache`)
+	$(call quiet, rm -rf `find . -name .pytest_cache`)
+	$(call quiet, rm -rf .coverage)
+	$(call quiet, rm -rf .coverage.*)
+	$(call quiet, rm -rf coverage.xml)
+	$(call quiet, rm -rf htmlcov)
 
 	@echo -e "\n✅ Run 'deactivate' to deactivate the virtual environment.\n"
 
