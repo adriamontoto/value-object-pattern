@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.29.0 (2026-05-20)
+
+### ✨ Features
+
+- Implement secret string value object with redacted display behavior
+  ([`a921396`](https://github.com/adriamontoto/value-object-pattern/commit/a9213967de362294205812a7ab53b06d2e3805f9))
+
+
 ## v1.28.0 (2026-04-29)
 
 ### ✨ Features
