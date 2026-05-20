@@ -136,7 +136,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         # >>> IntegerValueObject(value=10)
         ```
         """
-        return f'{self.__class__.__name__}(value={self.value!r})'
+        return f'{self.__class__.__name__}(value={self._value_for_display()!r})'
 
     @override
     def __str__(self) -> str:
@@ -160,7 +160,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         # >>> 10
         ```
         """
-        return str(object=self.value)
+        return str(object=self._value_for_display())
 
     @override
     def __hash__(self) -> int:
@@ -366,6 +366,15 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
             error.args = (str(object=error.args[0]).replace('value', self.parameter, 1),)
 
             raise error
+
+    def _value_for_display(self) -> Any:
+        """
+        Returns the value used by display-oriented representations.
+
+        Returns:
+            Any: Value safe for string, repr, and primitive display paths.
+        """
+        return self.value
 
     def _post_order_dfs_mro(self, cls: type, visited: set[type] | None = None, cut_off: type = object) -> list[type]:
         """

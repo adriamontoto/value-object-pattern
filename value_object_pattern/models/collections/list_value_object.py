@@ -204,7 +204,15 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
             elif isinstance(item, Enum):
                 list_to_return.append(item.value)
 
-            elif isinstance(item, ValueObject) or hasattr(item, 'value'):
+            elif isinstance(item, ValueObject):
+                value = item._value_for_display()
+
+                if isinstance(value, Enum):
+                    value = value.value
+
+                list_to_return.append(repr(value))
+
+            elif hasattr(item, 'value'):
                 value = item.value
 
                 if isinstance(value, Enum):
@@ -256,7 +264,15 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
             elif isinstance(item, Enum):
                 list_to_return.append(item.value)
 
-            elif isinstance(item, ValueObject) or hasattr(item, 'value'):
+            elif isinstance(item, ValueObject):
+                value = item._value_for_display()
+
+                if isinstance(value, Enum):
+                    value = value.value
+
+                list_to_return.append(str(object=value))
+
+            elif hasattr(item, 'value'):
                 value = item.value
 
                 if isinstance(value, Enum):

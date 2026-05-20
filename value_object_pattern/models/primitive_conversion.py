@@ -101,7 +101,14 @@ def _convert_with_value_attribute(*, value: Any) -> Any:
     Returns:
         Any: Converted value or sentinel when the branch does not apply.
     """
-    if not (isinstance(value, ValueObject) or hasattr(value, 'value')):
+    if isinstance(value, ValueObject):
+        nested_value = value._value_for_display()
+        if nested_value is value:
+            return str(object=value)
+
+        return to_primitive(value=nested_value)
+
+    if not hasattr(value, 'value'):
         return _MISSING
 
     nested_value = getattr(value, 'value', value)
