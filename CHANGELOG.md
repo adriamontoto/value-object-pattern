@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.29.1 (2026-05-20)
+
+### 🐛 Bug Fixes
+
+- Update dependency installation instructions and clean commands in Makefile
+  ([`ddfa37b`](https://github.com/adriamontoto/value-object-pattern/commit/ddfa37b1773504413085430d090fa721ff5d53ac))
+
+
 ## v1.29.0 (2026-05-20)
 
 ### ✨ Features
