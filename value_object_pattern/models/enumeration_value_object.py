@@ -1,5 +1,5 @@
 """
-EnumerationValueObject module.
+Value object for enum-backed domain values.
 """
 
 from sys import version_info
@@ -22,7 +22,10 @@ E = TypeVar('E', bound=Enum)
 
 class EnumerationValueObject(ValueObject[Any | E], Generic[E]):  # noqa: UP046
     """
-    EnumerationValueObject is a value object that ensures the provided value is from an enumeration.
+    Validate and store a value as a member of a configured `Enum`.
+
+    Subclasses declare the enum with `EnumerationValueObject[MyEnum]`. The constructor accepts either an enum member or
+    a raw enum value and stores the matching enum member.
 
     ***This class is abstract and should not be instantiated directly***.
 
@@ -56,14 +59,14 @@ class EnumerationValueObject(ValueObject[Any | E], Generic[E]):  # noqa: UP046
     @override
     def __init_subclass__(cls, **kwargs: Any) -> None:
         """
-        Initializes the class.
+        Capture and validate the enum type declared by a subclass.
 
         Args:
-            **kwargs (Any): Keyword arguments.
+            **kwargs: Keyword arguments forwarded to the parent class hook.
 
         Raises:
-            TypeError: If the class parameter is not an Enum subclass.
-            TypeError: If the class is not parameterized.
+            TypeError: If the class parameter is not an `Enum` subclass.
+            TypeError: If the subclass is not parameterized with `EnumerationValueObject[E]`.
         """
         super().__init_subclass__(**kwargs)
 

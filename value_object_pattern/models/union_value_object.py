@@ -1,5 +1,5 @@
 """
-UnionValueObject module.
+Value object for values constrained by a union annotation.
 """
 
 from __future__ import annotations
@@ -28,10 +28,10 @@ T = TypeVar('T', bound=Any)
 
 class UnionValueObject(ValueObject[T], Generic[T]):  # noqa: UP046
     """
-    UnionValueObject validates and stores the value as one of the allowed union candidates.
+    Validate and store a value as one of the allowed union candidates.
 
-    It supports primitives, ValueObject subclasses, BaseModel subclasses, Enum subclasses,
-    and combinations of all of them.
+    It supports primitives, `ValueObject` subclasses, `BaseModel` subclasses, `Enum` subclasses, nested collections,
+    and combinations of those types. Input is converted to the first candidate that can represent it safely.
 
     Example:
     ```python
@@ -69,14 +69,14 @@ class UnionValueObject(ValueObject[T], Generic[T]):  # noqa: UP046
     @override
     def __init_subclass__(cls, **kwargs: Any) -> None:
         """
-        Initializes the class.
+        Capture and validate the type or union annotation declared by a subclass.
 
         Args:
-            **kwargs (Any): Keyword arguments.
+            **kwargs: Keyword arguments forwarded to the parent class hook.
 
         Raises:
-            TypeError: If the class parameter is not a type.
-            TypeError: If the class is not parameterized.
+            TypeError: If the class parameter is not a type-like annotation.
+            TypeError: If the subclass is not parameterized with `UnionValueObject[T]`.
         """
         super().__init_subclass__(**kwargs)
 

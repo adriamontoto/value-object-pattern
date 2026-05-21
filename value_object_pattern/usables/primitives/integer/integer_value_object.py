@@ -1,5 +1,5 @@
 """
-IntegerValueObject value object.
+Reusable value object for integer validation.
 """
 
 from typing import Any, NoReturn
@@ -10,7 +10,10 @@ from value_object_pattern.models import ValueObject
 
 class IntegerValueObject(ValueObject[int]):
     """
-    IntegerValueObject value object ensures the provided value is an integer.
+    Ensure the provided value is exactly an `int`.
+
+    This is the base integer validator used by stricter integer value objects such as positive, negative, even, and odd
+    variants.
 
     Example:
     ```python

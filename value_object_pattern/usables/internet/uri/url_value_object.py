@@ -99,7 +99,11 @@ def split_netloc(value: str) -> tuple[str | None, str, int | None]:
 
 class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     """
-    UrlValueObject value object ensures the provided value is a valid URL.
+    Ensure the provided value is a syntactically valid URL.
+
+    The validator checks URL shape, host, optional user information, optional port, path, query, and fragment.
+    Processing lowercases the scheme and host while preserving the rest of the URL. This class validates syntax; it does
+    not verify ownership, reachability, or safety of the target URL.
 
     References:
         https://www.rfc-editor.org/rfc/rfc3986

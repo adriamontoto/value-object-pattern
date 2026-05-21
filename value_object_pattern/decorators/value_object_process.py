@@ -1,5 +1,5 @@
 """
-Process decorator for value object pattern.
+Decorator used to register value-object processing hooks.
 """
 
 from functools import wraps
@@ -10,11 +10,13 @@ T = TypeVar('T')
 
 def process(order: int | None = None) -> Callable[[Callable[..., T]], Callable[..., T]]:
     """
-    Decorator for process the value after the value is validated.
+    Register a method that normalizes a value after validation.
+
+    Processing methods run in ascending `order`. Methods without an explicit order are ordered by method name. Each
+    processing method receives the current value and returns the value passed to the next processor.
 
     Args:
-        order (int | None, optional): The order of the process that will be executed, if None the functions will be
-        executed alphabetically. Defaults to None.
+        order: Execution order for the processing method.
 
     Raises:
         TypeError: If the order is not an integer.
@@ -42,10 +44,10 @@ def process(order: int | None = None) -> Callable[[Callable[..., T]], Callable[.
 
     def decorator(function: Callable[..., T]) -> Callable[..., T]:
         """
-        Decorator for process the value after the value is validated.
+        Mark `function` as a processing hook.
 
         Args:
-            function (Callable[..., T]): Function to be execution after the value object is validated.
+            function: Processing method to register.
 
         Raises:
             TypeError: If the order is not an integer.
@@ -67,7 +69,7 @@ def process(order: int | None = None) -> Callable[[Callable[..., T]], Callable[.
         @wraps(function)
         def wrapper(*args: tuple[Any, ...], **kwargs: dict[str, Any]) -> T:
             """
-            Wrapper for process.
+            Execute the wrapped processing method.
 
             Args:
                 *args (tuple[Any, ...]): The arguments for the function.

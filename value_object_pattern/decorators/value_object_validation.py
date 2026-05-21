@@ -1,5 +1,5 @@
 """
-Validation decorator for value object pattern.
+Decorator used to register value-object validation hooks.
 """
 
 from functools import wraps
@@ -11,12 +11,15 @@ def validation(
     early_process: bool = False,
 ) -> Callable[[Callable[..., None]], Callable[..., None]]:
     """
-    Decorator for validation the value before the value is created.
+    Register a method that validates a value before it is stored.
+
+    Validation methods run in ascending `order`. Methods without an explicit order are ordered by method name. When
+    `early_process=True`, the value object processes the input first and passes both the raw value and the processed
+    value to the validator.
 
     Args:
-        order (int | None, optional): The order of the validation that will be executed, if None the functions will be
-        executed alphabetically. Defaults to None.
-        early_process (bool, optional): If True, the value will be processed before the validation. Defaults to False.
+        order: Execution order for the validation method.
+        early_process: Whether to pass a processed value into the validation method.
 
     Raises:
         TypeError: If the order is not an integer.
@@ -45,10 +48,10 @@ def validation(
 
     def decorator(function: Callable[..., None]) -> Callable[..., None]:
         """
-        Decorator for validation the value before the value is created.
+        Mark `function` as a validation hook.
 
         Args:
-            function (Callable[..., None]): Function to be execution before the value object is created.
+            function: Validation method to register.
 
         Raises:
             TypeError: If the order is not an integer.
@@ -75,7 +78,7 @@ def validation(
         @wraps(function)
         def wrapper(*args: tuple[Any, ...], **kwargs: dict[str, Any]) -> None:
             """
-            Wrapper for validation.
+            Execute the wrapped validation method.
 
             Args:
                 *args (tuple[Any, ...]): The arguments for the function.

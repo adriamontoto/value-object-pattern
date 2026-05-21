@@ -1,5 +1,5 @@
 """
-DictValueObject module.
+Value object for typed dictionary values.
 """
 
 from __future__ import annotations
@@ -27,7 +27,10 @@ V = TypeVar('V', bound=Any)
 
 class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
     """
-    DictValueObject is a value object that guarantees the wrapped value is a dictionary.
+    Validate dictionary values, keys, and items against declared key and value types.
+
+    `DictValueObject[K, V]` behaves like an immutable dictionary wrapper. Helpers such as `add()` and `delete()` return
+    new value-object instances, while primitive helpers convert raw keys and values before applying the operation.
 
     Example:
     ```python
@@ -54,15 +57,15 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
     @override
     def __init_subclass__(cls, **kwargs: Any) -> None:
         """
-        Initializes the class.
+        Capture and validate key and value types declared by a subclass.
 
         Args:
-            **kwargs (Any): Keyword arguments.
+            **kwargs: Keyword arguments forwarded to the parent class hook.
 
         Raises:
-            TypeError: If the key is not a type.
-            TypeError: If the value is not a type.
-            TypeError: If the class is not parameterized.
+            TypeError: If the key type is not a type-like annotation.
+            TypeError: If the value type is not a type-like annotation.
+            TypeError: If the subclass is not parameterized with `DictValueObject[K, V]`.
         """
         super().__init_subclass__(**kwargs)
 

@@ -1,5 +1,5 @@
 """
-StringValueObject value object.
+Reusable value object for plain string validation.
 """
 
 from typing import Any, NoReturn
@@ -10,7 +10,10 @@ from value_object_pattern.models import ValueObject
 
 class StringValueObject(ValueObject[str]):
     """
-    StringValueObject value object ensures the provided value is a string.
+    Ensure the provided value is exactly a `str`.
+
+    This is the base string validator used by stricter string value objects such as non-empty, trimmed, lowercase, and
+    formatted string variants.
 
     Example:
     ```python

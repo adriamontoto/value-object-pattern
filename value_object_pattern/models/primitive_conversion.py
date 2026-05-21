@@ -18,7 +18,10 @@ _MISSING = object()
 
 def to_primitive(value: Any) -> Any:
     """
-    Recursively converts value objects, models, enums, and collections to primitives.
+    Recursively convert value objects, models, enums, and collections to primitive representations.
+
+    `ValueObject` instances are converted through their display value, `BaseModel`-like objects through
+    `to_primitives()`, enums through their `.value`, and collections item by item.
 
     Args:
         value (Any): Value to convert.
@@ -48,7 +51,10 @@ def to_primitive(value: Any) -> Any:
 
 def from_primitive(*, value: Any, expected_type: Any) -> Any:
     """
-    Recursively converts a primitive value into the provided expected type.
+    Recursively convert a primitive value into `expected_type` when possible.
+
+    Conversion supports value-object classes, model classes, enums, unions, and typed collections. If no conversion path
+    applies, the original value is returned so the caller can perform final type validation.
 
     Args:
         value (Any): Primitive value to convert.

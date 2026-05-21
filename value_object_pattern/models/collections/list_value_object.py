@@ -1,5 +1,5 @@
 """
-ListValueObject module.
+Value object for typed list values.
 """
 
 from __future__ import annotations
@@ -27,7 +27,11 @@ T = TypeVar('T', bound=Any)
 
 class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
     """
-    ListValueObject is a value object that ensures the provided value is from a list.
+    Validate list values and every item against the declared item type.
+
+    `ListValueObject[T]` stores an immutable wrapper around a list. Mutating helpers such as `add()`, `extend()`, and
+    `delete()` return new value-object instances instead of changing the current object. Primitive helpers convert raw
+    items into the declared item type before applying the operation.
 
     Example:
     ```python
@@ -49,14 +53,14 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
     @override
     def __init_subclass__(cls, **kwargs: Any) -> None:
         """
-        Initializes the class.
+        Capture and validate the item type declared by a subclass.
 
         Args:
-            **kwargs (Any): Keyword arguments.
+            **kwargs: Keyword arguments forwarded to the parent class hook.
 
         Raises:
-            TypeError: If the class parameter is not a type.
-            TypeError: If the class is not parameterized.
+            TypeError: If the class parameter is not a type-like annotation.
+            TypeError: If the subclass is not parameterized with `ListValueObject[T]`.
         """
         super().__init_subclass__(**kwargs)
 

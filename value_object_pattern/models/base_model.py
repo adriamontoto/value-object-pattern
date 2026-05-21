@@ -1,5 +1,5 @@
 """
-BaseModel module.
+Base class for primitive-convertible domain models.
 """
 
 from __future__ import annotations
@@ -23,7 +23,12 @@ from .type_matching import matches_expected_type
 
 class BaseModel(ABC):
     """
-    BaseModel class is a base class for all aggregate root classes.
+    Provide representation, equality, copying, and primitive conversion for domain models.
+
+    `BaseModel` is useful for small aggregate-like objects that contain value objects, enums, primitives, collections,
+    or nested models. Public and single-underscore attributes participate in equality, hashing, string output, and
+    primitive conversion. Double-underscore private attributes are intentionally omitted from those public
+    representations.
 
     ***This class is abstract and should not be instantiated directly***.
 
@@ -342,10 +347,13 @@ class BaseModel(ABC):
     @classmethod
     def from_primitives(cls, primitives: dict[str, Any]) -> Self:
         """
-        Create an instance of the class with a dictionary of its primitives.
+        Create an instance from primitive constructor values.
+
+        Primitive values are converted according to the constructor annotations, including nested `ValueObject`,
+        `BaseModel`, `Enum`, collection, and union annotations.
 
         Args:
-            primitives (dict[str, Any]): Dictionary to create the instance from.
+            primitives: Dictionary keyed by constructor parameter name.
 
         Raises:
             TypeError: If the `primitives` is not a dictionary of strings.
@@ -505,11 +513,13 @@ class BaseModel(ABC):
 
     def to_primitives(self) -> dict[str, Any]:
         """
-        Returns the class as a dictionary of its primitives. Private attributes that start with "__" are not included,
-        this can be used to hide sensitive information.
+        Convert public model state to primitive values.
+
+        Double-underscore private attributes are excluded. Value objects, enums, nested models, and collections are
+        converted recursively.
 
         Returns:
-            dict[str, Any]: Primitives dictionary representation of the class.
+            dict[str, Any]: Primitive dictionary representation of the model.
 
         Example:
         ```python

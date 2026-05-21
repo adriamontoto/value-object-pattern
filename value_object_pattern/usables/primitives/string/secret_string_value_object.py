@@ -1,5 +1,5 @@
 """
-SecretStringValueObject value object.
+Reusable value object for display-redacted strings.
 """
 
 from sys import version_info
@@ -14,7 +14,10 @@ from .string_value_object import StringValueObject
 
 class SecretStringValueObject(StringValueObject):
     """
-    SecretStringValueObject stores a string that is redacted in display-oriented output.
+    Store a string while redacting display-oriented output.
+
+    The raw secret remains available through `.value`; `str()`, `repr()`, and primitive conversion use the masked
+    display value. This is a presentation guard, not encryption or secure secret storage.
 
     Example:
     ```python

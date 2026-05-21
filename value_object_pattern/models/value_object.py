@@ -1,5 +1,5 @@
 """
-ValueObject module.
+Base contract for immutable, validated value objects.
 """
 
 from __future__ import annotations
@@ -21,7 +21,12 @@ T = TypeVar('T')
 
 class ValueObject(ABC, Generic[T]):  # noqa: UP046
     """
-    ValueObject class is a value object that ensures the provided value follows the domain rules.
+    Store a single immutable value after running validation and processing hooks.
+
+    Subclasses declare their wrapped type with `ValueObject[T]`. Validation methods decorated with `@validation` run
+    before the value is stored, and processing methods decorated with `@process` can normalize the value after
+    validation. Instances compare by concrete class and wrapped value, expose the raw value through `.value`, and reject
+    attribute mutation after construction.
 
     ***This class is abstract and should not be instantiated directly***.
 
@@ -50,14 +55,16 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
 
     def __init__(self, *, value: T, title: str | None = None, parameter: str | None = None) -> None:
         """
-        ValueObject value object constructor.
+        Create a value object from `value`.
+
+        `title` and `parameter` customize validation error messages. By default, `title` is the class name and
+        `parameter` is `"value"`. The constructor validates metadata, executes decorated validation hooks, executes
+        decorated process hooks, then stores the final value immutably.
 
         Args:
-            value (T): The value to store in the value object.
-            title (str | None, optional): The title of the value object when raising exceptions, if title is None, the
-            class name is used instead. Defaults to None.
-            parameter (str | None, optional): The parameter name of the value object when raising exceptions, if
-            parameter is None, the string "value" is used instead. Defaults to None.
+            value: Value to validate, process, and store.
+            title: Name used in validation errors. Defaults to the concrete class name.
+            parameter: Parameter name used in validation errors. Defaults to `"value"`.
 
         Raises:
             TypeError: If the title is not a string.
@@ -324,14 +331,16 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
 
     def _process(self, value: T) -> T:
         """
-        This method processes the value object value after validation. It ensure that the value object is stored in the
-        correct format, by executing all methods with the `@process` decorator.
+        Process a validated value by executing `@process` methods in configured order.
+
+        Processing hooks are used for normalization, such as trimming, lowercasing, converting enum inputs, or coercing
+        primitive values into richer objects.
 
         Args:
-            value (T): The value object value.
+            value: Value to process.
 
         Returns:
-            T: The processed value object value.
+            T: Processed value.
         """
         methods = self._gather_decorated_methods(instance=self, attribute_name='_is_process')
         while methods:
@@ -342,11 +351,13 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
 
     def _validate(self, value: T) -> None:
         """
-        This method validates that the value follows the domain rules, by executing all methods with the `@validation`
-        decorator.
+        Validate a value by executing `@validation` methods in configured order.
+
+        Validation errors are rewritten to use this instance's `title` and `parameter`, which lets reusable value
+        objects report errors in the context of the calling domain object.
 
         Args:
-            value (T): The value object value.
+            value (T): Value to validate.
         """
         try:
             methods = self._gather_decorated_methods(instance=self, attribute_name='_is_validation')
@@ -463,15 +474,16 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
 
     def early_process(self, value: T) -> T:
         """
-        This method processes the value object value before validation. This is useful for early processing of the value
-        object value where you need to have a format before validating. If the value object has already been early
-        processed, it returns the already processed value.
+        Process a value before validation and cache the result for the constructor.
+
+        This supports validators that need to inspect normalized input before the value is finally stored, for example
+        union conversion or enum conversion. Repeated calls return the cached early-processed value.
 
         Args:
-            value (T): The value object value.
+            value (T): Value to process.
 
         Returns:
-            T: The processed value object value.
+            T: Early-processed value.
         """
         if self._early_processed is not None:
             return self._early_processed
@@ -556,10 +568,10 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
     @classmethod
     def type(cls) -> type[T]:
         """
-        Returns the value object type.
+        Return the wrapped type declared by the `ValueObject[T]` subclass.
 
         Returns:
-            type[T]: The value object type.
+            type[T]: Declared wrapped type, or `Any` when it cannot be resolved.
         """
         for base in cls.__orig_bases__:  # type: ignore[attr-defined]
             if hasattr(base, '__origin__') and base.__origin__ is Generic:
