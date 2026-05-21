@@ -14,7 +14,7 @@ def get_iso3166_alpha2_codes() -> tuple[str, ...]:
         ISO 3166-1 alpha-2 codes: https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
     """
     with (
-        files(anchor='value_object_pattern.usables.identifiers.world.utils')
+        files('value_object_pattern.usables.identifiers.world.utils')
         .joinpath('iso3166_alpha2_codes.txt')
         .open(mode='r') as file
     ):
@@ -37,7 +37,7 @@ def get_iso3166_alpha2_to_alpha3_mapping() -> tuple[dict[str, str], dict[str, st
         ISO 3166-1 alpha-2 to alpha-3 mapping: https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
     """
     with (
-        files(anchor='value_object_pattern.usables.identifiers.world.utils')
+        files('value_object_pattern.usables.identifiers.world.utils')
         .joinpath('iso3166_alpha2_to_alpha3_mapping.txt')
         .open(mode='r') as file
     ):
@@ -67,7 +67,7 @@ def get_iso3166_alpha2_to_numeric_mapping() -> tuple[dict[str, int], dict[int, s
         ISO 3166-1 alpha-2 to numeric mapping: https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
     """
     with (
-        files(anchor='value_object_pattern.usables.identifiers.world.utils')
+        files('value_object_pattern.usables.identifiers.world.utils')
         .joinpath('iso3166_alpha2_to_numeric_mapping.txt')
         .open(mode='r') as file
     ):
@@ -97,7 +97,7 @@ def get_iso3166_alpha2_to_phone_code_mapping() -> tuple[dict[str, str], dict[str
         ISO 3166-1 alpha-2 to phone code mapping: https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
     """
     with (
-        files(anchor='value_object_pattern.usables.identifiers.world.utils')
+        files('value_object_pattern.usables.identifiers.world.utils')
         .joinpath('iso3166_alpha2_to_phone_code_mapping.txt')
         .open(mode='r') as file
     ):
@@ -127,7 +127,7 @@ def get_iso3166_alpha2_to_tld_mapping() -> tuple[dict[str, str], dict[str, str]]
         ISO 3166-1 alpha-2 to TLD mapping: https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
     """
     with (
-        files(anchor='value_object_pattern.usables.identifiers.world.utils')
+        files('value_object_pattern.usables.identifiers.world.utils')
         .joinpath('iso3166_alpha2_to_tld_mapping.txt')
         .open(mode='r') as file
     ):
@@ -158,7 +158,7 @@ def get_iso3166_alpha3_codes() -> tuple[str, ...]:
         ISO 3166-1 alpha-3 codes: https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
     """
     with (
-        files(anchor='value_object_pattern.usables.identifiers.world.utils')
+        files('value_object_pattern.usables.identifiers.world.utils')
         .joinpath('iso3166_alpha3_codes.txt')
         .open(mode='r') as file
     ):
@@ -180,7 +180,7 @@ def get_iso3166_numeric_codes() -> tuple[int, ...]:
         ISO 3166-1 numeric codes: https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
     """
     with (
-        files(anchor='value_object_pattern.usables.identifiers.world.utils')
+        files('value_object_pattern.usables.identifiers.world.utils')
         .joinpath('iso3166_numeric_codes.txt')
         .open(mode='r') as file
     ):

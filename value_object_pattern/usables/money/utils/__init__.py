@@ -13,7 +13,7 @@ def get_iban_lengths() -> dict[str, int]:
     References:
         IBAN Structure: https://www.iban.com/structure
     """
-    with files(anchor='value_object_pattern.usables.money.utils').joinpath('iban_lengths.txt').open(mode='r') as file:
+    with files('value_object_pattern.usables.money.utils').joinpath('iban_lengths.txt').open(mode='r') as file:
         lines = file.read().splitlines()
         filtered_lines = tuple(line for line in lines if not line.startswith('#') and (_line := line.strip().upper()))
 

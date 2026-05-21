@@ -11,7 +11,7 @@ def get_provincial_codes() -> tuple[int, ...]:
         tuple[int, ...]: The provincial codes.
     """
     with (
-        files(anchor='value_object_pattern.usables.identifiers.world.europe.spain.utils')
+        files('value_object_pattern.usables.identifiers.world.europe.spain.utils')
         .joinpath('provincial_codes.txt')
         .open(mode='r') as file
     ):
