@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.29.2 (2026-05-21)
+
+### 🐛 Bug Fixes
+
+- Remove parameter anchor from files()
+  ([`694c71f`](https://github.com/adriamontoto/value-object-pattern/commit/694c71f25877a089610798e6b7efde9f60c8ed99))
+
+
 ## v1.29.1 (2026-05-20)
 
 ### 🐛 Bug Fixes
