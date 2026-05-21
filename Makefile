@@ -44,10 +44,7 @@ help: # It displays this help message
 setup: # It setups the project, creates the virtual environment and installs the dependencies
 	@echo -e "\n⌛ Setting up the project...\n"
 
-	$(call quiet, $(UV_BIN) venv $(PYTHON_VIRTUAL_ENVIRONMENT) --python $(PYTHON_VERSION))
-	$(call quiet, make install GROUP=$(GROUP))
-	$(call quiet, make install GROUP=develop)
-	$(call quiet, $(PYTHON_BIN) -m pre_commit install --hook-type pre-commit --hook-type commit-msg)
+	$(call quiet, $(UV_BIN) venv $(PYTHON_VIRTUAL_ENVIRONMENT) --python $(PYTHON_VERSION) --clear)
 
 	@echo -e "\n✅ Run 'source $(PYTHON_VIRTUAL_ENVIRONMENT)/bin/activate' to activate the virtual environment.\n"
 
