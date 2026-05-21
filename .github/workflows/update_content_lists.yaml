@@ -74,7 +74,7 @@ jobs:
           committer: '${{ vars.GIT_COMMITTER_NAME }} <${{ vars.GIT_COMMITTER_EMAIL }}>'
           author: '${{ vars.GIT_COMMITTER_NAME }} <${{ vars.GIT_COMMITTER_EMAIL }}>'
           signoff: true
-          branch: 'chore/update-content-lists-${{ github.run_id }}'
+          branch: 'chore/update-content-lists'
           delete-branch: true
           title: 'chore: update content lists'
           body: This pull request was created automatically by the scheduled `Update Content Lists` workflow. It updates the generated content lists.
