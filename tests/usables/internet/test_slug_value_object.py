@@ -22,8 +22,7 @@ def test_slug_value_object_happy_path() -> None:
 
 # TODO: make it dynamic with object mother
 @mark.unit_testing
-@mark.parametrize(argnames='value', argvalues=['abc_123', 'Abc-123', '-abc-123', 'abc--123', 'abc-123-'])
-def test_slug_value_object_invalid_characters(value: str) -> None:
+def test_slug_value_object_invalid_underscore_separator() -> None:
     """
     Test SlugValueObject value object raises ValueError when value has invalid format.
     """
@@ -31,7 +30,55 @@ def test_slug_value_object_invalid_characters(value: str) -> None:
         expected_exception=ValueError,
         match=r'SlugValueObject value <<<.*>>> has invalid format. Only lowercase letters and digits separated by single hyphens are allowed.',  # noqa: E501
     ):
-        SlugValueObject(value=value)
+        SlugValueObject(value='abc_123')
+
+
+@mark.unit_testing
+def test_slug_value_object_invalid_uppercase_letter() -> None:
+    """
+    Test SlugValueObject value object raises ValueError when value has invalid format.
+    """
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'SlugValueObject value <<<.*>>> has invalid format. Only lowercase letters and digits separated by single hyphens are allowed.',  # noqa: E501
+    ):
+        SlugValueObject(value='Abc-123')
+
+
+@mark.unit_testing
+def test_slug_value_object_invalid_leading_hyphen() -> None:
+    """
+    Test SlugValueObject value object raises ValueError when value has invalid format.
+    """
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'SlugValueObject value <<<.*>>> has invalid format. Only lowercase letters and digits separated by single hyphens are allowed.',  # noqa: E501
+    ):
+        SlugValueObject(value='-abc-123')
+
+
+@mark.unit_testing
+def test_slug_value_object_invalid_double_hyphen() -> None:
+    """
+    Test SlugValueObject value object raises ValueError when value has invalid format.
+    """
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'SlugValueObject value <<<.*>>> has invalid format. Only lowercase letters and digits separated by single hyphens are allowed.',  # noqa: E501
+    ):
+        SlugValueObject(value='abc--123')
+
+
+@mark.unit_testing
+def test_slug_value_object_invalid_trailing_hyphen() -> None:
+    """
+    Test SlugValueObject value object raises ValueError when value has invalid format.
+    """
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'SlugValueObject value <<<.*>>> has invalid format. Only lowercase letters and digits separated by single hyphens are allowed.',  # noqa: E501
+    ):
+        SlugValueObject(value='abc-123-')
 
 
 @mark.unit_testing

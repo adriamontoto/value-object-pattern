@@ -2,9 +2,10 @@
 Test DniValueObject value object.
 """
 
+from typing import Any
+
 from object_mother_pattern import StringMother
 from object_mother_pattern.mothers.identifiers.countries.spain import DniMother
-from object_mother_pattern.mothers.primitives.utils.alphabets import ALPHABET_UPPERCASE_BASIC
 from pytest import mark, raises as assert_raises
 
 from value_object_pattern.usables.identifiers.world.europe.spain import DniValueObject
@@ -19,6 +20,18 @@ def test_dni_value_object_happy_path() -> None:
 
     assert type(dni_value.value) is str
     assert dni_value.value.isupper()
+
+
+@mark.unit_testing
+def test_dni_value_object_formats_value() -> None:
+    """
+    Test DniValueObject value object formats separators and uppercase letters.
+    """
+    dni_value = DniValueObject(value='87654321-x')
+
+    assert dni_value.value == '87654321X'
+    assert DniValueObject.identification_regex().fullmatch('87654321-x')
+    assert DniValueObject.validation_regex().fullmatch(dni_value.value)
 
 
 @mark.unit_testing
@@ -74,13 +87,22 @@ def test_dni_value_object_invalid_dni_letter() -> None:
     """
     Test DniValueObject value object raises ValueError when value is not a valid dni letter.
     """
-    dni_value = DniMother.create()
-    last_letter = dni_value[-1].upper()
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'DniValueObject value <<<87654321T>>> is not a valid Spanish DNI.',
+    ):
+        DniValueObject(value='87654321T')
 
-    dni_value = dni_value[:-1] + ALPHABET_UPPERCASE_BASIC.replace(last_letter, '', 1)
+
+@mark.unit_testing
+def test_dni_value_object_invalid_processed_value() -> None:
+    """
+    Test DniValueObject defensive validation branch for invalid processed values.
+    """
+    dni_value: Any = DniValueObject(value='87654321-x')
 
     with assert_raises(
         expected_exception=ValueError,
-        match=r'DniValueObject value <<<.*>>> is not a valid Spanish DNI.',
+        match=r'DniValueObject value <<<87654321X>>> is not a valid Spanish DNI.',
     ):
-        DniValueObject(value=dni_value)
+        dni_value._ensure_value_follows_validation_regex(value='87654321X', processed_value='INVALID')
