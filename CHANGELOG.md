@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.30.0 (2026-06-17)
+
+### 🐛 Bug Fixes
+
+- Use importlib.resources to read resource files
+  ([`64fc0cd`](https://github.com/adriamontoto/value-object-pattern/commit/64fc0cda8d982cde32091c0b441ee9dc2126dd5c))
+
+### ✨ Features
+
+- Implement value object pattern skill for AI agents
+  ([`1dfb2d7`](https://github.com/adriamontoto/value-object-pattern/commit/1dfb2d7164211254f00325ce67f7e02beae66008))
+
+
 ## v1.29.2 (2026-05-21)
 
 ### 🐛 Bug Fixes
