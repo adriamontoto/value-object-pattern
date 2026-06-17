@@ -55,6 +55,15 @@ You can install **Value Object Pattern** using `pip`:
 pip install value-object-pattern
 ```
 
+You can install the companion AI-agent skill from [skills.sh](https://www.skills.sh/) with Vercel's `skills` CLI:
+
+```bash
+npx skills add adriamontoto/value-object-pattern
+```
+
+Review the skill source in [`skills/value-object-pattern`](skills/value-object-pattern) before installing it in
+sensitive environments.
+
 <p align="right">
     <a href="#readme-top">🔼 Back to top</a>
 </p><br><br>
@@ -72,6 +81,7 @@ The root README is the entry point. Deeper guides live in this repository and ar
   [`identifiers`](docs/catalog/identifiers/README.md), [`internet`](docs/catalog/internet/README.md), and
   [`money`](docs/catalog/money/README.md).
 - [`docs/conversion/README.md`](docs/conversion/README.md): Primitive conversion and nested model behavior.
+- [`AI Skill`](skills/README.md): Installable skill package that teaches AI agents how to use Value Object Pattern.
 
 This [project's DeepWiki documentation](https://deepwiki.com/adriamontoto/value-object-pattern) is also available for
 generated repository navigation.

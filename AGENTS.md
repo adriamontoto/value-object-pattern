@@ -121,6 +121,8 @@ Architecture conventions:
 - Put reusable validation logic under the closest existing validators module.
 - Add public exports only when the value object is intended for package users.
 - Keep static data files under the relevant `utils/` package.
+- When public APIs, import paths, reusable value-object behavior, catalog entries, examples, or documented package-version
+  facts change, update the installable Agent Skill under `skills/value-object-pattern/` in the same change.
 
 ## Build And Release
 
