@@ -10,12 +10,12 @@ def get_provincial_plate_codes() -> tuple[str, ...]:
     Returns:
         tuple[str, ...]: The provincial plate codes in upper case.
     """
-    with (
+    lines = (
         files('value_object_pattern.usables.identifiers.world.europe.spain.plates.utils')
         .joinpath('provincial_plate_codes.txt')
-        .open(mode='r') as file
-    ):
-        lines = file.read().splitlines()
-        filtered_lines = tuple(line for line in lines if not line.startswith('#') and (_line := line.strip().upper()))
+        .read_text(encoding='utf-8')
+        .splitlines()
+    )
+    filtered_lines = tuple(line for line in lines if not line.startswith('#') and (_line := line.strip().upper()))
 
     return filtered_lines

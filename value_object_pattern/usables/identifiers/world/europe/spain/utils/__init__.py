@@ -10,12 +10,12 @@ def get_provincial_codes() -> tuple[int, ...]:
     Returns:
         tuple[int, ...]: The provincial codes.
     """
-    with (
+    lines = (
         files('value_object_pattern.usables.identifiers.world.europe.spain.utils')
         .joinpath('provincial_codes.txt')
-        .open(mode='r') as file
-    ):
-        lines = file.read().splitlines()
-        filtered_lines = tuple(int(line) for line in lines if not line.startswith('#') and (_line := line.strip()))
+        .read_text(encoding='utf-8')
+        .splitlines()
+    )
+    filtered_lines = tuple(int(line) for line in lines if not line.startswith('#') and (_line := line.strip()))
 
     return filtered_lines
