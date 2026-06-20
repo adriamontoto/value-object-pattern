@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.31.0 (2026-06-20)
+
+### ✨ Features
+
+- Implement inline construction for UnionValueObject, ListValueObject and DictValueObject
+  ([`8182691`](https://github.com/adriamontoto/value-object-pattern/commit/8182691af9a16e5cca02f9e318500f550af7a41e))
+
+
 ## v1.30.0 (2026-06-17)
 
 ### 🐛 Bug Fixes
