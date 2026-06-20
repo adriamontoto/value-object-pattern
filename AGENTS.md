@@ -118,6 +118,8 @@ Architecture conventions:
 
 - New value objects should follow the existing value-object model style and validation flow.
 - `create()` and validators should preserve existing explicit-value behavior where nearby code does so.
+- `UnionValueObject[T]`, `ListValueObject[T]`, and `DictValueObject[K, V]` support both named subclasses and inline
+  construction as `UnionValueObject[T](...)`, `ListValueObject[T](...)`, and `DictValueObject[K, V](...)`.
 - Put reusable validation logic under the closest existing validators module.
 - Add public exports only when the value object is intended for package users.
 - Keep static data files under the relevant `utils/` package.

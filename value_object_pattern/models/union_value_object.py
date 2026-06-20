@@ -14,7 +14,7 @@ else:
 from enum import Enum
 from inspect import isclass
 from types import UnionType
-from typing import Any, Generic, NoReturn, Self, TypeVar, Union, get_args, get_origin
+from typing import Any, ClassVar, Generic, NoReturn, Self, TypeVar, Union, get_args, get_origin
 
 from value_object_pattern.decorators import process, validation
 
@@ -24,6 +24,127 @@ from .type_matching import matches_expected_type
 from .value_object import ValueObject
 
 T = TypeVar('T', bound=Any)
+
+
+def _validate_union_type_argument(*, type_argument: Any) -> None:
+    """
+    Validate a type argument used by UnionValueObject.
+
+    Args:
+        type_argument: The type argument to validate.
+
+    Raises:
+        TypeError: If the type argument is not a type-like annotation.
+    """
+    if isinstance(type_argument, TypeVar):
+        return
+
+    if type(type_argument) is not type and not isclass(object=type_argument) and get_origin(tp=type_argument) is None:
+        raise TypeError(f'UnionValueObject[...] <<<{type_argument}>>> must be a type. Got <<<{type(type_argument).__name__}>>> type.')  # noqa: E501  # fmt: skip
+
+
+class _UnionValueObjectAlias:
+    """
+    Runtime alias returned by `UnionValueObject[T]`.
+
+    Python assigns `__orig_class__` only after `__init__` completes, but union conversion needs the type parameter
+    during `ValueObject.__init__`. This alias keeps subclass declarations working through `__mro_entries__` and supports
+    direct inline construction by creating a parameterized runtime subclass before validation starts.
+    """
+
+    _runtime_classes: ClassVar[dict[Any, type[UnionValueObject[Any]]]] = {}
+
+    def __init__(self, *, origin: type[UnionValueObject[Any]], type_argument: Any) -> None:
+        """
+        Create a runtime alias for a parameterized UnionValueObject.
+
+        Args:
+            origin: The original UnionValueObject class.
+            type_argument: The type argument used in `UnionValueObject[T]`.
+        """
+        self.__origin__ = origin
+        self.__args__ = (type_argument,)
+
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        """
+        Construct an inline parameterized UnionValueObject instance.
+
+        Args:
+            *args: Positional arguments passed to the generated value object subclass.
+            **kwargs: Keyword arguments passed to the generated value object subclass.
+
+        Returns:
+            Any: The constructed value object.
+        """
+        return self._runtime_class()(*args, **kwargs)
+
+    def __getattr__(self, name: str) -> Any:
+        """
+        Delegate class attribute access to the generated runtime subclass.
+
+        Args:
+            name: The attribute name to retrieve.
+
+        Returns:
+            Any: The resolved attribute.
+        """
+        return getattr(self._runtime_class(), name)
+
+    def __mro_entries__(self, bases: tuple[type, ...]) -> tuple[type[UnionValueObject[Any]], ...]:
+        """
+        Return the origin class when the alias is used as a base class.
+
+        Args:
+            bases: The original class bases supplied by Python.
+
+        Returns:
+            tuple[type[UnionValueObject[Any]], ...]: The base classes to use for MRO construction.
+        """
+        _ = bases
+
+        return (self.__origin__,)
+
+    def _runtime_class(self) -> type[UnionValueObject[Any]]:
+        """
+        Return the generated runtime subclass for this alias.
+
+        Returns:
+            type[UnionValueObject[Any]]: The runtime subclass.
+        """
+        type_argument, *_ = self.__args__
+        _validate_union_type_argument(type_argument=type_argument)
+        key = (self.__origin__, type_argument)
+        if key not in self._runtime_classes:
+            self._runtime_classes[key] = type(
+                f'{self.__origin__.__name__}[{self._format_type_argument(type=type_argument)}]',
+                (self.__origin__,),
+                {
+                    '_is_inline_parameterized_union_value_object': True,
+                    '_type': type_argument,
+                },
+            )
+
+        return self._runtime_classes[key]
+
+    @staticmethod
+    def _format_type_argument(*, type: Any) -> str:
+        """
+        Return a compact type-argument label for generated runtime class names.
+
+        Args:
+            type: The type argument to format.
+
+        Returns:
+            str: A readable type label.
+        """
+        origin = get_origin(tp=type)
+        if origin in (Union, UnionType):
+            return ' | '.join(_UnionValueObjectAlias._format_type_argument(type=allowed) for allowed in get_args(type))
+
+        if hasattr(type, '__name__'):
+            return type.__name__  # type: ignore[no-any-return]
+
+        return str(type).replace('typing.', '')
 
 
 class UnionValueObject(ValueObject[T], Generic[T]):  # noqa: UP046
@@ -66,6 +187,19 @@ class UnionValueObject(ValueObject[T], Generic[T]):  # noqa: UP046
 
     _type: T
 
+    @classmethod
+    def __class_getitem__(cls, item: Any) -> Any:
+        """
+        Return a runtime alias that supports subclassing and inline construction.
+
+        Args:
+            item: The type argument used in `UnionValueObject[item]`.
+
+        Returns:
+            Any: A runtime alias for the parameterized UnionValueObject.
+        """
+        return _UnionValueObjectAlias(origin=cls, type_argument=item)
+
     @override
     def __init_subclass__(cls, **kwargs: Any) -> None:
         """
@@ -80,17 +214,14 @@ class UnionValueObject(ValueObject[T], Generic[T]):  # noqa: UP046
         """
         super().__init_subclass__(**kwargs)
 
+        if getattr(cls, '_is_inline_parameterized_union_value_object', False):
+            return
+
         for base in getattr(cls, '__orig_bases__', ()):
-            if get_origin(tp=base) is UnionValueObject:
-                _type, *_ = get_args(tp=base)
+            if get_origin(tp=base) is UnionValueObject or getattr(base, '__origin__', None) is UnionValueObject:
+                _type, *_ = get_args(tp=base) or base.__args__
 
-                if isinstance(_type, TypeVar):
-                    cls._type = _type  # type: ignore[assignment]
-                    return
-
-                if type(_type) is not type and not isclass(object=_type) and get_origin(tp=_type) is None:
-                    raise TypeError(f'UnionValueObject[...] <<<{_type}>>> must be a type. Got <<<{type(_type).__name__}>>> type.')  # noqa: E501  # fmt: skip
-
+                _validate_union_type_argument(type_argument=_type)
                 cls._type = _type
                 return
 

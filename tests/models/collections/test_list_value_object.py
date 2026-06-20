@@ -10,7 +10,7 @@ else:
     from typing_extensions import override  # pragma: no cover
 
 from enum import Enum
-from typing import Any, ForwardRef, TypeVar
+from typing import Any, ForwardRef, TypeVar, cast
 
 from object_mother_pattern import IntegerMother
 from object_mother_pattern.models import BaseMother
@@ -18,6 +18,7 @@ from pytest import mark, raises as assert_raises
 
 from value_object_pattern import BaseModel, ValueObject
 from value_object_pattern.models.collections import ListValueObject
+from value_object_pattern.models.collections.list_value_object import _ListValueObjectAlias
 
 
 class IntListValueObject(ListValueObject[int]):
@@ -1101,3 +1102,101 @@ def test_list_value_object_to_primitives_with_strings() -> None:
     primitives = list_vo.to_primitives()
 
     assert primitives == ['hello', 'world', 'test']
+
+
+@mark.unit_testing
+def test_list_value_object_inline_constructor_stores_items() -> None:
+    """
+    Test that ListValueObject[T](...) works without declaring a named subclass.
+    """
+    value = ListValueObject[int](value=[1, 2])
+
+    assert value.value == [1, 2]
+
+
+@mark.unit_testing
+def test_list_value_object_inline_constructor_supports_union_item_type() -> None:
+    """
+    Test that inline construction preserves union item validation.
+    """
+    value = ListValueObject[int | str](value=[1, 'name'])
+
+    assert value.value == [1, 'name']
+
+
+@mark.unit_testing
+def test_list_value_object_inline_constructor_reuses_runtime_class_for_equality() -> None:
+    """
+    Test that repeated inline construction uses the same runtime class for equivalent aliases.
+    """
+    first = ListValueObject[int](value=[1])
+    second = ListValueObject[int](value=[1])
+
+    assert first == second
+
+
+@mark.unit_testing
+def test_list_value_object_inline_from_primitives_converts_items() -> None:
+    """
+    Test that inline aliases expose class helpers through the generated runtime subclass.
+    """
+    value = ListValueObject[Age].from_primitives(value=[1, 2])
+
+    assert [item.value for item in value] == [1, 2]
+    assert all(isinstance(item, Age) for item in value)
+
+
+@mark.unit_testing
+def test_list_value_object_inline_add_from_primitives_converts_item() -> None:
+    """
+    Test that inline instances can use primitive-converting list helpers.
+    """
+    value = ListValueObject[Age].from_primitives(value=[1])
+    updated = value.add_from_primitives(item=2)
+
+    assert [item.value for item in updated] == [1, 2]
+    assert [item.value for item in value] == [1]
+
+
+@mark.unit_testing
+def test_list_value_object_inline_constructor_rejects_invalid_type_argument() -> None:
+    """
+    Test that inline construction preserves type argument validation.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'ListValueObject\[\.\.\.\] <<<1>>> must be a type\. Got <<<int>>> type\.',
+    ):
+        invalid_list_value_object = cast(Any, ListValueObject)[1]
+        invalid_list_value_object(value=[1])
+
+
+@mark.unit_testing
+def test_list_value_object_inline_constructor_rejects_invalid_value() -> None:
+    """
+    Test that inline construction reports list validation errors.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'ListValueObject\[int\] value <<<name>>> must be of type <<<int>>> type\. Got <<<str>>> type\.',
+    ):
+        ListValueObject[int](value=cast(Any, ['name']))
+
+
+@mark.unit_testing
+def test_list_value_object_inline_constructor_allows_any() -> None:
+    """
+    Test that inline construction preserves Any handling.
+    """
+    payload = object()
+    value = ListValueObject[Any](value=[payload])
+
+    assert value.value == [payload]
+
+
+@mark.unit_testing
+def test_list_value_object_inline_type_argument_label_uses_string_fallback() -> None:
+    """
+    Test that generated inline class labels handle type-like objects without names.
+    """
+    assert _ListValueObjectAlias._format_type_argument(type=ForwardRef('SomeType')) == "ForwardRef('SomeType')"

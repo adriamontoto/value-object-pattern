@@ -9,7 +9,8 @@ from unittest.mock import patch
 from pytest import mark, raises as assert_raises
 
 from value_object_pattern import BaseModel, EnumerationValueObject, UnionValueObject, ValueObject, validation
-from value_object_pattern.usables import IntegerValueObject
+from value_object_pattern.models.union_value_object import _UnionValueObjectAlias
+from value_object_pattern.usables import IntegerValueObject, StringValueObject
 
 TGenericUnion = TypeVar('TGenericUnion')
 
@@ -467,3 +468,91 @@ def test_union_value_object_type_label_non_union_and_any_and_format_fallback() -
     assert single_int._type_label() == 'int'
     assert any_union._type_label() == 'Any'
     assert single_int._format_single_type(type=ForwardRef('SomeType')) == "ForwardRef('SomeType')"
+
+
+@mark.unit_testing
+def test_union_value_object_inline_constructor_stores_first_matching_value_object_candidate() -> None:
+    """
+    Test that UnionValueObject[T](...) works without declaring a named subclass.
+    """
+    value = UnionValueObject[IntegerValueObject | StringValueObject](value=cast(Any, 1))
+
+    assert isinstance(value.value, IntegerValueObject)
+    assert value.value.value == 1
+
+
+@mark.unit_testing
+def test_union_value_object_inline_constructor_falls_back_to_later_candidate() -> None:
+    """
+    Test that inline construction preserves union candidate fallback behavior.
+    """
+    value = UnionValueObject[IntegerValueObject | StringValueObject](value=cast(Any, 'name'))
+
+    assert isinstance(value.value, StringValueObject)
+    assert value.value.value == 'name'
+
+
+@mark.unit_testing
+def test_union_value_object_inline_constructor_reuses_runtime_class_for_equality() -> None:
+    """
+    Test that repeated inline construction uses the same runtime class for equivalent aliases.
+    """
+    first = UnionValueObject[int | str](value=1)
+    second = UnionValueObject[int | str](value=1)
+
+    assert first == second
+
+
+@mark.unit_testing
+def test_union_value_object_inline_from_primitives_uses_union_conversion() -> None:
+    """
+    Test that inline aliases expose class helpers through the generated runtime subclass.
+    """
+    value = UnionValueObject[IntegerValueObject | StringValueObject].from_primitives(value=1)
+
+    assert isinstance(value.value, IntegerValueObject)
+    assert value.value.value == 1
+
+
+@mark.unit_testing
+def test_union_value_object_inline_constructor_rejects_invalid_type_argument() -> None:
+    """
+    Test that inline construction preserves type argument validation.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'UnionValueObject\[\.\.\.\] <<<1>>> must be a type\. Got <<<int>>> type\.',
+    ):
+        invalid_union_value_object = cast(Any, UnionValueObject)[1]
+        invalid_union_value_object(value=1)
+
+
+@mark.unit_testing
+def test_union_value_object_inline_constructor_rejects_invalid_value() -> None:
+    """
+    Test that inline construction reports union validation errors for unmatched values.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'UnionValueObject\[int \| str\] value <<<.*>>> must be of type <<<int \| str>>> type\. Got <<<object>>> type\.',  # noqa: E501
+    ):
+        UnionValueObject[int | str](value=cast(Any, object()))
+
+
+@mark.unit_testing
+def test_union_value_object_inline_constructor_allows_any() -> None:
+    """
+    Test that inline construction preserves Any handling.
+    """
+    payload = {'name': 'dynamic'}
+    value = UnionValueObject[Any](value=payload)
+
+    assert value.value is payload
+
+
+@mark.unit_testing
+def test_union_value_object_inline_type_argument_label_uses_string_fallback() -> None:
+    """
+    Test that generated inline class labels handle type-like objects without names.
+    """
+    assert _UnionValueObjectAlias._format_type_argument(type=ForwardRef('SomeType')) == "ForwardRef('SomeType')"

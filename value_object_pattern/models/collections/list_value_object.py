@@ -15,7 +15,7 @@ from collections.abc import Iterator
 from enum import Enum
 from inspect import isclass
 from types import UnionType
-from typing import Any, Generic, NoReturn, Self, TypeVar, Union, get_args, get_origin
+from typing import Any, ClassVar, Generic, NoReturn, Self, TypeVar, Union, get_args, get_origin
 
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import BaseModel, ValueObject
@@ -23,6 +23,127 @@ from value_object_pattern.models.primitive_conversion import from_primitive, to_
 from value_object_pattern.models.type_matching import matches_expected_type
 
 T = TypeVar('T', bound=Any)
+
+
+def _validate_list_type_argument(*, type_argument: Any) -> None:
+    """
+    Validate a type argument used by ListValueObject.
+
+    Args:
+        type_argument: The type argument to validate.
+
+    Raises:
+        TypeError: If the type argument is not a type-like annotation.
+    """
+    if isinstance(type_argument, TypeVar):
+        return
+
+    if type(type_argument) is not type and not isclass(object=type_argument) and get_origin(tp=type_argument) is None:
+        raise TypeError(f'ListValueObject[...] <<<{type_argument}>>> must be a type. Got <<<{type(type_argument).__name__}>>> type.')  # noqa: E501  # fmt: skip
+
+
+class _ListValueObjectAlias:
+    """
+    Runtime alias returned by `ListValueObject[T]`.
+
+    The item type must be available before `ValueObject.__init__` validates the list. This alias keeps subclass
+    declarations working through `__mro_entries__` and supports direct inline construction by creating a parameterized
+    runtime subclass before validation starts.
+    """
+
+    _runtime_classes: ClassVar[dict[Any, type[ListValueObject[Any]]]] = {}
+
+    def __init__(self, *, origin: type[ListValueObject[Any]], type_argument: Any) -> None:
+        """
+        Create a runtime alias for a parameterized ListValueObject.
+
+        Args:
+            origin: The original ListValueObject class.
+            type_argument: The type argument used in `ListValueObject[T]`.
+        """
+        self.__origin__ = origin
+        self.__args__ = (type_argument,)
+
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        """
+        Construct an inline parameterized ListValueObject instance.
+
+        Args:
+            *args: Positional arguments passed to the generated value object subclass.
+            **kwargs: Keyword arguments passed to the generated value object subclass.
+
+        Returns:
+            Any: The constructed value object.
+        """
+        return self._runtime_class()(*args, **kwargs)
+
+    def __getattr__(self, name: str) -> Any:
+        """
+        Delegate class attribute access to the generated runtime subclass.
+
+        Args:
+            name: The attribute name to retrieve.
+
+        Returns:
+            Any: The resolved attribute.
+        """
+        return getattr(self._runtime_class(), name)
+
+    def __mro_entries__(self, bases: tuple[type, ...]) -> tuple[type[ListValueObject[Any]], ...]:
+        """
+        Return the origin class when the alias is used as a base class.
+
+        Args:
+            bases: The original class bases supplied by Python.
+
+        Returns:
+            tuple[type[ListValueObject[Any]], ...]: The base classes to use for MRO construction.
+        """
+        _ = bases
+
+        return (self.__origin__,)
+
+    def _runtime_class(self) -> type[ListValueObject[Any]]:
+        """
+        Return the generated runtime subclass for this alias.
+
+        Returns:
+            type[ListValueObject[Any]]: The runtime subclass.
+        """
+        type_argument, *_ = self.__args__
+        _validate_list_type_argument(type_argument=type_argument)
+        key = (self.__origin__, type_argument)
+        if key not in self._runtime_classes:
+            self._runtime_classes[key] = type(
+                f'{self.__origin__.__name__}[{self._format_type_argument(type=type_argument)}]',
+                (self.__origin__,),
+                {
+                    '_is_inline_parameterized_list_value_object': True,
+                    '_type': type_argument,
+                },
+            )
+
+        return self._runtime_classes[key]
+
+    @staticmethod
+    def _format_type_argument(*, type: Any) -> str:
+        """
+        Return a compact type-argument label for generated runtime class names.
+
+        Args:
+            type: The type argument to format.
+
+        Returns:
+            str: A readable type label.
+        """
+        origin = get_origin(tp=type)
+        if origin in (Union, UnionType):
+            return ' | '.join(_ListValueObjectAlias._format_type_argument(type=allowed) for allowed in get_args(type))
+
+        if hasattr(type, '__name__'):
+            return type.__name__  # type: ignore[no-any-return]
+
+        return str(type).replace('typing.', '')
 
 
 class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
@@ -50,6 +171,19 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
 
     _type: T
 
+    @classmethod
+    def __class_getitem__(cls, item: Any) -> Any:
+        """
+        Return a runtime alias that supports subclassing and inline construction.
+
+        Args:
+            item: The type argument used in `ListValueObject[item]`.
+
+        Returns:
+            Any: A runtime alias for the parameterized ListValueObject.
+        """
+        return _ListValueObjectAlias(origin=cls, type_argument=item)
+
     @override
     def __init_subclass__(cls, **kwargs: Any) -> None:
         """
@@ -64,17 +198,14 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         """
         super().__init_subclass__(**kwargs)
 
+        if getattr(cls, '_is_inline_parameterized_list_value_object', False):
+            return
+
         for base in getattr(cls, '__orig_bases__', ()):
-            if get_origin(tp=base) is ListValueObject:
-                _type, *_ = get_args(tp=base)
+            if get_origin(tp=base) is ListValueObject or getattr(base, '__origin__', None) is ListValueObject:
+                _type, *_ = get_args(tp=base) or base.__args__
 
-                if isinstance(_type, TypeVar):
-                    cls._type = _type  # type: ignore[assignment]
-                    return
-
-                if type(_type) is not type and not isclass(object=_type) and get_origin(tp=_type) is None:
-                    raise TypeError(f'ListValueObject[...] <<<{_type}>>> must be a type. Got <<<{type(_type).__name__}>>> type.')  # noqa: E501  # fmt: skip
-
+                _validate_list_type_argument(type_argument=_type)
                 cls._type = _type
                 return
 

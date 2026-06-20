@@ -13,7 +13,7 @@ from value_object_pattern.models.collections import DictValueObject, ListValueOb
 
 `ValueObject[T]` is the base immutable wrapper for exactly one value.
 
-Observed behavior in `value_object_pattern` 1.29.2:
+Observed behavior in `value_object_pattern` 1.30.0:
 
 - Construct with keyword arguments: `MyValue(value=raw)`.
 - Optional constructor metadata: `title` and `parameter` customize validation error context.
@@ -85,7 +85,9 @@ validator and the processed value is cached for storage.
 - Use `EnumerationValueObject[E]` for enum-backed values that should accept enum members or raw enum values.
 - Use `UnionValueObject[T]` when the stored value may be one of several annotated types and conversion should try the
   union candidates in order.
-- Use `ListValueObject[T]` or `DictValueObject[K, V]` when the collection itself has domain meaning.
+- Use `ListValueObject[T]` or `DictValueObject[K, V]` when the collection itself has domain meaning. Both also support
+  inline construction as `ListValueObject[T](...)` and `DictValueObject[K, V](...)` for local typed collection
+  validation.
 - Use `BaseModel` for aggregate-like models with multiple attributes and primitive conversion.
 
 ## EnumerationValueObject
@@ -117,7 +119,8 @@ Parameterize the subclass. Unparameterized subclasses raise at class creation.
 ## UnionValueObject
 
 `UnionValueObject[T]` stores the first union candidate that can represent the input. It supports primitives,
-`ValueObject` subclasses, `BaseModel` subclasses, enums, nested collections, and unions.
+`ValueObject` subclasses, `BaseModel` subclasses, enums, nested collections, and unions. Use a named subclass for
+reusable domain concepts, or construct `UnionValueObject[T]` inline for local conversion.
 
 ```python
 from value_object_pattern import UnionValueObject
@@ -130,6 +133,7 @@ class IdOrSlug(UnionValueObject[PositiveIntegerValueObject | str]):
 
 assert isinstance(IdOrSlug(value=10).value, PositiveIntegerValueObject)
 assert IdOrSlug(value='tenant-a').value == 'tenant-a'
+assert isinstance(UnionValueObject[PositiveIntegerValueObject | str](value=10).value, PositiveIntegerValueObject)
 ```
 
 Candidate order matters. Put more specific or richer candidates before broader primitives when both could match.

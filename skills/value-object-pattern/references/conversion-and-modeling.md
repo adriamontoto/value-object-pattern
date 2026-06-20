@@ -44,7 +44,8 @@ Prefer `BaseModel.from_primitives()` at inbound boundaries and `to_primitives()`
 ## ListValueObject
 
 `ListValueObject[T]` validates that the wrapped value is a list and each item matches the declared item type. Helpers
-return new instances rather than mutating the original object.
+return new instances rather than mutating the original object. Use a named subclass for domain collections, or construct
+`ListValueObject[T]` inline for local typed-list validation.
 
 Supported read behavior:
 
@@ -79,15 +80,18 @@ class Quantities(ListValueObject[PositiveIntegerValueObject]):
 
 quantities = Quantities.from_primitives(value=[1, 2])
 updated = quantities.add_from_primitives(item=3)
+inline_quantities = ListValueObject[PositiveIntegerValueObject].from_primitives(value=[1, 2, 3])
 
 assert quantities.to_primitives() == [1, 2]
 assert updated.to_primitives() == [1, 2, 3]
+assert inline_quantities.to_primitives() == [1, 2, 3]
 ```
 
 ## DictValueObject
 
 `DictValueObject[K, V]` validates that the wrapped value is a dictionary and validates each key/value against the
-declared types.
+declared types. Use a named subclass for domain mappings, or construct `DictValueObject[K, V]` inline for local typed
+dictionary validation.
 
 Supported read behavior:
 
@@ -114,9 +118,11 @@ class StockBySku(DictValueObject[str, PositiveIntegerValueObject]):
 
 
 stock = StockBySku.from_primitives(value={'sku-1': 10})
+inline_stock = DictValueObject[str, PositiveIntegerValueObject].from_primitives(value={'sku-1': 10})
 
 assert stock['sku-1'].value == 10
 assert stock.to_primitives() == {'sku-1': 10}
+assert inline_stock.to_primitives() == {'sku-1': 10}
 ```
 
 ## Conversion Rules To Remember
@@ -124,6 +130,8 @@ assert stock.to_primitives() == {'sku-1': 10}
 - `BaseModel.from_primitives(primitives={...})` expects constructor parameter names, not arbitrary object attributes.
 - Extra or missing constructor parameters are rejected.
 - Collection `.from_primitives()` methods use `value=...`, while `BaseModel.from_primitives()` uses `primitives=...`.
-- `UnionValueObject` tries candidates in annotation order.
+- `ListValueObject` can be constructed inline as `ListValueObject[T](...)`.
+- `DictValueObject` can be constructed inline as `DictValueObject[K, V](...)`.
+- `UnionValueObject` tries candidates in annotation order and can be constructed inline as `UnionValueObject[T](...)`.
 - `SecretStringValueObject` converts through its display value, so `to_primitives()` may produce a masked string.
 - Keep raw primitive conversion near I/O; avoid unpacking `.value` throughout domain code.

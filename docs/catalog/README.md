@@ -17,10 +17,10 @@ For deeper category references, use:
 | --- | --- |
 | `ValueObject[T]` | Immutable validated wrapper for one value. |
 | `EnumerationValueObject[E]` | Enum-backed value object accepting enum members or raw enum values. |
-| `UnionValueObject[T]` | Value object constrained by a union annotation. |
+| `UnionValueObject[T]` | Value object constrained by a union annotation; supports named subclasses and inline construction. |
 | `BaseModel` | Aggregate-like model with primitive conversion and public-state representation. |
-| `ListValueObject[T]` | Typed immutable list wrapper. |
-| `DictValueObject[K, V]` | Typed immutable dictionary wrapper. |
+| `ListValueObject[T]` | Typed immutable list wrapper; supports named subclasses and inline construction. |
+| `DictValueObject[K, V]` | Typed immutable dictionary wrapper; supports named subclasses and inline construction. |
 
 ## Primitive Value Objects
 

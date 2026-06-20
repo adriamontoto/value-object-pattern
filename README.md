@@ -237,10 +237,10 @@ low-level operations, and boundary examples.
 | --- | --- |
 | `ValueObject[T]` | Base class for immutable validated single-value wrappers. |
 | `EnumerationValueObject[E]` | Stores enum members while accepting enum members or raw enum values. |
-| `UnionValueObject[T]` | Accepts and converts values that match a union annotation. |
+| `UnionValueObject[T]` | Accepts and converts values that match a union annotation; supports subclass and inline construction. |
 | `BaseModel` | Adds representation, equality, copying, and primitive conversion for aggregate-like models. |
-| `ListValueObject[T]` | Immutable typed list wrapper with helper methods that return new instances. |
-| `DictValueObject[K, V]` | Immutable typed dictionary wrapper with helper methods that return new instances. |
+| `ListValueObject[T]` | Immutable typed list wrapper; supports subclass and inline construction. |
+| `DictValueObject[K, V]` | Immutable typed dictionary wrapper; supports subclass and inline construction. |
 
 See [`docs/usage/README.md`](docs/usage/README.md) for examples of each model.
 

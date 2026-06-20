@@ -14,7 +14,20 @@ else:
 from collections.abc import Iterator
 from inspect import isclass
 from types import UnionType
-from typing import Any, Generic, ItemsView, KeysView, NoReturn, Self, TypeVar, Union, ValuesView, get_args, get_origin
+from typing import (
+    Any,
+    ClassVar,
+    Generic,
+    ItemsView,
+    KeysView,
+    NoReturn,
+    Self,
+    TypeVar,
+    Union,
+    ValuesView,
+    get_args,
+    get_origin,
+)
 
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import ValueObject
@@ -23,6 +36,154 @@ from value_object_pattern.models.type_matching import matches_expected_type
 
 K = TypeVar('K', bound=Any)
 V = TypeVar('V', bound=Any)
+
+
+def _validate_dict_type_argument(*, type_argument: Any) -> None:
+    """
+    Validate a type argument used by DictValueObject.
+
+    Args:
+        type_argument: The type argument to validate.
+
+    Raises:
+        TypeError: If the type argument is not a type-like annotation.
+    """
+    if isinstance(type_argument, TypeVar):
+        return
+
+    if type(type_argument) is not type and not isclass(object=type_argument) and get_origin(tp=type_argument) is None:
+        raise TypeError(f'DictValueObject[...] <<<{type_argument}>>> must be a type. Got <<<{type(type_argument).__name__}>>> type.')  # noqa: E501  # fmt: skip
+
+
+def _parse_dict_type_arguments(*, type_arguments: Any) -> tuple[Any, Any]:
+    """
+    Return key and value type arguments from `DictValueObject[K, V]` input.
+
+    Args:
+        type_arguments: The raw type arguments passed to `DictValueObject[...]`.
+
+    Raises:
+        TypeError: If exactly two type arguments are not provided.
+
+    Returns:
+        tuple[Any, Any]: The key and value type arguments.
+    """
+    if not isinstance(type_arguments, tuple):
+        raise TypeError('DictValueObject must be parameterised, e.g. `class StrIntDict(DictValueObject[str, int])`.')
+
+    if len(type_arguments) != 2:
+        raise TypeError('DictValueObject must be parameterised, e.g. `class StrIntDict(DictValueObject[str, int])`.')
+
+    key_type, value_type = type_arguments
+
+    return key_type, value_type
+
+
+class _DictValueObjectAlias:
+    """
+    Runtime alias returned by `DictValueObject[K, V]`.
+
+    Key and value types must be available before `ValueObject.__init__` validates the dictionary. This alias keeps
+    subclass declarations working through `__mro_entries__` and supports direct inline construction by creating a
+    parameterized runtime subclass before validation starts.
+    """
+
+    _runtime_classes: ClassVar[dict[Any, type[DictValueObject[Any, Any]]]] = {}
+
+    def __init__(self, *, origin: type[DictValueObject[Any, Any]], key_type: Any, value_type: Any) -> None:
+        """
+        Create a runtime alias for a parameterized DictValueObject.
+
+        Args:
+            origin: The original DictValueObject class.
+            key_type: The key type argument used in `DictValueObject[K, V]`.
+            value_type: The value type argument used in `DictValueObject[K, V]`.
+        """
+        self.__origin__ = origin
+        self.__args__ = (key_type, value_type)
+
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        """
+        Construct an inline parameterized DictValueObject instance.
+
+        Args:
+            *args: Positional arguments passed to the generated value object subclass.
+            **kwargs: Keyword arguments passed to the generated value object subclass.
+
+        Returns:
+            Any: The constructed value object.
+        """
+        return self._runtime_class()(*args, **kwargs)
+
+    def __getattr__(self, name: str) -> Any:
+        """
+        Delegate class attribute access to the generated runtime subclass.
+
+        Args:
+            name: The attribute name to retrieve.
+
+        Returns:
+            Any: The resolved attribute.
+        """
+        return getattr(self._runtime_class(), name)
+
+    def __mro_entries__(self, bases: tuple[type, ...]) -> tuple[type[DictValueObject[Any, Any]], ...]:
+        """
+        Return the origin class when the alias is used as a base class.
+
+        Args:
+            bases: The original class bases supplied by Python.
+
+        Returns:
+            tuple[type[DictValueObject[Any, Any]], ...]: The base classes to use for MRO construction.
+        """
+        _ = bases
+
+        return (self.__origin__,)
+
+    def _runtime_class(self) -> type[DictValueObject[Any, Any]]:
+        """
+        Return the generated runtime subclass for this alias.
+
+        Returns:
+            type[DictValueObject[Any, Any]]: The runtime subclass.
+        """
+        key_type, value_type = self.__args__
+        _validate_dict_type_argument(type_argument=key_type)
+        _validate_dict_type_argument(type_argument=value_type)
+        key = (self.__origin__, key_type, value_type)
+        if key not in self._runtime_classes:
+            self._runtime_classes[key] = type(
+                f'{self.__origin__.__name__}[{self._format_type_argument(type=key_type)}, {self._format_type_argument(type=value_type)}]',  # noqa: E501
+                (self.__origin__,),
+                {
+                    '_is_inline_parameterized_dict_value_object': True,
+                    '_key_type': key_type,
+                    '_value_type': value_type,
+                },
+            )
+
+        return self._runtime_classes[key]
+
+    @staticmethod
+    def _format_type_argument(*, type: Any) -> str:
+        """
+        Return a compact type-argument label for generated runtime class names.
+
+        Args:
+            type: The type argument to format.
+
+        Returns:
+            str: A readable type label.
+        """
+        origin = get_origin(tp=type)
+        if origin in (Union, UnionType):
+            return ' | '.join(_DictValueObjectAlias._format_type_argument(type=allowed) for allowed in get_args(type))
+
+        if hasattr(type, '__name__'):
+            return type.__name__  # type: ignore[no-any-return]
+
+        return str(type).replace('typing.', '')
 
 
 class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
@@ -54,6 +215,21 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
     _key_type: K
     _value_type: V
 
+    @classmethod
+    def __class_getitem__(cls, item: Any) -> Any:
+        """
+        Return a runtime alias that supports subclassing and inline construction.
+
+        Args:
+            item: The type arguments used in `DictValueObject[item]`.
+
+        Returns:
+            Any: A runtime alias for the parameterized DictValueObject.
+        """
+        key_type, value_type = _parse_dict_type_arguments(type_arguments=item)
+
+        return _DictValueObjectAlias(origin=cls, key_type=key_type, value_type=value_type)
+
     @override
     def __init_subclass__(cls, **kwargs: Any) -> None:
         """
@@ -69,25 +245,17 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
         """
         super().__init_subclass__(**kwargs)
 
+        if getattr(cls, '_is_inline_parameterized_dict_value_object', False):
+            return
+
         for base in getattr(cls, '__orig_bases__', ()):
-            if get_origin(base) is DictValueObject:
-                key_type, val_type, *_ = get_args(base)
+            if get_origin(base) is DictValueObject or getattr(base, '__origin__', None) is DictValueObject:
+                key_type, val_type = get_args(base) or base.__args__
 
-                if isinstance(key_type, TypeVar):
-                    cls._key_type = key_type  # type: ignore[assignment]
-                else:
-                    if type(key_type) is not type and not isclass(key_type) and get_origin(key_type) is None:
-                        raise TypeError(f'DictValueObject[...] <<<{key_type}>>> must be a type. Got <<<{type(key_type).__name__}>>> type.')  # noqa: E501  # fmt: skip
-
-                    cls._key_type = key_type
-
-                if isinstance(val_type, TypeVar):
-                    cls._value_type = val_type  # type: ignore[assignment]
-                else:
-                    if type(val_type) is not type and not isclass(val_type) and get_origin(val_type) is None:
-                        raise TypeError(f'DictValueObject[...] <<<{val_type}>>> must be a type. Got <<<{type(val_type).__name__}>>> type.')  # noqa: E501  # fmt: skip
-
-                    cls._value_type = val_type
+                _validate_dict_type_argument(type_argument=key_type)
+                cls._key_type = key_type
+                _validate_dict_type_argument(type_argument=val_type)
+                cls._value_type = val_type
 
                 return
 

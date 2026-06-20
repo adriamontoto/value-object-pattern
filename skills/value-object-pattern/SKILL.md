@@ -2,10 +2,10 @@
 name: value-object-pattern
 description: Use this skill when working in Python projects that use or should use the value-object-pattern package. Use it for domain primitives, value objects, validation wrappers, DDD-style typed values, reusable validators, primitive conversion, BaseModel aggregates, ListValueObject, DictValueObject, EnumerationValueObject, UnionValueObject, or when replacing scattered validation with named immutable objects, even if the user only says "make this field validated" or "avoid primitive obsession."
 license: MIT
-compatibility: Designed for Agent Skills-compatible coding agents. Python project guidance is authored from value-object-pattern 1.29.2 and Python 3.11+; verify the consuming project's pinned package version before relying on newer APIs.
+compatibility: Designed for Agent Skills-compatible coding agents. Python project guidance is authored from value-object-pattern 1.30.0 and Python 3.11+; verify the consuming project's pinned package version before relying on newer APIs.
 metadata:
   package: value-object-pattern
-  package-version: '1.29.2'
+  package-version: '1.30.0'
   source: https://github.com/adriamontoto/value-object-pattern
 ---
 

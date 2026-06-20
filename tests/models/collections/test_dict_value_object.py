@@ -10,7 +10,7 @@ else:
     from typing_extensions import override  # pragma: no cover
 
 from enum import Enum
-from typing import Any, ForwardRef, TypeVar
+from typing import Any, ForwardRef, TypeVar, cast
 
 from object_mother_pattern import IntegerMother
 from object_mother_pattern.models import BaseMother
@@ -18,6 +18,7 @@ from pytest import mark, raises as assert_raises
 
 from value_object_pattern import BaseModel, EnumerationValueObject, ValueObject
 from value_object_pattern.models.collections import DictValueObject
+from value_object_pattern.models.collections.dict_value_object import _DictValueObjectAlias
 
 
 class StrIntDictValueObject(DictValueObject[str, int]):
@@ -1178,3 +1179,149 @@ def test_dict_value_object_to_primitives_with_custom_object_keys() -> None:
     primitives = dict_value_object.to_primitives()
 
     assert primitives == {'CustomKey(alpha)': 1, 'CustomKey(beta)': 2}
+
+
+@mark.unit_testing
+def test_dict_value_object_inline_constructor_stores_items() -> None:
+    """
+    Test that DictValueObject[K, V](...) works without declaring a named subclass.
+    """
+    value = DictValueObject[str, int](value={'quantity': 1})
+
+    assert value.value == {'quantity': 1}
+
+
+@mark.unit_testing
+def test_dict_value_object_inline_constructor_supports_union_key_type() -> None:
+    """
+    Test that inline construction preserves union key validation.
+    """
+    value = DictValueObject[int | str, int](value={1: 10, 'two': 20})
+
+    assert value.value == {1: 10, 'two': 20}
+
+
+@mark.unit_testing
+def test_dict_value_object_inline_constructor_supports_union_value_type() -> None:
+    """
+    Test that inline construction preserves union value validation.
+    """
+    value = DictValueObject[str, int | str](value={'one': 1, 'two': 'second'})
+
+    assert value.value == {'one': 1, 'two': 'second'}
+
+
+@mark.unit_testing
+def test_dict_value_object_inline_constructor_reuses_runtime_class_for_equality() -> None:
+    """
+    Test that repeated inline construction uses the same runtime class for equivalent aliases.
+    """
+    first = DictValueObject[str, int](value={'quantity': 1})
+    second = DictValueObject[str, int](value={'quantity': 1})
+
+    assert first == second
+
+
+@mark.unit_testing
+def test_dict_value_object_inline_from_primitives_converts_values() -> None:
+    """
+    Test that inline aliases expose class helpers through the generated runtime subclass.
+    """
+    value = DictValueObject[str, SimpleValueObject].from_primitives(value={'quantity': 1})
+
+    assert isinstance(value['quantity'], SimpleValueObject)
+    assert value['quantity'].value == 1
+
+
+@mark.unit_testing
+def test_dict_value_object_inline_constructor_rejects_invalid_key_type_argument() -> None:
+    """
+    Test that inline construction preserves key type argument validation.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'DictValueObject\[\.\.\.\] <<<1>>> must be a type\. Got <<<int>>> type\.',
+    ):
+        invalid_dict_value_object = cast(Any, DictValueObject)[1, int]
+        invalid_dict_value_object(value={1: 1})
+
+
+@mark.unit_testing
+def test_dict_value_object_inline_constructor_rejects_invalid_value_type_argument() -> None:
+    """
+    Test that inline construction preserves value type argument validation.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'DictValueObject\[\.\.\.\] <<<1>>> must be a type\. Got <<<int>>> type\.',
+    ):
+        invalid_dict_value_object = cast(Any, DictValueObject)[str, 1]
+        invalid_dict_value_object(value={'quantity': 1})
+
+
+@mark.unit_testing
+def test_dict_value_object_inline_constructor_rejects_missing_type_argument() -> None:
+    """
+    Test that inline construction requires key and value type arguments.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'DictValueObject must be parameterised, e\.g\. `class StrIntDict\(DictValueObject\[str, int\]\)`\.',
+    ):
+        cast(Any, DictValueObject)[str]
+
+
+@mark.unit_testing
+def test_dict_value_object_inline_constructor_rejects_extra_type_argument() -> None:
+    """
+    Test that inline construction rejects more than key and value type arguments.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'DictValueObject must be parameterised, e\.g\. `class StrIntDict\(DictValueObject\[str, int\]\)`\.',
+    ):
+        cast(Any, DictValueObject)[str, int, bool]
+
+
+@mark.unit_testing
+def test_dict_value_object_inline_constructor_rejects_invalid_key() -> None:
+    """
+    Test that inline construction reports key validation errors.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'DictValueObject\[str, int\] value <<<1>>> must be of type <<<str>>> type\. Got <<<int>>> type\.',
+    ):
+        DictValueObject[str, int](value=cast(Any, {1: 1}))
+
+
+@mark.unit_testing
+def test_dict_value_object_inline_constructor_rejects_invalid_value() -> None:
+    """
+    Test that inline construction reports value validation errors.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'DictValueObject\[str, int\] value <<<quantity>>> must be of type <<<int>>> type\. Got <<<str>>> type\.',
+    ):
+        DictValueObject[str, int](value=cast(Any, {'quantity': 'quantity'}))
+
+
+@mark.unit_testing
+def test_dict_value_object_inline_constructor_allows_any() -> None:
+    """
+    Test that inline construction preserves Any handling for keys and values.
+    """
+    key = object()
+    payload = object()
+    value = DictValueObject[Any, Any](value={key: payload})
+
+    assert value.value == {key: payload}
+
+
+@mark.unit_testing
+def test_dict_value_object_inline_type_argument_label_uses_string_fallback() -> None:
+    """
+    Test that generated inline class labels handle type-like objects without names.
+    """
+    assert _DictValueObjectAlias._format_type_argument(type=ForwardRef('SomeType')) == "ForwardRef('SomeType')"
