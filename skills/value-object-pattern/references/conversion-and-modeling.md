@@ -47,6 +47,9 @@ Prefer `BaseModel.from_primitives()` at inbound boundaries and `to_primitives()`
 return new instances rather than mutating the original object. Use a named subclass for domain collections, or construct
 `ListValueObject[T]` inline for local typed-list validation.
 
+`from_primitives()` validates that its input is a list before converting items. Named subclasses can override
+`_raise_value_is_not_list()` to provide a domain-specific container error.
+
 Supported read behavior:
 
 - `item in collection`
@@ -92,6 +95,9 @@ assert inline_quantities.to_primitives() == [1, 2, 3]
 `DictValueObject[K, V]` validates that the wrapped value is a dictionary and validates each key/value against the
 declared types. Use a named subclass for domain mappings, or construct `DictValueObject[K, V]` inline for local typed
 dictionary validation.
+
+`from_primitives()` validates that its input is a dictionary before converting keys and values. Named subclasses can
+override `_raise_not_is_not_dict()` to provide a domain-specific container error.
 
 Supported read behavior:
 

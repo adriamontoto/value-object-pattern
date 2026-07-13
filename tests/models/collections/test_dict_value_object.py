@@ -764,6 +764,18 @@ def test_dict_value_object_from_primitives_with_primitive_types_keeps_values() -
 
 
 @mark.unit_testing
+def test_dict_value_object_from_primitives_with_invalid_type_raises_type_error() -> None:
+    """
+    Test from_primitives raises the standard TypeError for invalid types.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'DictValueObject value <<<None>>> must be a dict\. Got <<<NoneType>>> type\.',
+    ):
+        StrIntDictValueObject.from_primitives(value=cast(Any, None))
+
+
+@mark.unit_testing
 def test_dict_value_object_from_primitives_with_any_types_keeps_values() -> None:
     """
     Test from_primitives keeps values unchanged when key/value annotations are Any.

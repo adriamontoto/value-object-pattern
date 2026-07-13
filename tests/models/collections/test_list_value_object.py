@@ -10,7 +10,7 @@ else:
     from typing_extensions import override  # pragma: no cover
 
 from enum import Enum
-from typing import Any, ForwardRef, TypeVar, cast
+from typing import Any, ForwardRef, NoReturn, TypeVar, cast
 
 from object_mother_pattern import IntegerMother
 from object_mother_pattern.models import BaseMother
@@ -25,6 +25,25 @@ class IntListValueObject(ListValueObject[int]):
     """
     List value object storing integers.
     """
+
+
+class CustomListTypeError(TypeError):
+    """
+    Custom error used to verify ListValueObject error-hook delegation.
+    """
+
+
+class CustomErrorListValueObject(ListValueObject[int]):
+    """
+    List value object with a custom container type error.
+    """
+
+    @override
+    def _raise_value_is_not_list(self, value: Any) -> NoReturn:
+        """
+        Raise the custom list type error.
+        """
+        raise CustomListTypeError(value)
 
 
 class Age(ValueObject[int]):
@@ -882,6 +901,27 @@ def test_list_value_object_from_primitives_builds_value_object_list() -> None:
     age_list = AgeListValueObject.from_primitives(value=[10, 20])
 
     assert [age.value for age in age_list] == [10, 20]
+
+
+@mark.unit_testing
+def test_list_value_object_from_primitives_rejects_non_list() -> None:
+    """
+    Test that from_primitives validates its container before converting items.
+    """
+    with assert_raises(
+        expected_exception=TypeError,
+        match=r'ListValueObject value <<<invalid>>> must be a list\. Got <<<str>>> type\.',
+    ):
+        IntListValueObject.from_primitives(value=cast(Any, 'invalid'))
+
+
+@mark.unit_testing
+def test_list_value_object_from_primitives_delegates_to_custom_error_hook() -> None:
+    """
+    Test that from_primitives preserves subclass container error hooks.
+    """
+    with assert_raises(expected_exception=CustomListTypeError):
+        CustomErrorListValueObject.from_primitives(value=BaseMother.invalid_type(remove_types=(list,)))
 
 
 @mark.unit_testing

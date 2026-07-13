@@ -25,6 +25,7 @@ from typing import (
     TypeVar,
     Union,
     ValuesView,
+    cast,
     get_args,
     get_origin,
 )
@@ -644,6 +645,9 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
         Returns:
             Self: The created DictValueObject.
 
+        Raises:
+            TypeError: If the `value` is not a dict.
+
         Example:
         ```python
         from value_object_pattern.models import ValueObject
@@ -663,6 +667,9 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
         # >>> {'john': 30, 'jane': 25}
         ```
         """
+        if not isinstance(cast(Any, value), dict):
+            return cls(value=value)
+
         dictionary: dict[Any, Any] = {}
 
         for key, item in value.items():

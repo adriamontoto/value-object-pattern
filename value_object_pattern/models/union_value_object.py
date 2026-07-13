@@ -264,10 +264,11 @@ class UnionValueObject(ValueObject[T], Generic[T]):  # noqa: UP046
             except Exception as error:
                 last_error = error
 
-        if last_error is not None:
-            raise TypeError(f'UnionValueObject value <<<{value}>>> must be of type <<<{self._type_label()}>>> type. Got <<<{type(value).__name__}>>> type.') from last_error  # noqa: E501  # fmt: skip
+        try:
+            self._raise_value_is_not_of_type(value=value)
 
-        self._raise_value_is_not_of_type(value=value)
+        except Exception as error:
+            raise error from last_error
 
     def _unwrap_candidate_value(self, *, value: Any, unwrap_enum: bool = True) -> Any:
         """

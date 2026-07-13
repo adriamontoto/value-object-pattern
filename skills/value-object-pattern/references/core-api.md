@@ -13,7 +13,7 @@ from value_object_pattern.models.collections import DictValueObject, ListValueOb
 
 `ValueObject[T]` is the base immutable wrapper for exactly one value.
 
-Observed behavior in `value_object_pattern` 1.30.0:
+Observed behavior in `value_object_pattern` 1.31.0:
 
 - Construct with keyword arguments: `MyValue(value=raw)`.
 - Optional constructor metadata: `title` and `parameter` customize validation error context.
@@ -137,6 +137,8 @@ assert isinstance(UnionValueObject[PositiveIntegerValueObject | str](value=10).v
 ```
 
 Candidate order matters. Put more specific or richer candidates before broader primitives when both could match.
+When no candidate matches, named subclasses can override `_raise_value_is_not_of_type()` to raise a domain-specific
+error.
 
 ## Display Overrides
 

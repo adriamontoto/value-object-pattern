@@ -15,7 +15,7 @@ from collections.abc import Iterator
 from enum import Enum
 from inspect import isclass
 from types import UnionType
-from typing import Any, ClassVar, Generic, NoReturn, Self, TypeVar, Union, get_args, get_origin
+from typing import Any, ClassVar, Generic, NoReturn, Self, TypeVar, Union, cast, get_args, get_origin
 
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import BaseModel, ValueObject
@@ -878,6 +878,9 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         # >>> [10, 20, 30]
         ```
         """
+        if not isinstance(cast(Any, value), list):
+            return cls(value=value)
+
         return cls(value=[from_primitive(value=item, expected_type=cls._type) for item in value])
 
     def to_primitives(self) -> list[Any]:

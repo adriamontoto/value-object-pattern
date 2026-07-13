@@ -2,8 +2,15 @@
 Test union value object module.
 """
 
+from sys import version_info
+
+if version_info >= (3, 12):
+    from typing import override  # pragma: no cover
+else:
+    from typing_extensions import override  # pragma: no cover
+
 from enum import Enum
-from typing import Any, ForwardRef, TypeVar, Union, cast
+from typing import Any, ForwardRef, NoReturn, TypeVar, Union, cast
 from unittest.mock import patch
 
 from pytest import mark, raises as assert_raises
@@ -68,6 +75,25 @@ class StringOrIntegerValueObject(UnionValueObject[LongStringValueObject | Intege
     """
     Union value object that accepts long strings or integers.
     """
+
+
+class CustomUnionTypeError(TypeError):
+    """
+    Custom error used to verify UnionValueObject error-hook delegation.
+    """
+
+
+class CustomErrorUnionValueObject(UnionValueObject[int | str]):
+    """
+    Union value object with a custom type error.
+    """
+
+    @override
+    def _raise_value_is_not_of_type(self, value: Any) -> NoReturn:
+        """
+        Raise the custom union type error.
+        """
+        raise CustomUnionTypeError(value)
 
 
 class ModelOrEnumOrValueObject(UnionValueObject[Tag | Status | LongStringValueObject]):
@@ -174,6 +200,15 @@ def test_union_value_object_raises_type_error_when_no_candidate_matches() -> Non
         match=r'StringOrIntegerValueObject value <<<abc>>> must be of type <<<LongStringValueObject \| IntegerValueObject>>> type\. Got <<<str>>> type\.',  # noqa: E501
     ):
         StringOrIntegerValueObject(value=cast(Any, 'abc'))
+
+
+@mark.unit_testing
+def test_union_value_object_delegates_failed_candidates_to_custom_error_hook() -> None:
+    """
+    Test that a subclass can customize the error raised when no union candidate matches.
+    """
+    with assert_raises(expected_exception=CustomUnionTypeError):
+        CustomErrorUnionValueObject(value=cast(Any, None))
 
 
 @mark.unit_testing
