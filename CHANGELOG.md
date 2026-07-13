@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.31.1 (2026-07-13)
+
+### 🐛 Bug Fixes
+
+- What happens when from_primitives receives a not the expected type
+  ([`dcd58cf`](https://github.com/adriamontoto/value-object-pattern/commit/dcd58cf85f47e49a27a233ef7ed70764d1066ba9))
+
+
 ## v1.31.0 (2026-06-20)
 
 ### ✨ Features
