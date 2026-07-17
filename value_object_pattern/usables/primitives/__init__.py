@@ -20,6 +20,7 @@ from .none import NoneValueObject, NotNoneValueObject
 from .string import (
     AlphaStringValueObject,
     AlphanumericStringValueObject,
+    Base64StringValueObject,
     CamelCaseStringValueObject,
     DigitStringValueObject,
     KebabCaseStringValueObject,
@@ -38,6 +39,7 @@ from .string import (
 __all__ = (
     'AlphaStringValueObject',
     'AlphanumericStringValueObject',
+    'Base64StringValueObject',
     'BooleanValueObject',
     'BytesValueObject',
     'CamelCaseStringValueObject',

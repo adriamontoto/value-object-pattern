@@ -33,6 +33,7 @@ Strings:
 | `StringValueObject` | Exact `str` values. |
 | `NotEmptyStringValueObject` | Rejects empty strings. |
 | `TrimmedStringValueObject` | Rejects leading/trailing whitespace. |
+| `Base64StringValueObject` | Canonical standard Base64 strings, including the empty encoding. |
 | `SecretStringValueObject` | Stores a string and redacts display. |
 | `AlphaStringValueObject` | Alphabetic strings. |
 | `AlphanumericStringValueObject` | Alphabetic and numeric characters. |

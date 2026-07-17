@@ -1,6 +1,7 @@
 from .primitives import (
     AlphaStringValueObject,
     AlphanumericStringValueObject,
+    Base64StringValueObject,
     BooleanValueObject,
     BytesValueObject,
     CamelCaseStringValueObject,
@@ -37,6 +38,7 @@ from .primitives import (
 __all__ = (
     'AlphaStringValueObject',
     'AlphanumericStringValueObject',
+    'Base64StringValueObject',
     'BooleanValueObject',
     'BytesValueObject',
     'CamelCaseStringValueObject',

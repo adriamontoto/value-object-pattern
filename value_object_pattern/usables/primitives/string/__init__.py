@@ -1,5 +1,6 @@
 from .alpha_value_object import AlphaStringValueObject
 from .alphanumeric_value_object import AlphanumericStringValueObject
+from .base64_value_object import Base64StringValueObject
 from .camel_case_string_value_object import CamelCaseStringValueObject
 from .digit_value_object import DigitStringValueObject
 from .kebab_case_string_value_object import KebabCaseStringValueObject
@@ -17,6 +18,7 @@ from .uppercase_string_value_object import UppercaseStringValueObject
 __all__ = (
     'AlphaStringValueObject',
     'AlphanumericStringValueObject',
+    'Base64StringValueObject',
     'CamelCaseStringValueObject',
     'DigitStringValueObject',
     'KebabCaseStringValueObject',
