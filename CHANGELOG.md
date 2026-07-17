@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.32.0 (2026-07-17)
+
+### ✨ Features
+
+- Implement Base64StringValueObject
+  ([`542631b`](https://github.com/adriamontoto/value-object-pattern/commit/542631b25ee6ad333b85ca81fbc9c366fd1b5411))
+
+
 ## v1.31.1 (2026-07-13)
 
 ### 🐛 Bug Fixes
