@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.33.1 (2026-07-18)
+
+### 🐛 Bug Fixes
+
+- Delegate URL validation errors to overridable hooks
+  ([`e9bbdb4`](https://github.com/adriamontoto/value-object-pattern/commit/e9bbdb4f900e58e45bcbe8d7e96ccd62ac01a7d6))
+
+
 ## v1.33.0 (2026-07-18)
 
 ### ✨ Features
