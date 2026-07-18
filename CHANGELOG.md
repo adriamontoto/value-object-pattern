@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.33.0 (2026-07-18)
+
+### ✨ Features
+
+- Implement DomainOrLocalhostValueObject
+  ([`ad82be3`](https://github.com/adriamontoto/value-object-pattern/commit/ad82be32822fa3169bd99c2e19515edbff1fc198))
+
+
 ## v1.32.0 (2026-07-17)
 
 ### ✨ Features
