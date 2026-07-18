@@ -146,15 +146,20 @@ error.
 
 ## Display Overrides
 
-Override `_value_for_display()` only when display/primitive output should differ from the stored value. The package uses
-this pattern for `SecretStringValueObject`, which redacts display output. Redaction is not encryption.
+Override `_value_for_display()` when a regular value object's `str()` and `repr()` should differ from its stored value. For secret display redaction, compose the non-generic `SecretValueObject` marker with any typed value object. The marker takes precedence over normal display hooks, works in either inheritance order, and preserves raw primitive conversion. Redaction is not encryption.
 
 ```python
-from value_object_pattern.usables import SecretStringValueObject
+from value_object_pattern import SecretValueObject
+from value_object_pattern.usables import StringValueObject
 
 
-token = SecretStringValueObject(value='secret')
+class SecretToken(StringValueObject, SecretValueObject):
+    pass
+
+
+token = SecretToken(value='secret')
 assert str(token) == '********'
+assert token.value == 'secret'
 ```
 
 ## Error Context

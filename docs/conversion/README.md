@@ -22,8 +22,7 @@ user = User(name=NotEmptyStringValueObject(value='Ada'))
 assert user.to_primitives() == {'name': 'Ada'}
 ```
 
-Value objects convert through their display value. This matters for `SecretStringValueObject`, which returns a masked
-display value.
+Value objects convert through their stored value. A value object composed with `SecretValueObject` redacts `str()` and `repr()` without changing primitive conversion.
 
 ## From Primitives
 

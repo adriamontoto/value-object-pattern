@@ -143,7 +143,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         # >>> IntegerValueObject(value=10)
         ```
         """
-        return f'{self.__class__.__name__}(value={self._value_for_display()!r})'
+        return f'{self.__class__.__name__}(value={self._resolved_value_for_display()!r})'
 
     @override
     def __str__(self) -> str:
@@ -167,7 +167,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         # >>> 10
         ```
         """
-        return str(object=self._value_for_display())
+        return str(object=self._resolved_value_for_display())
 
     @override
     def __hash__(self) -> int:
@@ -380,12 +380,34 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
 
     def _value_for_display(self) -> Any:
         """
-        Returns the value used by display-oriented representations.
+        Return the value used by display-oriented representations.
 
         Returns:
-            Any: Value safe for string, repr, and primitive display paths.
+            Any: Value safe for string and repr display paths.
         """
         return self.value
+
+    def _resolved_value_for_display(self) -> Any:
+        """
+        Resolve the final display value, giving secret redaction precedence.
+
+        Returns:
+            Any: Redacted value for secret compositions, otherwise the regular display value.
+        """
+        secret_value_for_display = getattr(self, '_secret_value_for_display', None)
+        if callable(secret_value_for_display):
+            return secret_value_for_display()
+
+        return self._value_for_display()
+
+    def _has_secret_display(self) -> bool:
+        """
+        Return whether this value object carries the secret display marker.
+
+        Returns:
+            bool: True when secret display composition is active.
+        """
+        return callable(getattr(self, '_secret_value_for_display', None))
 
     def _post_order_dfs_mro(self, cls: type, visited: set[type] | None = None, cut_off: type = object) -> list[type]:
         """

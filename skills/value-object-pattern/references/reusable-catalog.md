@@ -6,7 +6,30 @@ working in a consuming project.
 ## Root Public API
 
 ```python
-from value_object_pattern import BaseModel, EnumerationValueObject, UnionValueObject, ValueObject, process, validation
+from value_object_pattern import (
+    BaseModel,
+    EnumerationValueObject,
+    SecretValueObject,
+    UnionValueObject,
+    ValueObject,
+    process,
+    validation,
+)
+```
+
+Compose non-generic `SecretValueObject` with any typed value-object base that requires display redaction. It works in either inheritance order while the other base retains typing, validation, processing, and raw primitive conversion.
+
+```python
+from value_object_pattern import SecretValueObject
+from value_object_pattern.usables import BooleanValueObject, StringValueObject
+
+
+class SecretString(SecretValueObject, StringValueObject):
+    pass
+
+
+class SecretBoolean(BooleanValueObject, SecretValueObject):
+    pass
 ```
 
 ## Primitive Imports
@@ -47,7 +70,6 @@ Strings:
 | `Base56StringValueObject` | Ambiguity-free Base56 alphabet strings. |
 | `Base58StringValueObject` | Bitcoin Base58 alphabet strings. |
 | `Base64StringValueObject` | Canonical standard Base64 strings, including the empty encoding. |
-| `SecretStringValueObject` | Stores a string and redacts display. |
 | `AlphaStringValueObject` | Alphabetic strings. |
 | `AlphanumericStringValueObject` | Alphabetic and numeric characters. |
 | `DigitStringValueObject` | Digit-only strings. |

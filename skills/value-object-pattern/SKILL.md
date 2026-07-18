@@ -82,7 +82,7 @@ class TenantName(NotEmptyStringValueObject, TrimmedStringValueObject):
 - Hook order is explicit when order matters.
 - Tests assert `.value`, normalization, expected failures, and boundary conversion.
 - `BaseModel.from_primitives()` is backed by constructor annotations.
-- `SecretStringValueObject` is treated as display redaction, not encryption or secure storage.
+- `SecretValueObject` is a non-generic, composition-only display marker that works with every value-object type in either inheritance order. It is not encryption or secure storage; primitive conversion still exposes the raw stored value.
 - Public API imports are stable for the consuming project; if in doubt, use documented package paths.
 
 ## Common Mistakes

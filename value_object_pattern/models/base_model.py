@@ -17,7 +17,7 @@ from inspect import Parameter, _empty, signature
 from types import UnionType
 from typing import Any, NoReturn, Self, Union, get_args, get_origin, get_type_hints
 
-from .primitive_conversion import from_primitive, to_primitive
+from .primitive_conversion import from_primitive, to_display_primitive, to_primitive
 from .type_matching import matches_expected_type
 
 
@@ -158,8 +158,8 @@ class BaseModel(ABC):
         ```
         """
         attributes = []
-        for key, value in sorted(self.to_primitives().items()):
-            attributes.append(f'{key}={value}')
+        for key, value in sorted(self._to_dict(ignore_private=True).items()):
+            attributes.append(f'{key}={to_display_primitive(value=value)}')
 
         return f'{self.__class__.__name__}({", ".join(attributes)})'
 

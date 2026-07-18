@@ -20,7 +20,7 @@ def to_primitive(value: Any) -> Any:
     """
     Recursively convert value objects, models, enums, and collections to primitive representations.
 
-    `ValueObject` instances are converted through their display value, `BaseModel`-like objects through
+    `ValueObject` instances are converted through their stored value, `BaseModel`-like objects through
     `to_primitives()`, enums through their `.value`, and collections item by item.
 
     Args:
@@ -47,6 +47,82 @@ def to_primitive(value: Any) -> Any:
         return _convert_collection(value=value)
 
     return str(object=value)
+
+
+def to_display_primitive(value: Any) -> Any:
+    """
+    Recursively convert a value for display while honoring value-object redaction.
+
+    Args:
+        value (Any): Value to convert.
+
+    Returns:
+        Any: Display-safe primitive representation.
+    """
+    if isinstance(value, PRIMITIVE_TYPES):
+        return value
+
+    if isinstance(value, Enum):
+        return to_display_primitive(value=value.value)
+
+    if isinstance(value, ValueObject):
+        return _convert_value_for_display(value=value)
+
+    if isinstance(value, (list, tuple, set, frozenset, dict)):
+        return _convert_collection_for_display(value=value)
+
+    if callable(getattr(value, 'to_primitives', None)):
+        return str(object=value)
+
+    if hasattr(value, 'value'):
+        return _convert_value_for_display(value=value)
+
+    return str(object=value)
+
+
+def _convert_value_for_display(*, value: Any) -> Any:
+    """
+    Convert a value-like wrapper through its display value.
+
+    Args:
+        value (Any): Value-like wrapper.
+
+    Returns:
+        Any: Display-safe primitive representation.
+    """
+    nested_value = (
+        value._resolved_value_for_display() if isinstance(value, ValueObject) else getattr(value, 'value', value)
+    )
+
+    if nested_value is value:
+        return str(object=value)
+
+    return to_display_primitive(value=nested_value)
+
+
+def _convert_collection_for_display(*, value: Any) -> Any:
+    """
+    Recursively convert collection values for display.
+
+    Args:
+        value (Any): Collection value.
+
+    Returns:
+        Any: Display-safe collection.
+    """
+    if isinstance(value, list):
+        return [to_display_primitive(value=item) for item in value]
+
+    if isinstance(value, tuple):
+        return tuple(to_display_primitive(value=item) for item in value)
+
+    if isinstance(value, set):
+        return {to_display_primitive(value=item) for item in value}
+
+    if isinstance(value, frozenset):
+        return frozenset(to_display_primitive(value=item) for item in value)
+
+    return {to_display_primitive(value=key): to_display_primitive(value=item) for key, item in value.items()}
 
 
 def from_primitive(*, value: Any, expected_type: Any) -> Any:
@@ -108,7 +184,7 @@ def _convert_with_value_attribute(*, value: Any) -> Any:
         Any: Converted value or sentinel when the branch does not apply.
     """
     if isinstance(value, ValueObject):
-        nested_value = value._value_for_display()
+        nested_value = value.value
         if nested_value is value:
             return str(object=value)
 

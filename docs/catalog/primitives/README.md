@@ -31,7 +31,6 @@ from value_object_pattern.usables.primitives.integer import EvenIntegerValueObje
 | `Base56StringValueObject` | Accepts strings from the ambiguity-free Base56 alphabet. |
 | `Base58StringValueObject` | Accepts strings from the Bitcoin Base58 alphabet. |
 | `Base64StringValueObject` | Accepts canonical standard Base64 strings. |
-| `SecretStringValueObject` | Stores a string and redacts display through `repr()` and `str()`. |
 | `AlphaStringValueObject` | Accepts alphabetic strings. |
 | `AlphanumericStringValueObject` | Accepts alphabetic and numeric characters. |
 | `DigitStringValueObject` | Accepts digit-only strings. |
@@ -82,6 +81,7 @@ assert key.value == 'page_size'
 ## Selection Notes
 
 - Use primitive value objects for reusable shape rules, not business-specific policy.
-- Use `SecretStringValueObject` for display redaction only; it does not encrypt or hash the stored value.
+- Compose the root `SecretValueObject` marker with any primitive value object when its display must be redacted. The
+  marker works in either inheritance order and does not encrypt or hash the stored value.
 - Prefer custom subclasses when the name should explain a domain concept such as `UserName`, `RetryLimit`, or
   `TenantSlug`.

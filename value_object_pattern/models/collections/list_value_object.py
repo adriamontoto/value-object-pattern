@@ -18,7 +18,7 @@ from types import UnionType
 from typing import Any, ClassVar, Generic, NoReturn, Self, TypeVar, Union, cast, get_args, get_origin
 
 from value_object_pattern.decorators import validation
-from value_object_pattern.models import BaseModel, ValueObject
+from value_object_pattern.models import ValueObject
 from value_object_pattern.models.primitive_conversion import from_primitive, to_primitive
 from value_object_pattern.models.type_matching import matches_expected_type
 
@@ -328,19 +328,19 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         # >>> [1, 2, 3]
         ```
         """
+        if self._has_secret_display():
+            return ValueObject.__repr__(self)
+
         primitive_types: tuple[type, ...] = (int, float, str, bool, bytes, bytearray, memoryview, type(None))
         collection_types: tuple[type, ...] = (list, dict, tuple, set, frozenset)
 
         list_to_return: list[Any] = []
         for item in self._value:
-            if isinstance(item, BaseModel):
-                list_to_return.append(repr(item))
-
-            elif isinstance(item, Enum):
+            if isinstance(item, Enum):
                 list_to_return.append(item.value)
 
             elif isinstance(item, ValueObject):
-                value = item._value_for_display()
+                value = item._resolved_value_for_display()
 
                 if isinstance(value, Enum):
                     value = value.value
@@ -388,19 +388,19 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         # >>> [1, 2, 3]
         ```
         """
+        if self._has_secret_display():
+            return ValueObject.__str__(self)
+
         primitive_types: tuple[type, ...] = (int, float, str, bool, bytes, bytearray, memoryview, type(None))
         collection_types: tuple[type, ...] = (list, dict, tuple, set, frozenset)
 
         list_to_return: list[Any] = []
         for item in self._value:
-            if isinstance(item, BaseModel):
-                list_to_return.append(str(object=item))
-
-            elif isinstance(item, Enum):
+            if isinstance(item, Enum):
                 list_to_return.append(item.value)
 
             elif isinstance(item, ValueObject):
-                value = item._value_for_display()
+                value = item._resolved_value_for_display()
 
                 if isinstance(value, Enum):
                     value = value.value

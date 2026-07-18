@@ -16,6 +16,7 @@ For deeper category references, use:
 | Model | Purpose |
 | --- | --- |
 | `ValueObject[T]` | Immutable validated wrapper for one value. |
+| `SecretValueObject` | Order-independent display-redaction marker composed with any value-object type. |
 | `EnumerationValueObject[E]` | Enum-backed value object accepting enum members or raw enum values. |
 | `UnionValueObject[T]` | Value object constrained by a union annotation; supports named subclasses and inline construction. |
 | `BaseModel` | Aggregate-like model with primitive conversion and public-state representation. |
@@ -26,7 +27,7 @@ For deeper category references, use:
 
 | Area | Examples |
 | --- | --- |
-| Strings | `StringValueObject`, `NotEmptyStringValueObject`, `TrimmedStringValueObject`, `SecretStringValueObject` |
+| Strings | `StringValueObject`, `NotEmptyStringValueObject`, `TrimmedStringValueObject` |
 | String formats | lower/upper case, snake case, kebab case, camel case, pascal case, alpha, alphanumeric, digit |
 | Encoded strings | hexadecimal/Base16, canonical Base32, uppercase Base36, ambiguity-free Base56, Bitcoin Base58, standard Base64 |
 | Integers | integer, positive, positive-or-zero, negative, negative-or-zero, even, odd |
@@ -38,6 +39,17 @@ Import examples:
 
 ```python
 from value_object_pattern.usables import NotEmptyStringValueObject, PositiveIntegerValueObject
+```
+
+Display redaction is composed separately and works with any primitive or domain value object:
+
+```python
+from value_object_pattern import SecretValueObject
+from value_object_pattern.usables import IntegerValueObject
+
+
+class SecretInteger(IntegerValueObject, SecretValueObject):
+    pass
 ```
 
 See [Primitive Value Objects](primitives/README.md) for the complete primitive family.
@@ -119,5 +131,5 @@ See [Money Value Objects](money/README.md) for IBAN and credit-card validation n
 
 - Use reusable validators for common primitive and format rules.
 - Use domain packages for specialized identifiers, internet, and money validators.
-- Use `SecretStringValueObject` only for display redaction, not secret storage.
+- Compose `SecretValueObject` with any typed value object for display redaction only; it is not secret storage.
 - Create custom value objects for domain-specific rules that are not generic reusable validators.

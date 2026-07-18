@@ -132,7 +132,7 @@ def test_user_registration_from_primitives_builds_value_objects() -> None:
 - `BaseModel.from_primitives()` and `to_primitives()` are tested at API/persistence boundaries.
 - Collections are tested for helper return values and non-mutation of the original instance.
 - Date/datetime helpers receive explicit reference values.
-- `SecretStringValueObject` display redaction is tested separately from stored `.value`.
+- `SecretValueObject` composition is tested in both inheritance orders across representative scalar and collection value objects. Display redaction is asserted separately from stored `.value` and raw primitive conversion.
 
 ## Review Prompts For Agents
 

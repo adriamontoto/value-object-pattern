@@ -139,5 +139,5 @@ assert inline_stock.to_primitives() == {'sku-1': 10}
 - `ListValueObject` can be constructed inline as `ListValueObject[T](...)`.
 - `DictValueObject` can be constructed inline as `DictValueObject[K, V](...)`.
 - `UnionValueObject` tries candidates in annotation order and can be constructed inline as `UnionValueObject[T](...)`.
-- `SecretStringValueObject` converts through its display value, so `to_primitives()` may produce a masked string.
+- A value object composed with `SecretValueObject` redacts `str()` and `repr()` in either inheritance order while raw primitive conversion returns the stored value.
 - Keep raw primitive conversion near I/O; avoid unpacking `.value` throughout domain code.

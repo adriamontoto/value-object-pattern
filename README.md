@@ -236,6 +236,7 @@ low-level operations, and boundary examples.
 | Model | Purpose |
 | --- | --- |
 | `ValueObject[T]` | Base class for immutable validated single-value wrappers. |
+| `SecretValueObject` | Composition marker that redacts any value object's display in either inheritance order. |
 | `EnumerationValueObject[E]` | Stores enum members while accepting enum members or raw enum values. |
 | `UnionValueObject[T]` | Accepts and converts values that match a union annotation; supports subclass and inline construction. |
 | `BaseModel` | Adds representation, equality, copying, and primitive conversion for aggregate-like models. |
@@ -243,6 +244,32 @@ low-level operations, and boundary examples.
 | `DictValueObject[K, V]` | Immutable typed dictionary wrapper; supports subclass and inline construction. |
 
 See [`docs/usage/README.md`](docs/usage/README.md) for examples of each model.
+
+Compose `SecretValueObject` with the typed value object that owns validation. The marker does not need a type argument and may appear before or after the value-object base:
+
+```python
+from value_object_pattern import SecretValueObject
+from value_object_pattern.usables import IntegerValueObject, StringValueObject
+
+
+class SecretToken(SecretValueObject, StringValueObject):
+    pass
+
+
+class SecretPin(IntegerValueObject, SecretValueObject):
+    pass
+
+
+token = SecretToken(value='hidden-token')
+pin = SecretPin(value=1234)
+
+assert str(token) == '********'
+assert str(pin) == '********'
+assert token.value == 'hidden-token'
+assert pin.value == 1234
+```
+
+Display redaction is not encryption: `.value` and primitive conversion still expose the raw stored value.
 
 <p align="right">
     <a href="#readme-top">🔼 Back to top</a>
@@ -257,7 +284,7 @@ The package includes reusable validators for common shapes:
 | Category | Examples |
 | --- | --- |
 | Primitives | strings, bytes, booleans, integers, floats, `None` / not-`None` |
-| String formats | non-empty, trimmed, alpha, alphanumeric, lower/upper case, snake case, kebab case, secret strings |
+| String formats | non-empty, trimmed, alpha, alphanumeric, lower/upper case, snake case, kebab case |
 | Encoded strings | hexadecimal/Base16, Base32, Base36, ambiguity-free Base56, Bitcoin Base58, standard Base64 |
 | Dates | `date`, `datetime`, date strings, datetime strings, timezone objects, timezone names |
 | Identifiers | UUIDs and UUID strings, world codes, Spanish identifiers and vehicle plates |
