@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v1.34.0 (2026-07-18)
+
+### ✨ Features
+
+- Implement Base32, Base36, Base56, Base58, and Hexadecimal string value
+  ([`eb0ea76`](https://github.com/adriamontoto/value-object-pattern/commit/eb0ea761e83849a8b6dbe313f367e0386ad58251))
+
+- Implement SecretValueObject as a composition marker for display redaction
+  ([`614ae27`](https://github.com/adriamontoto/value-object-pattern/commit/614ae27c9a05a2f9c4c67b6a01f65ef44cb681b1))
+
+
 ## v1.33.1 (2026-07-18)
 
 ### 🐛 Bug Fixes
