@@ -33,6 +33,11 @@ Strings:
 | `StringValueObject` | Exact `str` values. |
 | `NotEmptyStringValueObject` | Rejects empty strings. |
 | `TrimmedStringValueObject` | Rejects leading/trailing whitespace. |
+| `HexadecimalStringValueObject` / `Base16StringValueObject` | Valid Base16 strings in either letter case. |
+| `Base32StringValueObject` | Canonical padded Base32 strings in either letter case. |
+| `Base36StringValueObject` | Uppercase Base36 alphabet strings. |
+| `Base56StringValueObject` | Ambiguity-free Base56 alphabet strings. |
+| `Base58StringValueObject` | Bitcoin Base58 alphabet strings. |
 | `Base64StringValueObject` | Canonical standard Base64 strings, including the empty encoding. |
 | `SecretStringValueObject` | Stores a string and redacts display. |
 | `AlphaStringValueObject` | Alphabetic strings. |
@@ -149,7 +154,12 @@ supported format is acceptable.
 ## Internet
 
 ```python
-from value_object_pattern.usables.internet import DomainValueObject, EmailAddressValueObject, PortValueObject
+from value_object_pattern.usables.internet import (
+    DomainOrLocalhostValueObject,
+    DomainValueObject,
+    EmailAddressValueObject,
+    PortValueObject,
+)
 from value_object_pattern.usables.internet.uri import HttpsUrlValueObject, UrlValueObject
 ```
 
@@ -162,6 +172,7 @@ URLs, hosts, and domains:
 | `HttpsUrlValueObject` | HTTPS URLs only. |
 | `HttpHttpsUrlValueObject` | HTTP or HTTPS URLs. |
 | `HostValueObject` | Host values; helpers: `is_domain`, `is_ipv4_address`, `is_ipv6_address`. |
+| `DomainOrLocalhostValueObject` | Domain values or `localhost`. |
 | `DomainValueObject` | Domain labels and top-level domains. |
 
 Addresses, networks, and ports:

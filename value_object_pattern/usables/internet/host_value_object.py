@@ -7,7 +7,7 @@ from typing import NoReturn
 from value_object_pattern import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
-from .domain_value_object import DomainValueObject
+from .domain_or_localhost_value_object import DomainOrLocalhostValueObject
 from .ipv4_address_value_object import Ipv4AddressValueObject
 from .ipv6_address_value_object import Ipv6AddressValueObject
 
@@ -38,7 +38,7 @@ class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             str: The host value stored in respective format.
         """
         if self._is_domain(value=value):
-            return DomainValueObject(value=value).value
+            return DomainOrLocalhostValueObject(value=value).value
 
         if self._is_ipv4_address(value=value):
             return Ipv4AddressValueObject(value=value).value
@@ -104,7 +104,7 @@ class HostValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             bool: True if the value is a domain, False otherwise.
         """
         try:
-            DomainValueObject(value=value)
+            DomainOrLocalhostValueObject(value=value)
             return True
 
         except (TypeError, ValueError):

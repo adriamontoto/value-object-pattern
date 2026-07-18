@@ -83,7 +83,7 @@ Internet validators cover:
 
 | Area | Examples |
 | --- | --- |
-| URLs and hosts | `UrlValueObject`, `HttpUrlValueObject`, `HttpsUrlValueObject`, `HostValueObject`, `DomainValueObject` |
+| URLs and hosts | `UrlValueObject`, `HttpUrlValueObject`, `HttpsUrlValueObject`, `HostValueObject`, `DomainOrLocalhostValueObject`, `DomainValueObject` |
 | Addresses and networks | IPv4, IPv6, IP address, IPv4 network, IPv6 network |
 | Network metadata | MAC address formats, ports, AWS cloud regions, user agents |
 | Keys and slugs | snake-case keys, kebab-case keys, slugs |
@@ -92,7 +92,7 @@ Internet validators cover:
 Import examples:
 
 ```python
-from value_object_pattern.usables.internet import DomainValueObject, EmailAddressValueObject
+from value_object_pattern.usables.internet import DomainOrLocalhostValueObject, DomainValueObject, EmailAddressValueObject
 from value_object_pattern.usables.internet.uri import UrlValueObject
 ```
 

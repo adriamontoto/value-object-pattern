@@ -32,6 +32,7 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
     _DOMAIN_MAX_LABEL_LENGTH: int = 63
     _DOMAIN_MAX_DOMAIN_LENGTH: int = 253
     _DOMAIN_REGEX: Pattern[str] = re_compile(pattern=r'[0-9a-zA-Z-]+')
+    _DOMAIN_VALID_SINGLE_LABELS: frozenset[str] = frozenset()
 
     @process(order=0)
     def _ensure_domain_is_in_lowercase(self, value: str) -> str:
@@ -72,7 +73,10 @@ class DomainValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If domain value has not a valid top level domain.
         """
         if '.' not in processed_value:
-            self._raise_value_has_not_valid_top_level_domain(value=value)
+            if processed_value not in self._DOMAIN_VALID_SINGLE_LABELS:
+                self._raise_value_has_not_valid_top_level_domain(value=value)
+
+            return
 
         tdl = processed_value.split(sep='.')[-1]
         if tdl not in get_tld_dict():

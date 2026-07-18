@@ -22,6 +22,19 @@ def test_host_value_object_accepts_domain() -> None:
 
 
 @mark.unit_testing
+def test_host_value_object_accepts_localhost() -> None:
+    """
+    Test HostValueObject value object accepts and normalizes localhost.
+    """
+    host = HostValueObject(value='LOCALHOST.')
+
+    assert host.value == 'localhost'
+    assert host.is_domain()
+    assert not host.is_ipv4_address()
+    assert not host.is_ipv6_address()
+
+
+@mark.unit_testing
 def test_host_value_object_accepts_ipv4_address() -> None:
     """
     Test HostValueObject value object accepts IPv4 address values.

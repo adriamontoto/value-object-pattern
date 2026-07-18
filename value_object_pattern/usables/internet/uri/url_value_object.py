@@ -37,6 +37,9 @@ def join_url(
     Returns:
         str: The URL joined.
     """
+    if ':' in host and not host.startswith('['):
+        host = f'[{host}]'
+
     netloc = host
     if user_information:
         netloc = f'{user_information}@{netloc}'
@@ -88,9 +91,18 @@ def split_netloc(value: str) -> tuple[str | None, str, int | None]:
         # prevent splitting passwords with @
         user_information, host_port = value.rsplit(sep='@', maxsplit=1)
 
+    if host_port.startswith('['):
+        host, _, port_string = host_port[1:].partition(']')
+        if port_string:
+            port = int(port_string.removeprefix(':'))
+
+        return user_information, host, port
+
+    if host_port.count(':') > 1:
+        raise ValueError('IPv6 URL hosts must be enclosed in brackets.')
+
     host = host_port
-    if ':' in host_port and host_port.count(':') == 1:
-        # prevent splitting IPv6 addresses
+    if ':' in host_port:
         host, port_string = host_port.rsplit(sep=':', maxsplit=1)
         port = int(port_string)
 
@@ -207,7 +219,11 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             https://www.rfc-editor.org/rfc/rfc3986#section-3.2.3
         """
         _, netloc, *_ = split_url(value=value)
-        user_information, host, port = split_netloc(value=netloc)
+        try:
+            user_information, host, port = split_netloc(value=netloc)
+
+        except ValueError as error:
+            raise ValueError(f'UrlValueObject value <<<{value}>>> is not a valid url.') from error
 
         if user_information is not None and not self._URL_USER_INFORMATION_REGEX.match(string=user_information):  # noqa: E501  # fmt: skip
             raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid user information <<<{user_information}>>>.')  # noqa: E501  # fmt: skip

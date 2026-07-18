@@ -6,7 +6,12 @@ configuration and user-facing input before the value reaches lower-level network
 ## Imports
 
 ```python
-from value_object_pattern.usables.internet import DomainValueObject, EmailAddressValueObject, PortValueObject
+from value_object_pattern.usables.internet import (
+    DomainOrLocalhostValueObject,
+    DomainValueObject,
+    EmailAddressValueObject,
+    PortValueObject,
+)
 from value_object_pattern.usables.internet.uri import HttpsUrlValueObject, UrlValueObject
 ```
 
@@ -19,6 +24,7 @@ from value_object_pattern.usables.internet.uri import HttpsUrlValueObject, UrlVa
 | `HttpsUrlValueObject` | Accepts only HTTPS URLs. |
 | `HttpHttpsUrlValueObject` | Accepts HTTP or HTTPS URLs. |
 | `HostValueObject` | Accepts host values. |
+| `DomainOrLocalhostValueObject` | Accepts domain values or `localhost`. |
 | `DomainValueObject` | Validates domain labels and top-level domains. |
 
 ## Addresses, Networks, And Ports

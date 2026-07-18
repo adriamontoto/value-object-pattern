@@ -30,6 +30,14 @@ def test_join_url_with_required_parts() -> None:
 
 
 @mark.unit_testing
+def test_join_url_with_ipv6_host() -> None:
+    """
+    Test join_url helper encloses an IPv6 host in brackets.
+    """
+    assert join_url('http', '::1', 8000, None, '', '', '') == 'http://[::1]:8000'
+
+
+@mark.unit_testing
 def test_split_url() -> None:
     """
     Test split_url helper.
@@ -54,9 +62,18 @@ def test_split_netloc_with_user_information_and_port() -> None:
 @mark.unit_testing
 def test_split_netloc_with_ipv6_address() -> None:
     """
-    Test split_netloc helper with IPv6 address.
+    Test split_netloc helper with a bracketed IPv6 address and port.
     """
-    assert split_netloc(value='2001:db8::1') == (None, '2001:db8::1', None)
+    assert split_netloc(value='[::1]:8000') == (None, '::1', 8000)
+
+
+@mark.unit_testing
+def test_split_netloc_rejects_unbracketed_ipv6_address() -> None:
+    """
+    Test split_netloc helper rejects an unbracketed IPv6 address.
+    """
+    with assert_raises(expected_exception=ValueError, match='IPv6 URL hosts must be enclosed in brackets.'):
+        split_netloc(value='2001:db8::1')
 
 
 @mark.unit_testing
@@ -85,6 +102,29 @@ def test_url_value_object_empty_optional_parts() -> None:
     assert url.path is None
     assert url.query is None
     assert url.fragment is None
+
+
+@mark.unit_testing
+def test_url_value_object_accepts_loopback_hosts() -> None:
+    """
+    Test UrlValueObject accepts localhost, IPv4 loopback, and bracketed IPv6 loopback hosts.
+    """
+    assert UrlValueObject(value='http://LOCALHOST:8000').value == 'http://localhost:8000'
+    assert UrlValueObject(value='http://127.0.0.1:8000').value == 'http://127.0.0.1:8000'
+    assert UrlValueObject(value='http://[::1]').value == 'http://[::1]'
+    assert UrlValueObject(value='http://[::1]:8000').value == 'http://[::1]:8000'
+
+
+@mark.unit_testing
+def test_url_value_object_rejects_unbracketed_ipv6_host() -> None:
+    """
+    Test UrlValueObject rejects an unbracketed IPv6 host.
+    """
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'UrlValueObject value <<<http://::1>>> is not a valid url.',
+    ):
+        UrlValueObject(value='http://::1')
 
 
 @mark.unit_testing
