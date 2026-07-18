@@ -25,6 +25,12 @@ from value_object_pattern.usables.primitives.integer import EvenIntegerValueObje
 | `StringValueObject` | Accepts only exact `str` values. |
 | `NotEmptyStringValueObject` | Rejects empty strings. |
 | `TrimmedStringValueObject` | Rejects values with leading or trailing whitespace. |
+| `HexadecimalStringValueObject` / `Base16StringValueObject` | Accepts valid Base16 strings in either letter case. |
+| `Base32StringValueObject` | Accepts canonical padded Base32 strings in either letter case. |
+| `Base36StringValueObject` | Accepts strings from the uppercase Base36 alphabet. |
+| `Base56StringValueObject` | Accepts strings from the ambiguity-free Base56 alphabet. |
+| `Base58StringValueObject` | Accepts strings from the Bitcoin Base58 alphabet. |
+| `Base64StringValueObject` | Accepts canonical standard Base64 strings. |
 | `SecretStringValueObject` | Stores a string and redacts display through `repr()` and `str()`. |
 | `AlphaStringValueObject` | Accepts alphabetic strings. |
 | `AlphanumericStringValueObject` | Accepts alphabetic and numeric characters. |

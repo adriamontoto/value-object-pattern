@@ -258,6 +258,7 @@ The package includes reusable validators for common shapes:
 | --- | --- |
 | Primitives | strings, bytes, booleans, integers, floats, `None` / not-`None` |
 | String formats | non-empty, trimmed, alpha, alphanumeric, lower/upper case, snake case, kebab case, secret strings |
+| Encoded strings | hexadecimal/Base16, Base32, Base36, ambiguity-free Base56, Bitcoin Base58, standard Base64 |
 | Dates | `date`, `datetime`, date strings, datetime strings, timezone objects, timezone names |
 | Identifiers | UUIDs and UUID strings, world codes, Spanish identifiers and vehicle plates |
 | Internet | URLs, hosts, domains, ports, emails, IP addresses, networks, MAC addresses, slugs, keys |

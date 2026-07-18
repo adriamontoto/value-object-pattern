@@ -14,7 +14,15 @@ from value_object_pattern import BaseModel, EnumerationValueObject, UnionValueOb
 Most primitive value objects are re-exported from `value_object_pattern.usables`.
 
 ```python
-from value_object_pattern.usables import NotEmptyStringValueObject, PositiveIntegerValueObject
+from value_object_pattern.usables import (
+    Base16StringValueObject,
+    Base32StringValueObject,
+    Base36StringValueObject,
+    Base56StringValueObject,
+    Base58StringValueObject,
+    Base64StringValueObject,
+    HexadecimalStringValueObject,
+)
 ```
 
 Category-specific imports are also available:

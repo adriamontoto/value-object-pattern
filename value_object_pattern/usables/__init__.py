@@ -1,6 +1,11 @@
 from .primitives import (
     AlphaStringValueObject,
     AlphanumericStringValueObject,
+    Base16StringValueObject,
+    Base32StringValueObject,
+    Base36StringValueObject,
+    Base56StringValueObject,
+    Base58StringValueObject,
     Base64StringValueObject,
     BooleanValueObject,
     BytesValueObject,
@@ -38,6 +43,11 @@ from .primitives import (
 __all__ = (
     'AlphaStringValueObject',
     'AlphanumericStringValueObject',
+    'Base16StringValueObject',
+    'Base32StringValueObject',
+    'Base36StringValueObject',
+    'Base56StringValueObject',
+    'Base58StringValueObject',
     'Base64StringValueObject',
     'BooleanValueObject',
     'BytesValueObject',

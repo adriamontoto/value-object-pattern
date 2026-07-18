@@ -28,6 +28,7 @@ For deeper category references, use:
 | --- | --- |
 | Strings | `StringValueObject`, `NotEmptyStringValueObject`, `TrimmedStringValueObject`, `SecretStringValueObject` |
 | String formats | lower/upper case, snake case, kebab case, camel case, pascal case, alpha, alphanumeric, digit |
+| Encoded strings | hexadecimal/Base16, canonical Base32, uppercase Base36, ambiguity-free Base56, Bitcoin Base58, standard Base64 |
 | Integers | integer, positive, positive-or-zero, negative, negative-or-zero, even, odd |
 | Floats | float, positive, positive-or-zero, negative, negative-or-zero |
 | Booleans | boolean, true, false |
