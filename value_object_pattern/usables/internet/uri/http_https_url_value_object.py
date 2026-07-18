@@ -2,6 +2,8 @@
 HttpHttpsUrlValueObject value object.
 """
 
+from typing import NoReturn
+
 from value_object_pattern import validation
 
 from .url_value_object import UrlValueObject, split_url
@@ -36,4 +38,17 @@ class HttpHttpsUrlValueObject(UrlValueObject):
         scheme, *_ = split_url(value=value)
 
         if scheme not in ('http', 'https'):
-            raise ValueError(f'HttpHttpsUrlValueObject value <<<{value}>>> scheme is not HTTP or HTTPS')
+            self._raise_value_is_not_http_https_url(value=value, scheme=scheme)
+
+    def _raise_value_is_not_http_https_url(self, value: str, scheme: str) -> NoReturn:
+        """
+        Raise an error if the URL scheme is not HTTP or HTTPS.
+
+        Args:
+            value (str): The URL value.
+            scheme (str): The invalid scheme.
+
+        Raises:
+            ValueError: If the URL scheme is not HTTP or HTTPS.
+        """
+        raise ValueError(f'HttpHttpsUrlValueObject value <<<{value}>>> scheme is not HTTP or HTTPS')

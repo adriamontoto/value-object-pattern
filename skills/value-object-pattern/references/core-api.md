@@ -51,6 +51,10 @@ class PositiveQuantity(ValueObject[int]):
 Validation methods run in ascending `order`. Methods without an explicit order are ordered by method name. Prefer
 explicit order when one validation depends on another.
 
+Reusable validators delegate failures through protected `_raise_*` methods. Override those methods when a domain value
+object needs custom exception types or context. Do not override `_validate()` merely to replace reusable exceptions;
+that duplicates ordering and can bypass inherited rules.
+
 `@validation(order=N, early_process=True)` passes both `value` and `processed_value` after running processors early. Use
 this only when validation must inspect normalized/coerced input before storage.
 

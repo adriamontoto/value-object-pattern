@@ -4,6 +4,7 @@ UrlValueObject value object.
 
 from functools import lru_cache
 from re import Pattern, compile as re_compile
+from typing import NoReturn
 from urllib.parse import parse_qs, urlsplit
 
 from value_object_pattern import process, validation
@@ -178,11 +179,23 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         try:
             scheme, netloc, path, query, fragment = split_url(value=value)
 
-        except ValueError as error:
-            raise ValueError(f'UrlValueObject value <<<{value}>>> is not a valid url.') from error
+        except ValueError:
+            self._raise_value_is_not_valid_url(value=value)
 
         if not scheme and not netloc and not path and not query and not fragment:
-            raise ValueError(f'UrlValueObject value <<<{value}>>> is not a valid url.')
+            self._raise_value_is_not_valid_url(value=value)
+
+    def _raise_value_is_not_valid_url(self, value: str) -> NoReturn:
+        """
+        Raise an error if the value is not a valid URL.
+
+        Args:
+            value (str): The invalid URL value.
+
+        Raises:
+            ValueError: If the value is not a valid URL.
+        """
+        raise ValueError(f'UrlValueObject value <<<{value}>>> is not a valid url.')
 
     @validation(order=1)
     def _validate_url_scheme(self, value: str) -> None:
@@ -200,7 +213,20 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         """
         scheme, *_ = split_url(value=value)
         if not self._URL_SCHEME_REGEX.match(string=scheme):
-            raise ValueError(f'UrlValueObject value <<<{value}>>> contains an invalid scheme <<<{scheme}>>>.')
+            self._raise_value_has_not_valid_scheme(value=value, scheme=scheme)
+
+    def _raise_value_has_not_valid_scheme(self, value: str, scheme: str) -> NoReturn:
+        """
+        Raise an error if the URL scheme is invalid.
+
+        Args:
+            value (str): The URL value.
+            scheme (str): The invalid scheme.
+
+        Raises:
+            ValueError: If the URL scheme is invalid.
+        """
+        raise ValueError(f'UrlValueObject value <<<{value}>>> contains an invalid scheme <<<{scheme}>>>.')
 
     @validation(order=2)
     def _validate_url_netloc(self, value: str) -> None:
@@ -222,24 +248,67 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         try:
             user_information, host, port = split_netloc(value=netloc)
 
-        except ValueError as error:
-            raise ValueError(f'UrlValueObject value <<<{value}>>> is not a valid url.') from error
+        except ValueError:
+            if netloc.count(':') > 1 and not netloc.startswith('['):
+                self._raise_value_is_not_valid_url(value=value)
+
+            invalid_port = netloc.rsplit(sep=':', maxsplit=1)[-1]
+            self._raise_value_has_not_valid_port(value=value, port=invalid_port)
 
         if user_information is not None and not self._URL_USER_INFORMATION_REGEX.match(string=user_information):  # noqa: E501  # fmt: skip
-            raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid user information <<<{user_information}>>>.')  # noqa: E501  # fmt: skip
+            self._raise_value_has_not_valid_user_information(value=value, user_information=user_information)
 
         try:
             HostValueObject(value=host)
 
-        except ValueError as error:
-            raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid host <<<{host}>>>.') from error
+        except (TypeError, ValueError):
+            self._raise_value_has_not_valid_host(value=value, host=host)
 
-        try:
-            if port is not None:
+        if port is not None:
+            try:
                 PortValueObject(value=port)
 
-        except ValueError as error:
-            raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid port <<<{port}>>>.') from error
+            except (TypeError, ValueError):
+                self._raise_value_has_not_valid_port(value=value, port=port)
+
+    def _raise_value_has_not_valid_user_information(self, value: str, user_information: str) -> NoReturn:
+        """
+        Raise an error if the URL user information is invalid.
+
+        Args:
+            value (str): The URL value.
+            user_information (str): The invalid user information.
+
+        Raises:
+            ValueError: If the URL user information is invalid.
+        """
+        raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid user information <<<{user_information}>>>.')  # noqa: E501  # fmt: skip
+
+    def _raise_value_has_not_valid_host(self, value: str, host: str) -> NoReturn:
+        """
+        Raise an error if the URL host is invalid.
+
+        Args:
+            value (str): The URL value.
+            host (str): The invalid host.
+
+        Raises:
+            ValueError: If the URL host is invalid.
+        """
+        raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid host <<<{host}>>>.')
+
+    def _raise_value_has_not_valid_port(self, value: str, port: int | str) -> NoReturn:
+        """
+        Raise an error if the URL port is invalid.
+
+        Args:
+            value (str): The URL value.
+            port (int | str): The invalid port.
+
+        Raises:
+            ValueError: If the URL port is invalid.
+        """
+        raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid port <<<{port}>>>.')
 
     @validation(order=3)
     def _validate_url_path(self, value: str) -> None:
@@ -260,7 +329,20 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             return
 
         if not self._URL_PATH_REGEX.match(string=path):
-            raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid path <<<{path}>>>.')
+            self._raise_value_has_not_valid_path(value=value, path=path)
+
+    def _raise_value_has_not_valid_path(self, value: str, path: str) -> NoReturn:
+        """
+        Raise an error if the URL path is invalid.
+
+        Args:
+            value (str): The URL value.
+            path (str): The invalid path.
+
+        Raises:
+            ValueError: If the URL path is invalid.
+        """
+        raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid path <<<{path}>>>.')
 
     @validation(order=4)
     def _validate_url_query(self, value: str) -> None:
@@ -283,11 +365,24 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         try:
             parse_qs(qs=query)
 
-        except ValueError as error:
-            raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid query <<<{query}>>>.') from error
+        except ValueError:
+            self._raise_value_has_not_valid_query(value=value, query=query)
 
         if not self._URL_QUERY_REGEX.match(string=query):
-            raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid query <<<{query}>>>.')
+            self._raise_value_has_not_valid_query(value=value, query=query)
+
+    def _raise_value_has_not_valid_query(self, value: str, query: str) -> NoReturn:
+        """
+        Raise an error if the URL query is invalid.
+
+        Args:
+            value (str): The URL value.
+            query (str): The invalid query.
+
+        Raises:
+            ValueError: If the URL query is invalid.
+        """
+        raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid query <<<{query}>>>.')
 
     @validation(order=5)
     def _validate_url_fragment(self, value: str) -> None:
@@ -308,7 +403,20 @@ class UrlValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             return
 
         if not self._URL_FRAGMENT_REGEX.match(string=fragment):
-            raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid fragment <<<{fragment}>>>.')
+            self._raise_value_has_not_valid_fragment(value=value, fragment=fragment)
+
+    def _raise_value_has_not_valid_fragment(self, value: str, fragment: str) -> NoReturn:
+        """
+        Raise an error if the URL fragment is invalid.
+
+        Args:
+            value (str): The URL value.
+            fragment (str): The invalid fragment.
+
+        Raises:
+            ValueError: If the URL fragment is invalid.
+        """
+        raise ValueError(f'UrlValueObject value <<<{value}>>> has not a valid fragment <<<{fragment}>>>.')
 
     @property
     def scheme(self) -> str:

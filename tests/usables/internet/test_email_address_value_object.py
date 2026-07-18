@@ -101,7 +101,7 @@ def test_email_address_value_object_invalid_domain(capsys: CaptureFixture[str]) 
     ):
         EmailAddressValueObject(value='user@example.invalidtldunlikely')
 
-    capsys.readouterr()
+    assert capsys.readouterr().out == ''
 
 
 @mark.unit_testing

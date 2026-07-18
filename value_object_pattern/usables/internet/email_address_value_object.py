@@ -214,8 +214,7 @@ class EmailAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObjec
         try:
             self._internal_domain_part = DomainValueObject(value=self._internal_domain_part).value
 
-        except Exception as exception:
-            print(f'{exception}')
+        except (TypeError, ValueError):
             self._raise_value_invalid_domain_error(value=value, domain_part=self._internal_domain_part)
 
     def _raise_email_address_domain_contains_invalid_characters_error(self, value: str, domain_part: str) -> NoReturn:

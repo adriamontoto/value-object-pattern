@@ -28,6 +28,8 @@ immutable, self-validating value objects and reusable validation primitives.
 3. Prefer reusable value objects before writing custom classes.
 4. For custom rules, subclass `ValueObject[T]` or the closest reusable base class.
 5. Add focused tests for valid construction, invalid construction, normalization, primitive conversion, and display.
+6. When a reusable validator exposes a protected `_raise_*` hook, override that hook for domain-specific exceptions;
+   do not replace `_validate()` or duplicate the inherited validation pipeline.
 
 ## What To Load
 
@@ -76,6 +78,7 @@ class TenantName(NotEmptyStringValueObject, TrimmedStringValueObject):
 - The value object name describes the domain concept, not only the primitive type.
 - Constructor calls use keyword arguments: `EmailAddressValueObject(value='ada@example.com')`.
 - Validation hooks reject invalid data; processing hooks perform deterministic normalization.
+- Domain-specific exceptions override reusable `_raise_*` hooks instead of validators.
 - Hook order is explicit when order matters.
 - Tests assert `.value`, normalization, expected failures, and boundary conversion.
 - `BaseModel.from_primitives()` is backed by constructor annotations.

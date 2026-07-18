@@ -2,7 +2,14 @@
 Test UrlValueObject value object.
 """
 
-from typing import Any
+from sys import version_info
+
+if version_info >= (3, 12):
+    from typing import override  # pragma: no cover
+else:
+    from typing_extensions import override  # pragma: no cover
+
+from typing import Any, NoReturn
 
 from pytest import MonkeyPatch, mark, raises as assert_raises
 
@@ -184,6 +191,35 @@ def test_url_value_object_invalid_port() -> None:
         match=r'UrlValueObject value <<<https://example.com:70000>>> has not a valid port <<<70000>>>.',
     ):
         UrlValueObject(value='https://example.com:70000')
+
+
+@mark.unit_testing
+def test_url_value_object_non_integer_port() -> None:
+    """
+    Test UrlValueObject reports a non-integer port through the port validation hook.
+    """
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'UrlValueObject value <<<https://example.com:not-a-port>>> has not a valid port <<<not-a-port>>>.',
+    ):
+        UrlValueObject(value='https://example.com:not-a-port')
+
+
+@mark.unit_testing
+def test_url_value_object_validation_error_hook_is_overridable() -> None:
+    """
+    Test URL validation delegates failures to overridable error hooks.
+    """
+
+    class CustomUrlValueObject(UrlValueObject):
+        """URL value object with a domain-specific host error."""
+
+        @override
+        def _raise_value_has_not_valid_host(self, value: str, host: str) -> NoReturn:
+            raise RuntimeError(f'Invalid host: {host}')
+
+    with assert_raises(expected_exception=RuntimeError, match=r'Invalid host: not_a_domain'):
+        CustomUrlValueObject(value='https://not_a_domain')
 
 
 @mark.unit_testing
