@@ -226,7 +226,7 @@ def test_value_object_can_disable_decorated_method_cache() -> None:
     def _append_dynamic_marker(self: DynamicHooksValueObject, value: str) -> str:
         return value + '-dynamic'
 
-    DynamicHooksValueObject._append_dynamic_marker = _append_dynamic_marker
+    DynamicHooksValueObject._append_dynamic_marker = _append_dynamic_marker  # type: ignore[attr-defined]
     second = DynamicHooksValueObject(value='second')
 
     assert first.value == 'first-static'
