@@ -13,7 +13,7 @@ from value_object_pattern.usables.money.credit_cards import VisaCreditCardValueO
 
 | Value Object | Rule |
 | --- | --- |
-| `IbanValueObject` | Validates IBAN format and checksum. |
+| `IbanValueObject` | Validates IBAN format, MOD-97 checksum, and Spanish CCC control digits. |
 | `CreditCardValueObject` | Accepts any supported credit-card brand format. |
 | `VisaCreditCardValueObject` | Validates Visa card number shape and Luhn checksum. |
 | `MastercardCreditCardValueObject` | Validates Mastercard number shape and Luhn checksum. |

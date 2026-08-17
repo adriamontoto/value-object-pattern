@@ -12,9 +12,8 @@ else:
     from typing_extensions import override  # pragma: no cover
 
 from abc import ABC
-from collections import deque
 from copy import deepcopy
-from typing import Any, Callable, Generic, TypeVar, get_args
+from typing import Any, Callable, ClassVar, Generic, TypeVar, cast, get_args
 
 T = TypeVar('T')
 
@@ -26,7 +25,8 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
     Subclasses declare their wrapped type with `ValueObject[T]`. Validation methods decorated with `@validation` run
     before the value is stored, and processing methods decorated with `@process` can normalize the value after
     validation. Instances compare by concrete class and wrapped value, expose the raw value through `.value`, and reject
-    attribute mutation after construction.
+    attribute mutation after construction. Decorated hooks are cached per concrete class; subclasses that modify hooks
+    at runtime can set `_cache_decorated_methods = False` to rediscover them for each construction.
 
     ***This class is abstract and should not be instantiated directly***.
 
@@ -52,6 +52,9 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
     _title: str
     _parameter: str
     _early_processed: T | None
+    _cache_decorated_methods: ClassVar[bool] = True
+    _cached_process_methods: ClassVar[tuple[Callable[..., Any], ...] | None] = None
+    _cached_validation_methods: ClassVar[tuple[Callable[..., Any], ...] | None] = None
 
     def __init__(self, *, value: T, title: str | None = None, parameter: str | None = None) -> None:
         """
@@ -342,9 +345,9 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         Returns:
             T: Processed value.
         """
-        methods = self._gather_decorated_methods(instance=self, attribute_name='_is_process')
-        while methods:
-            method: Callable[..., T] = methods.popleft().__get__(self, self.__class__)
+        methods = self._get_cached_decorated_methods(attribute_name='_is_process')
+        for decorated_method in methods:
+            method: Callable[..., T] = decorated_method.__get__(self, self.__class__)
             value = method(value=value)
 
         return value
@@ -360,9 +363,9 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
             value (T): Value to validate.
         """
         try:
-            methods = self._gather_decorated_methods(instance=self, attribute_name='_is_validation')
-            while methods:
-                method: Callable[..., T] = methods.popleft().__get__(self, self.__class__)
+            methods = self._get_cached_decorated_methods(attribute_name='_is_validation')
+            for decorated_method in methods:
+                method: Callable[..., T] = decorated_method.__get__(self, self.__class__)
                 if getattr(method, '_early_process', False):
                     method(value=value, processed_value=self.early_process(value=value))
                     continue
@@ -443,17 +446,40 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
 
         return result
 
-    def _gather_decorated_methods(self, instance: object, attribute_name: str) -> deque[Callable[..., Any]]:
+    def _get_cached_decorated_methods(self, attribute_name: str) -> tuple[Callable[..., Any], ...]:
+        """
+        Return decorated methods for the concrete value-object class, caching them when enabled.
+
+        Args:
+            attribute_name: Marker attribute used to identify decorated methods.
+
+        Returns:
+            tuple[Callable[..., Any], ...]: Ordered decorated methods.
+        """
+        if not self.__class__._cache_decorated_methods:
+            return self._gather_decorated_methods(instance=self, attribute_name=attribute_name)
+
+        cache_attribute_name = f'_cached_{attribute_name.removeprefix("_is_")}_methods'
+        cached_methods = cast(tuple[Callable[..., Any], ...] | None, self.__class__.__dict__.get(cache_attribute_name))
+        if cached_methods is not None:
+            return cached_methods
+
+        methods = self._gather_decorated_methods(instance=self, attribute_name=attribute_name)
+        setattr(self.__class__, cache_attribute_name, methods)
+
+        return methods
+
+    def _gather_decorated_methods(self, instance: object, attribute_name: str) -> tuple[Callable[..., Any], ...]:
         """
         Gathers decorated methods from instance.__class__ and its parent classes following the post-order DFS MRO,
-        returning them in a deque with the methods sorted by class hierarchy, method order, and method name.
+        returning them in a tuple sorted by class hierarchy, method order, and method name.
 
         Args:
             instance (object): The object instance whose class hierarchy is inspected.
             attribute_name (str): The attribute name used to identify the methods.
 
         Returns
-            deque[Callable[..., Any]]: A deque of methods sorted by class hierarchy, method order, and method name.
+            tuple[Callable[..., Any], ...]: Methods sorted by class hierarchy, method order, and method name.
 
         References:
             DFS: https://en.wikipedia.org/wiki/Depth-first_search
@@ -480,7 +506,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         classes = self._post_order_dfs_mro(cls=instance.__class__, cut_off=ValueObject)
         classes_names = {cls.__name__: index for index, cls in enumerate(iterable=classes)}
 
-        classes_methods: deque[tuple[str, str, Callable[..., Any]]] = deque()
+        classes_methods: list[tuple[str, str, Callable[..., Any]]] = []
         for cls in classes:
             for method_name, method in cls.__dict__.items():
                 if not callable(method):
@@ -492,7 +518,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
                 classes_methods.append((method.__qualname__.split('.')[0], method_name, method))
 
         # sort by class hierarchy, method order attribute, and method name
-        return deque([method for _, _, method in sorted(classes_methods, key=sort_key)])
+        return tuple(method for _, _, method in sorted(classes_methods, key=sort_key))
 
     def early_process(self, value: T) -> T:
         """

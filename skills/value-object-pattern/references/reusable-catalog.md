@@ -240,7 +240,7 @@ from value_object_pattern.usables.money.credit_cards import VisaCreditCardValueO
 
 | Value Object | Rule |
 | --- | --- |
-| `IbanValueObject` | IBAN format and checksum. |
+| `IbanValueObject` | IBAN format, MOD-97 checksum, and Spanish CCC control digits. |
 | `CreditCardValueObject` | Any supported credit-card brand format. |
 | `VisaCreditCardValueObject` | Visa shape and Luhn checksum. |
 | `MastercardCreditCardValueObject` | Mastercard shape and Luhn checksum. |

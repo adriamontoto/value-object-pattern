@@ -86,7 +86,7 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         Raises:
             ValueError: If the `value` does not follow the validation regex.
         """
-        if not self._IDENTIFICATION_REGEX.fullmatch(string=processed_value):
+        if not self._VALIDATION_REGEX.fullmatch(string=processed_value):
             self._raise_value_is_not_iban(value=value)
 
     @validation(order=2, early_process=True)
@@ -126,6 +126,66 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         if not self._validate_mod97_checksum(iban=processed_value):
             self._raise_value_is_not_iban(value=value)
 
+    @validation(order=4, early_process=True)
+    def _ensure_value_follows_country_specific_bban_rules(self, value: str, processed_value: str) -> None:
+        """
+        Ensure country-specific BBAN rules are satisfied.
+
+        Args:
+            value (str): The provided value.
+            processed_value (str): The early processed value.
+
+        Raises:
+            ValueError: If the country-specific BBAN rules are not satisfied.
+        """
+        if not processed_value.startswith('ES'):
+            return
+
+        bban = processed_value[4:]
+        if not self._validate_spanish_bban(bban=bban):
+            self._raise_value_is_not_iban(value=value)
+
+    @classmethod
+    def _validate_spanish_bban(cls, *, bban: str) -> bool:
+        """
+        Validate the Spanish BBAN control digits.
+
+        Args:
+            bban (str): The Spanish Basic Bank Account Number.
+
+        Returns:
+            bool: True if both Spanish CCC control digits are valid.
+        """
+        if len(bban) != 20 or not bban.isdigit():
+            return False
+
+        first_control = cls._spanish_control_digit(digits=bban[:8], weights=(4, 8, 5, 10, 9, 7, 3, 6))
+        second_control = cls._spanish_control_digit(digits=bban[10:], weights=(1, 2, 4, 8, 5, 10, 9, 7, 3, 6))
+
+        return bban[8:10] == f'{first_control}{second_control}'
+
+    @staticmethod
+    def _spanish_control_digit(*, digits: str, weights: tuple[int, ...]) -> int:
+        """
+        Calculate one Spanish CCC control digit.
+
+        Args:
+            digits (str): The account digits used in the calculation.
+            weights (tuple[int, ...]): The weights applied to the account digits.
+
+        Returns:
+            int: The calculated control digit.
+        """
+        control = 11 - (sum(int(digit) * weight for digit, weight in zip(digits, weights, strict=True)) % 11)
+
+        if control == 10:
+            return 1
+
+        if control == 11:
+            return 0
+
+        return control
+
     def _validate_mod97_checksum(self, iban: str) -> bool:
         """
         Validates the IBAN using MOD-97 algorithm as per ISO 7064.
@@ -143,7 +203,7 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
 
     def _raise_value_is_not_iban(self, value: str) -> NoReturn:
         """
-        Raises a ValueError if the value object `value` is not a valid IBAN.
+        Raises a ValueError if the value object `value` is not a valid IBAN without exposing the raw IBAN.
 
         Args:
             value (str): The provided value.
@@ -151,7 +211,7 @@ class IbanValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         Raises:
             ValueError: If the `value` is not a valid IBAN.
         """
-        raise ValueError(f'IbanValueObject value <<<{value}>>> is not a valid International Bank Account Number.')
+        raise ValueError('IbanValueObject value is not a valid International Bank Account Number.')
 
     @classmethod
     def identification_regex(cls) -> Pattern[str]:
