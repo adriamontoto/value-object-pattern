@@ -9,6 +9,20 @@ from value_object_pattern.decorators import process
 
 
 @mark.unit_testing
+def test_process_returns_original_function() -> None:
+    """
+    Test that process marks and returns the original function.
+    """
+
+    def ensure_something(value: str) -> str:
+        return value
+
+    decorated_function = process()(ensure_something)
+
+    assert decorated_function is ensure_something
+
+
+@mark.unit_testing
 def test_process_uses_function_name_when_order_is_provided() -> None:
     """
     Test that process decorator uses the provided order when order is provided.

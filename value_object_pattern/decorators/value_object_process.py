@@ -2,8 +2,7 @@
 Decorator used to register value-object processing hooks.
 """
 
-from functools import wraps
-from typing import Any, Callable, TypeVar
+from typing import Callable, TypeVar
 
 T = TypeVar('T')
 
@@ -23,7 +22,7 @@ def process(order: int | None = None) -> Callable[[Callable[..., T]], Callable[.
         ValueError: If the order is not equal or greater than 0.
 
     Returns:
-        Callable[[Callable[..., T]], Callable[..., T]]: Wrapper function for the process.
+        Callable[[Callable[..., T]], Callable[..., T]]: Decorator that marks the process function.
 
     Example:
     ```python
@@ -54,7 +53,7 @@ def process(order: int | None = None) -> Callable[[Callable[..., T]], Callable[.
             ValueError: If the order is not equal or greater than 0.
 
         Returns:
-            Callable[..., T]: Wrapper function for the process.
+            Callable[..., T]: The marked process function.
         """
         if order is not None:
             if type(order) is not int:
@@ -66,20 +65,6 @@ def process(order: int | None = None) -> Callable[[Callable[..., T]], Callable[.
         function._is_process = True  # type: ignore[attr-defined]
         function._order = function.__name__ if order is None else str(order)  # type: ignore[attr-defined]
 
-        @wraps(function)
-        def wrapper(*args: tuple[Any, ...], **kwargs: dict[str, Any]) -> T:
-            """
-            Execute the wrapped processing method.
-
-            Args:
-                *args (tuple[Any, ...]): The arguments for the function.
-                **kwargs (dict[str, Any]): The keyword arguments for the function.
-
-            Returns:
-                T: The return value of the function.
-            """
-            return function(*args, **kwargs)
-
-        return wrapper
+        return function
 
     return decorator

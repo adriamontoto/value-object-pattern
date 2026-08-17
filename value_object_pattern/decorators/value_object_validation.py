@@ -2,8 +2,7 @@
 Decorator used to register value-object validation hooks.
 """
 
-from functools import wraps
-from typing import Any, Callable
+from typing import Callable
 
 
 def validation(
@@ -27,7 +26,7 @@ def validation(
         TypeError: If early_process is not a boolean.
 
     Returns:
-        Callable[[Callable[..., None]], Callable[..., None]]: Wrapper function for the validation.
+        Callable[[Callable[..., None]], Callable[..., None]]: Decorator that marks the validation function.
 
     Example:
     ```python
@@ -59,7 +58,7 @@ def validation(
             TypeError: If early_process is not a boolean.
 
         Returns:
-            Callable[..., None]: Wrapper function for the validation.
+            Callable[..., None]: The marked validation function.
         """
         if order is not None:
             if type(order) is not int:
@@ -75,17 +74,6 @@ def validation(
         function._order = function.__name__ if order is None else str(order)  # type: ignore[attr-defined]
         function._early_process = early_process  # type: ignore[attr-defined]
 
-        @wraps(function)
-        def wrapper(*args: tuple[Any, ...], **kwargs: dict[str, Any]) -> None:
-            """
-            Execute the wrapped validation method.
-
-            Args:
-                *args (tuple[Any, ...]): The arguments for the function.
-                **kwargs (dict[str, Any]): The keyword arguments for the function.
-            """
-            function(*args, **kwargs)
-
-        return wrapper
+        return function
 
     return decorator

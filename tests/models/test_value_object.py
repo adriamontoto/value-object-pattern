@@ -10,7 +10,7 @@ else:
     from typing_extensions import override  # pragma: no cover
 
 from copy import copy, deepcopy
-from typing import Any
+from typing import Any, ClassVar
 
 from object_mother_pattern import (
     BooleanMother,
@@ -168,6 +168,128 @@ class ValueObjectD(ValueObjectB, ValueObjectA):
     @process()
     def _concat_five(self, value: str) -> str:
         return value + 'D5'
+
+
+@mark.unit_testing
+def test_value_object_reuses_cached_decorated_methods() -> None:
+    """
+    Test that validation and process methods are gathered once per concrete class.
+    """
+
+    class CachedHooksValueObject(ValueObject[str]):
+        @validation(order=0)
+        def _ensure_value_is_string(self, value: str) -> None:
+            if type(value) is not str:
+                raise TypeError
+
+        @process(order=0)
+        def _append_marker(self, value: str) -> str:
+            return value + '-processed'
+
+    assert '_cached_validation_methods' not in CachedHooksValueObject.__dict__
+    assert '_cached_process_methods' not in CachedHooksValueObject.__dict__
+
+    first = CachedHooksValueObject(value='first')
+    cached_validation_methods = CachedHooksValueObject.__dict__['_cached_validation_methods']
+    cached_process_methods = CachedHooksValueObject.__dict__['_cached_process_methods']
+    second = CachedHooksValueObject(value='second')
+
+    assert first.value == 'first-processed'
+    assert second.value == 'second-processed'
+    assert isinstance(cached_validation_methods, tuple)
+    assert isinstance(cached_process_methods, tuple)
+    assert CachedHooksValueObject.__dict__['_cached_validation_methods'] is cached_validation_methods
+    assert CachedHooksValueObject.__dict__['_cached_process_methods'] is cached_process_methods
+
+
+@mark.unit_testing
+def test_value_object_can_disable_decorated_method_cache() -> None:
+    """
+    Test that disabling the hook cache discovers methods added between instantiations.
+    """
+
+    class DynamicHooksValueObject(ValueObject[str]):
+        _cache_decorated_methods = False
+
+        @validation(order=0)
+        def _ensure_value_is_string(self, value: str) -> None:
+            if type(value) is not str:
+                raise TypeError
+
+        @process(order=0)
+        def _append_static_marker(self, value: str) -> str:
+            return value + '-static'
+
+    first = DynamicHooksValueObject(value='first')
+
+    @process(order=1)
+    def _append_dynamic_marker(self: DynamicHooksValueObject, value: str) -> str:
+        return value + '-dynamic'
+
+    DynamicHooksValueObject._append_dynamic_marker = _append_dynamic_marker
+    second = DynamicHooksValueObject(value='second')
+
+    assert first.value == 'first-static'
+    assert second.value == 'second-static-dynamic'
+    assert '_cached_validation_methods' not in DynamicHooksValueObject.__dict__
+    assert '_cached_process_methods' not in DynamicHooksValueObject.__dict__
+
+
+@mark.unit_testing
+def test_value_object_subclass_has_independent_decorated_method_cache() -> None:
+    """
+    Test that a subclass does not reuse its parent's decorated method cache.
+    """
+
+    class CachedParentValueObject(ValueObject[str]):
+        @process(order=0)
+        def _append_parent_marker(self, value: str) -> str:
+            return value + '-parent'
+
+    CachedParentValueObject(value='value')
+    parent_process_methods = CachedParentValueObject.__dict__['_cached_process_methods']
+
+    class CachedChildValueObject(CachedParentValueObject):
+        @process(order=1)
+        def _append_child_marker(self, value: str) -> str:
+            return value + '-child'
+
+    assert '_cached_process_methods' not in CachedChildValueObject.__dict__
+
+    child = CachedChildValueObject(value='value')
+    child_process_methods = CachedChildValueObject.__dict__['_cached_process_methods']
+
+    assert child.value == 'value-parent-child'
+    assert child_process_methods is not parent_process_methods
+    assert len(child_process_methods) == 2
+
+
+@mark.unit_testing
+def test_value_object_cached_early_process_runs_once_per_instance() -> None:
+    """
+    Test that cached hooks preserve early processing behavior.
+    """
+
+    class EarlyProcessValueObject(ValueObject[str]):
+        calls: ClassVar[list[str]] = []
+
+        @validation(order=0, early_process=True)
+        def _ensure_processed_value(self, value: str, processed_value: str) -> None:
+            _ = value
+            self.calls.append('validation')
+            assert processed_value == processed_value.strip()
+
+        @process(order=0)
+        def _trim_value(self, value: str) -> str:
+            self.calls.append('process')
+            return value.strip()
+
+    first = EarlyProcessValueObject(value=' first ')
+    second = EarlyProcessValueObject(value=' second ')
+
+    assert first.value == 'first'
+    assert second.value == 'second'
+    assert EarlyProcessValueObject.calls == ['process', 'validation', 'process', 'validation']
 
 
 @mark.unit_testing
@@ -1205,8 +1327,10 @@ def test_value_object_c_validation_order() -> None:
     Test value object C validation order. The order should be class hierarchy, method order attribute, and method name.
     """
     value_object_c = ValueObjectC(value='')
+    cached_value_object_c = ValueObjectC(value='')
 
     assert value_object_c.value == 'A1A2A3A4A5B1B2B3B5B4C1C2C3C4C5'
+    assert cached_value_object_c.value == value_object_c.value
 
 
 def test_value_object_d_validation_order() -> None:

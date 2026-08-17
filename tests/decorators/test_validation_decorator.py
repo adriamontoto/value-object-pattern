@@ -9,6 +9,20 @@ from value_object_pattern.decorators import validation
 
 
 @mark.unit_testing
+def test_validation_returns_original_function() -> None:
+    """
+    Test that validation marks and returns the original function.
+    """
+
+    def ensure_something(value: str) -> None:
+        _ = value
+
+    decorated_function = validation()(ensure_something)
+
+    assert decorated_function is ensure_something
+
+
+@mark.unit_testing
 def test_validation_uses_function_name_when_order_is_provided() -> None:
     """
     Test that validation decorator uses the provided order when order is provided.
