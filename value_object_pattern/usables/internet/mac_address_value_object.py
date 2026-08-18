@@ -50,7 +50,7 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
     )
 
     @process(order=0)
-    def _ensure_value_is_formatted(self, value: str) -> str:  # type: ignore[return]
+    def _ensure_value_is_formatted(self, value: str) -> str:  # type: ignore[ty:invalid-return-type]
         """
         Ensures the value object `value` is stored without separators (Raw format).
 
@@ -64,7 +64,7 @@ class MacAddressValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
             try:
                 mac_address = variation(value=value)
                 if hasattr(mac_address, 'to_raw'):
-                    return mac_address.to_raw().value  # type: ignore[no-any-return]
+                    return mac_address.to_raw().value  # type: ignore[ty:call-non-callable, ty:unsound-return-statement]
 
                 return mac_address.value
 

@@ -128,11 +128,11 @@ lint: # It automatically lints code
 	@echo -e "\n⌛ Linting project code...\n"
 
 	@set -e; \
-	mypy_exit=0; \
+	ty_exit=0; \
 	ruff_exit=0; \
-	$(PYTHON_BIN) -m mypy $(FULL_SOURCES) --config-file $(CONFIGURATION_FILE) || mypy_exit=$$?; \
+	$(PYTHON_BIN) -m ty check $(FULL_SOURCES) || ty_exit=$$?; \
 	$(PYTHON_BIN) -m ruff check $(FULL_SOURCES) --config $(CONFIGURATION_FILE) --no-fix || ruff_exit=$$?; \
-	exit $$(( mypy_exit || ruff_exit ))
+	exit $$(( ty_exit || ruff_exit ))
 
 	@echo -e "\n✅ Code linted correctly.\n"
 
@@ -250,13 +250,13 @@ clean: # It cleans up the project, removing the virtual environment and some fil
 	$(call quiet, rm -rf `find . -type f -name '*.py[co]'`)
 	$(call quiet, rm -rf `find . -name __pycache__`)
 	$(call quiet, rm -rf `find . -name .ruff_cache`)
-	$(call quiet, rm -rf `find . -name .mypy_cache`)
 	$(call quiet, rm -rf `find . -name .pytest_cache`)
 	$(call quiet, rm -rf .coverage)
 	$(call quiet, rm -rf .coverage.*)
 	$(call quiet, rm -rf coverage)
 	$(call quiet, rm -rf coverage.xml)
 	$(call quiet, rm -rf htmlcov)
+	$(call quiet, rm -rf dist)
 
 	@echo -e "\n✅ Run 'deactivate' to deactivate the virtual environment.\n"
 

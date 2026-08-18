@@ -101,7 +101,7 @@ class NifValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If the `value` does not have a valid control letter.
         """
         match = self._IDENTIFICATION_REGEX.fullmatch(string=processed_value)
-        first_letter, number, control_character = match.groups()  # type: ignore[union-attr]
+        first_letter, number, control_character = match.groups()  # type: ignore[ty:unresolved-attribute]
 
         expected_number, expected_letter = self._calculate_control_values(number=number)
         if first_letter.upper() in self._NIF_CONTROL_CHARACTER_DIGITS:

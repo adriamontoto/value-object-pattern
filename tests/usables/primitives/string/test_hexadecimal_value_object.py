@@ -5,7 +5,10 @@ Test HexadecimalStringValueObject and Base16StringValueObject.
 from object_mother_pattern import StringMother
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern.usables import Base16StringValueObject, HexadecimalStringValueObject
+from value_object_pattern.usables import (
+    Base16StringValueObject,
+    HexadecimalStringValueObject,
+)
 from value_object_pattern.usables.primitives import (
     Base16StringValueObject as PrimitiveBase16StringValueObject,
     HexadecimalStringValueObject as PrimitiveHexadecimalStringValueObject,

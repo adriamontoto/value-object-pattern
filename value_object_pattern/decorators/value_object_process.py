@@ -62,8 +62,8 @@ def process(order: int | None = None) -> Callable[[Callable[..., T]], Callable[.
             if order < 0:
                 raise ValueError(f'Process order <<<{order}>>> must be equal or greater than 0.')
 
-        function._is_process = True  # type: ignore[attr-defined]
-        function._order = function.__name__ if order is None else str(order)  # type: ignore[attr-defined]
+        function._is_process = True  # type: ignore[ty:unresolved-attribute]
+        function._order = function.__name__ if order is None else str(order)  # type: ignore[ty:unresolved-attribute]
 
         return function
 

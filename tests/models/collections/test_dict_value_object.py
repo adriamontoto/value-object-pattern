@@ -182,7 +182,7 @@ class CustomKeyWithToPrimitives:
         return hash(self.value)
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, CustomKeyWithToPrimitives) and self.value == other.value
 
 
@@ -248,7 +248,7 @@ class CustomKey:
         return hash(self.name)
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, CustomKey) and self.name == other.name
 
 
@@ -302,6 +302,16 @@ def test_dict_value_object_contains_existing_key() -> None:
     mapping = StrIntDictValueObject(value={'a': 1})
 
     assert 'a' in mapping
+
+
+@mark.unit_testing
+def test_dict_value_object_contains_converts_primitive_key() -> None:
+    """
+    Test that __contains__ converts a primitive key to the declared key type.
+    """
+    mapping = ValueObjectIntDict(value={SimpleValueObject(value=1): 10})
+
+    assert 1 in mapping
 
 
 @mark.unit_testing
@@ -420,7 +430,7 @@ def test_dict_value_object_requires_parameterization() -> None:
         match=r'DictValueObject must be parameterised, e\.g\. `class StrIntDict\(DictValueObject\[str, int\]\)`.',
     ):
 
-        class _InvalidDictValueObject(DictValueObject):  # type: ignore[type-arg]  # pragma: no cover
+        class _InvalidDictValueObject(DictValueObject):  # type: ignore[ty:missing-type-argument]  # pragma: no cover
             pass
 
 
@@ -434,7 +444,7 @@ def test_dict_value_object_requires_key_type_argument_to_be_type() -> None:
         match=r'DictValueObject\[\.\.\.\] <<<.*>>> must be a type\. Got <<<.*>>> type\.',
     ):
 
-        class _InvalidKeyDictValueObject(DictValueObject[IntegerMother.create(), int]):  # type: ignore[misc]  # pragma: no cover
+        class _InvalidKeyDictValueObject(DictValueObject[IntegerMother.create(), int]):  # type: ignore[ty:invalid-type-form]  # pragma: no cover
             pass
 
 
@@ -448,7 +458,7 @@ def test_dict_value_object_requires_value_type_argument_to_be_type() -> None:
         match=r'DictValueObject\[\.\.\.\] <<<.*>>> must be a type\. Got <<<.*>>> type\.',
     ):
 
-        class _InvalidValueDictValueObject(DictValueObject[str, IntegerMother.create()]):  # type: ignore[misc]  # pragma: no cover
+        class _InvalidValueDictValueObject(DictValueObject[str, IntegerMother.create()]):  # type: ignore[ty:invalid-type-form]  # pragma: no cover
             pass
 
 
@@ -463,8 +473,8 @@ def test_dict_value_object_allows_typevar_parameterization() -> None:
     class _GenericDictValueObject(DictValueObject[TKey, TValue]):  # pragma: no cover
         pass
 
-    assert _GenericDictValueObject._key_type is TKey  # type: ignore[misc]
-    assert _GenericDictValueObject._value_type is TValue  # type: ignore[misc]
+    assert _GenericDictValueObject._key_type is TKey
+    assert _GenericDictValueObject._value_type is TValue
 
 
 @mark.unit_testing
@@ -488,7 +498,7 @@ def test_dict_value_object_raises_type_error_when_key_has_wrong_type() -> None:
         expected_exception=TypeError,
         match=r'DictValueObject value <<<.*>>> must be of type <<<str>>> type\. Got <<<.*>>> type\.',
     ):
-        StrIntDictValueObject(value={1: 2})  # type: ignore[dict-item]
+        StrIntDictValueObject(value={1: 2})  # type: ignore[ty:invalid-argument-type]
 
 
 @mark.unit_testing
@@ -500,7 +510,7 @@ def test_dict_value_object_raises_type_error_when_value_has_wrong_type() -> None
         expected_exception=TypeError,
         match=r'DictValueObject value <<<.*>>> must be of type <<<int>>> type\. Got <<<.*>>> type\.',
     ):
-        StrIntDictValueObject(value={'a': 'wrong'})  # type: ignore[dict-item]
+        StrIntDictValueObject(value={'a': 'wrong'})  # type: ignore[ty:invalid-argument-type]
 
 
 @mark.unit_testing
@@ -664,7 +674,7 @@ def test_dict_value_object_union_key_rejects_out_of_union_type() -> None:
         expected_exception=TypeError,
         match=r'DictValueObject value <<<.*>>> must be of type <<<int \| str>>> type\. Got <<<.*>>> type\.',
     ):
-        IntOrStrKeyDictValueObject(value={1.5: 1})  # type: ignore[dict-item]
+        IntOrStrKeyDictValueObject(value={1.5: 1})  # type: ignore[ty:invalid-argument-type]
 
 
 @mark.unit_testing
@@ -698,7 +708,7 @@ def test_dict_value_object_union_value_rejects_out_of_union_type() -> None:
         expected_exception=TypeError,
         match=r'DictValueObject value <<<.*>>> must be of type <<<int \| str>>> type\. Got <<<.*>>> type\.',
     ):
-        StrIntOrStrValueDictValueObject(value={'a': 1, 'b': 2.5})  # type: ignore[dict-item]
+        StrIntOrStrValueDictValueObject(value={'a': 1, 'b': 2.5})  # type: ignore[ty:invalid-argument-type]
 
 
 @mark.unit_testing

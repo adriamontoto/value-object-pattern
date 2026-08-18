@@ -15,7 +15,11 @@ from pytest import MonkeyPatch, mark, raises as assert_raises
 
 from value_object_pattern.usables.internet import UrlValueObject
 from value_object_pattern.usables.internet.uri import url_value_object as url_module
-from value_object_pattern.usables.internet.uri.url_value_object import join_url, split_netloc, split_url
+from value_object_pattern.usables.internet.uri.url_value_object import (
+    join_url,
+    split_netloc,
+    split_url,
+)
 
 
 @mark.unit_testing
@@ -63,7 +67,11 @@ def test_split_netloc_with_user_information_and_port() -> None:
     """
     Test split_netloc helper with user information and port.
     """
-    assert split_netloc(value='user:pass@example.com:443') == ('user:pass', 'example.com', 443)
+    assert split_netloc(value='user:pass@example.com:443') == (
+        'user:pass',
+        'example.com',
+        443,
+    )
 
 
 @mark.unit_testing
@@ -79,7 +87,10 @@ def test_split_netloc_rejects_unbracketed_ipv6_address() -> None:
     """
     Test split_netloc helper rejects an unbracketed IPv6 address.
     """
-    with assert_raises(expected_exception=ValueError, match='IPv6 URL hosts must be enclosed in brackets.'):
+    with assert_raises(
+        expected_exception=ValueError,
+        match='IPv6 URL hosts must be enclosed in brackets.',
+    ):
         split_netloc(value='2001:db8::1')
 
 
@@ -140,7 +151,8 @@ def test_url_value_object_invalid_url() -> None:
     Test UrlValueObject value object raises ValueError when URL cannot be parsed.
     """
     with assert_raises(
-        expected_exception=ValueError, match=r'UrlValueObject value <<<http://\[::1>>> is not a valid url.'
+        expected_exception=ValueError,
+        match=r'UrlValueObject value <<<http://\[::1>>> is not a valid url.',
     ):
         UrlValueObject(value='http://[::1')
 
@@ -265,7 +277,10 @@ def test_url_value_object_empty_url_validation() -> None:
     """
     url: Any = UrlValueObject(value='https://example.com')
 
-    with assert_raises(expected_exception=ValueError, match=r'UrlValueObject value <<<>>> is not a valid url.'):
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'UrlValueObject value <<<>>> is not a valid url.',
+    ):
         url._validate_url(value='')
 
 

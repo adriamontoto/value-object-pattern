@@ -39,7 +39,7 @@ class CreditCardValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
     )
 
     @process(order=0)
-    def _ensure_value_is_formatted(self, value: str) -> str:  # type: ignore[return]
+    def _ensure_value_is_formatted(self, value: str) -> str:  # type: ignore[ty:invalid-return-type]
         """
         Ensures the value object `value` is stored formatted.
 

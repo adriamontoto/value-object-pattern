@@ -141,7 +141,7 @@ class _ListValueObjectAlias:
             return ' | '.join(_ListValueObjectAlias._format_type_argument(type=allowed) for allowed in get_args(type))
 
         if hasattr(type, '__name__'):
-            return type.__name__  # type: ignore[no-any-return]
+            return type.__name__  # type: ignore[ty:unsound-return-statement]
 
         return str(type).replace('typing.', '')
 
@@ -505,12 +505,12 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
         """
         return not self._value
 
-    def add(self, *, item: T) -> Self:
+    def add(self, *, item: Any) -> Self:
         """
-        Returns a new ListValueObject with the item added to the end.
+        Returns a new ListValueObject with a typed or primitive item added to the end.
 
         Args:
-            item (T): The item to add.
+            item (Any): The typed or primitive item to convert and add.
 
         Raises:
             TypeError: If the item is not of type T.
@@ -576,12 +576,12 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
 
         return self.add(item=item)
 
-    def extend(self, *, items: list[T]) -> Self:
+    def extend(self, *, items: list[Any]) -> Self:
         """
-        Returns a new ListValueObject with multiple items added to the end.
+        Returns a new ListValueObject with typed or primitive items added to the end.
 
         Args:
-            items (list[T]): The items to add.
+            items (list[Any]): The typed or primitive items to convert and add.
 
         Raises:
             TypeError: If the items are not of the correct type.
@@ -647,12 +647,12 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
 
         return self.extend(items=items)
 
-    def delete(self, *, item: T) -> Self:
+    def delete(self, *, item: Any) -> Self:
         """
-        Returns a new ListValueObject with the first occurrence of the item deleted.
+        Returns a new ListValueObject with the first occurrence of a typed or primitive item deleted.
 
         Args:
-            item (T): The item to delete.
+            item (Any): The typed or primitive item to convert and delete.
 
         Raises:
             ValueError: If the item is not in the list.
@@ -844,7 +844,7 @@ class ListValueObject(ValueObject[list[T]], Generic[T]):  # noqa: UP046
             return 'Any'
 
         if hasattr(type, '__name__'):
-            return type.__name__  # type: ignore[no-any-return]
+            return type.__name__  # type: ignore[ty:unsound-return-statement]
 
         return str(type).replace('typing.', '')
 

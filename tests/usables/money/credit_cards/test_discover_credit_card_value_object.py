@@ -6,7 +6,9 @@ from typing import Any
 
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern.usables.money.credit_cards import DiscoverCreditCardValueObject
+from value_object_pattern.usables.money.credit_cards import (
+    DiscoverCreditCardValueObject,
+)
 
 
 @mark.unit_testing

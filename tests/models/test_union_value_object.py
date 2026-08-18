@@ -352,7 +352,7 @@ def test_union_value_object_requires_parameterization() -> None:
         match=r'UnionValueObject must be parameterized, e\.g\. "class IntOrStrValueObject\(UnionValueObject\[int \| str\]\)".',  # noqa: E501
     ):
 
-        class _InvalidUnionValueObject(UnionValueObject):  # type: ignore[type-arg]  # pragma: no cover
+        class _InvalidUnionValueObject(UnionValueObject):  # type: ignore[ty:missing-type-argument]  # pragma: no cover
             pass
 
 
@@ -366,7 +366,7 @@ def test_union_value_object_requires_type_argument_to_be_type() -> None:
         match=r'UnionValueObject\[\.\.\.\] <<<.*>>> must be a type\. Got <<<.*>>> type\.',
     ):
 
-        class _InvalidTypeUnionValueObject(UnionValueObject[cast(Any, 1)]):  # type: ignore[misc]  # pragma: no cover
+        class _InvalidTypeUnionValueObject(UnionValueObject[cast(Any, 1)]):  # type: ignore[ty:invalid-type-form]  # pragma: no cover
             pass
 
 

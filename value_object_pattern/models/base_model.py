@@ -306,7 +306,7 @@ class BaseModel(ABC):
         ```
         """
         if id(self) in memo:
-            return memo[id(self)]  # type: ignore[no-any-return]
+            return memo[id(self)]  # type: ignore[ty:unsound-return-statement]
 
         cls = self.__class__
         clone = cls.__new__(cls)
@@ -385,7 +385,7 @@ class BaseModel(ABC):
         # >>> {'name': 'John Doe', 'birthdate': '1900-01-01T00:00:00+00:00'}
         ```
         """  # noqa: E501
-        if not isinstance(primitives, dict) or not all(isinstance(key, str) for key in primitives):  # type: ignore[redundant-expr]
+        if not isinstance(primitives, dict) or not all(isinstance(key, str) for key in primitives):
             cls._raise_value_is_not_dict_of_strings(value=primitives)
 
         constructor_signature = signature(obj=cls.__init__)
@@ -470,7 +470,7 @@ class BaseModel(ABC):
             return 'Any'
 
         if hasattr(type, '__name__'):
-            return type.__name__  # type: ignore[no-any-return]
+            return type.__name__  # type: ignore[ty:unsound-return-statement]
 
         return str(type).replace('typing.', '')
 
