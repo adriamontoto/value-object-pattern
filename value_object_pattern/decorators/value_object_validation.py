@@ -70,9 +70,9 @@ def validation(
         if type(early_process) is not bool:
             raise TypeError(f'Validation early_process <<<{early_process}>>> must be a boolean. Got <<<{type(early_process).__name__}>>> type.')  # noqa: E501  # fmt: skip
 
-        function._is_validation = True  # type: ignore[attr-defined]
-        function._order = function.__name__ if order is None else str(order)  # type: ignore[attr-defined]
-        function._early_process = early_process  # type: ignore[attr-defined]
+        function._is_validation = True  # type: ignore[ty:unresolved-attribute]
+        function._order = function.__name__ if order is None else str(order)  # type: ignore[ty:unresolved-attribute]
+        function._early_process = early_process  # type: ignore[ty:unresolved-attribute]
 
         return function
 

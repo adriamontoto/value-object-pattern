@@ -77,7 +77,7 @@ class EnumerationValueObject(ValueObject[Any | E], Generic[E]):  # noqa: UP046
                 if not (isclass(object=enumeration) and issubclass(enumeration, Enum)):
                     raise TypeError(f'EnumerationValueObject[...] <<<{enumeration}>>> must be an Enum subclass. Got <<<{type(enumeration).__name__}>>> type.')  # noqa: E501  # fmt: skip
 
-                cls._enumeration = enumeration  # type: ignore[assignment]
+                cls._enumeration = enumeration
                 return
 
         raise TypeError('EnumerationValueObject must be parameterized, e.g. "class ColorValueObject(EnumerationValueObject[ColorEnumeration])".')  # noqa: E501  # fmt: skip
@@ -168,4 +168,4 @@ class EnumerationValueObject(ValueObject[Any | E], Generic[E]):  # noqa: UP046
         # >>> ColorEnumeration.RED
         ```
         """
-        return self._value
+        return self._value  # type: ignore[ty:unsound-return-statement]

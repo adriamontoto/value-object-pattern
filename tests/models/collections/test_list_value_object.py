@@ -309,7 +309,7 @@ def test_list_value_object_requires_parameterization() -> None:
         match=r'ListValueObject must be parameterized, e\.g\. "class InIntListValueObject\(ListValueObject\[int\]\)".',
     ):
 
-        class _InvalidListValueObject(ListValueObject):  # type: ignore[type-arg]  # pragma: no cover
+        class _InvalidListValueObject(ListValueObject):  # type: ignore[ty:missing-type-argument]  # pragma: no cover
             pass
 
 
@@ -323,7 +323,7 @@ def test_list_value_object_requires_type_argument_to_be_type() -> None:
         match=r'ListValueObject\[\.\.\.\] <<<.*>>> must be a type\. Got <<<.*>>> type\.',
     ):
 
-        class _InvalidTypeListValueObject(ListValueObject[IntegerMother.create()]):  # type: ignore[misc]  # pragma: no cover
+        class _InvalidTypeListValueObject(ListValueObject[IntegerMother.create()]):  # type: ignore[ty:invalid-type-form]  # pragma: no cover
             pass
 
 
@@ -337,7 +337,7 @@ def test_list_value_object_allows_typevar_parameterization() -> None:
     class _GenericListValueObject(ListValueObject[TItem]):  # pragma: no cover
         pass
 
-    assert _GenericListValueObject._type is TItem  # type: ignore[misc]
+    assert _GenericListValueObject._type is TItem
 
 
 @mark.unit_testing

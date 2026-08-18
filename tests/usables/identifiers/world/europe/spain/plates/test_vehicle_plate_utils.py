@@ -4,7 +4,9 @@ Test Spanish vehicle plate utility functions.
 
 from pytest import mark
 
-from value_object_pattern.usables.identifiers.world.europe.spain.plates import utils as plate_utils
+from value_object_pattern.usables.identifiers.world.europe.spain.plates import (
+    utils as plate_utils,
+)
 
 
 @mark.unit_testing

@@ -62,14 +62,18 @@ def test_ipv6_address_value_object_raises_invalid_ipv6_address() -> None:
 
 
 @mark.unit_testing
-def test_ipv6_address_value_object_rejects_invalid_normalized_value(monkeypatch: MonkeyPatch) -> None:
+def test_ipv6_address_value_object_rejects_invalid_normalized_value(
+    monkeypatch: MonkeyPatch,
+) -> None:
     """
     Test Ipv6AddressValueObject defensive validation branch for invalid normalized values.
     """
     address: Any = Ipv6AddressValueObject(value='::1')
 
     monkeypatch.setattr(
-        Ipv6AddressValueObject, '_ensure_value_is_normalized', lambda self, value: 'not-an-ipv6-address'
+        Ipv6AddressValueObject,
+        '_ensure_value_is_normalized',
+        lambda self, value: 'not-an-ipv6-address',
     )
 
     with assert_raises(

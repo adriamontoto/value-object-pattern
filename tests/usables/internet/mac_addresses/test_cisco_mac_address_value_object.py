@@ -9,7 +9,9 @@ from tests.usables.internet.mac_addresses.helpers import (
     assert_mac_address_value_object_invalid_processed_value,
     assert_mac_address_value_object_invalid_value,
 )
-from value_object_pattern.usables.internet.mac_addresses import CiscoMacAddressValueObject
+from value_object_pattern.usables.internet.mac_addresses import (
+    CiscoMacAddressValueObject,
+)
 
 
 @mark.unit_testing

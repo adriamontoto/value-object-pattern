@@ -6,7 +6,9 @@ from typing import Any
 
 from pytest import raises as assert_raises
 
-from value_object_pattern.usables.identifiers.world.europe.spain import VehiclePlateValueObject
+from value_object_pattern.usables.identifiers.world.europe.spain import (
+    VehiclePlateValueObject,
+)
 
 
 def assert_vehicle_plate_value_object_happy_path(

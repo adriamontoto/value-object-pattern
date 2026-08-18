@@ -2,7 +2,11 @@
 Test IpNetworkValueObject value object.
 """
 
-from object_mother_pattern.mothers.internet import IpNetworkMother, Ipv4NetworkMother, Ipv6NetworkMother
+from object_mother_pattern.mothers.internet import (
+    IpNetworkMother,
+    Ipv4NetworkMother,
+    Ipv6NetworkMother,
+)
 from pytest import mark, raises as assert_raises
 
 from value_object_pattern.usables.internet import IpNetworkValueObject

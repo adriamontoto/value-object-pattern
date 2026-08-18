@@ -141,8 +141,9 @@ class _UnionValueObjectAlias:
         if origin in (Union, UnionType):
             return ' | '.join(_UnionValueObjectAlias._format_type_argument(type=allowed) for allowed in get_args(type))
 
-        if hasattr(type, '__name__'):
-            return type.__name__  # type: ignore[no-any-return]
+        type_name = getattr(type, '__name__', None)
+        if isinstance(type_name, str):
+            return type_name
 
         return str(type).replace('typing.', '')
 
@@ -259,7 +260,7 @@ class UnionValueObject(ValueObject[T], Generic[T]):  # noqa: UP046
 
         for allowed_type in allowed_types:
             try:
-                return self._coerce_value_to_type(value=value, expected_type=allowed_type)  # type: ignore[no-any-return]
+                return self._coerce_value_to_type(value=value, expected_type=allowed_type)
 
             except Exception as error:
                 last_error = error
@@ -407,8 +408,9 @@ class UnionValueObject(ValueObject[T], Generic[T]):  # noqa: UP046
         if type is Any:
             return 'Any'
 
-        if hasattr(type, '__name__'):
-            return type.__name__  # type: ignore[no-any-return]
+        type_name = getattr(type, '__name__', None)
+        if isinstance(type_name, str):
+            return type_name
 
         return str(type).replace('typing.', '')
 

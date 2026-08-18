@@ -62,13 +62,19 @@ def test_ipv4_address_value_object_raises_invalid_ipv4_address() -> None:
 
 
 @mark.unit_testing
-def test_ipv4_address_value_object_rejects_invalid_normalized_value(monkeypatch: MonkeyPatch) -> None:
+def test_ipv4_address_value_object_rejects_invalid_normalized_value(
+    monkeypatch: MonkeyPatch,
+) -> None:
     """
     Test Ipv4AddressValueObject defensive validation branch for invalid normalized values.
     """
     address: Any = Ipv4AddressValueObject(value='127.0.0.1')
 
-    monkeypatch.setattr(Ipv4AddressValueObject, '_ensure_value_is_normalized', lambda self, value: '999.0.0.1')
+    monkeypatch.setattr(
+        Ipv4AddressValueObject,
+        '_ensure_value_is_normalized',
+        lambda self, value: '999.0.0.1',
+    )
 
     with assert_raises(
         expected_exception=ValueError,

@@ -98,7 +98,7 @@ class DniValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If the `value` does not have a valid control letter.
         """
         match = self._IDENTIFICATION_REGEX.fullmatch(string=processed_value)
-        number, control_letter = match.groups()  # type: ignore[union-attr]
+        number, control_letter = match.groups()  # type: ignore[ty:unresolved-attribute]
 
         expected_letter = self._DNI_LETTERS[int(number) % 23]
         if control_letter != expected_letter:

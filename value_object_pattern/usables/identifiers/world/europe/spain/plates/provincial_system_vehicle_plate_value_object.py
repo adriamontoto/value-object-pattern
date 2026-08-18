@@ -103,7 +103,7 @@ class ProvincialSystemVehiclePlateValueObject(NotEmptyStringValueObject, Trimmed
         """
         match = self._IDENTIFICATION_REGEX.fullmatch(string=value)
 
-        province_code, _, _ = match.groups()  # type: ignore[union-attr]
+        province_code, _, _ = match.groups()  # type: ignore[ty:unresolved-attribute]
         if province_code.upper() not in get_provincial_plate_codes():
             self._raise_value_is_not_provincial_system_plate(value=value)
 

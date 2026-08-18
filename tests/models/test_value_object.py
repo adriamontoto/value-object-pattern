@@ -679,7 +679,7 @@ def test_value_object_cannot_get_unexistent_attribute() -> None:
         expected_exception=AttributeError,
         match=f"'{value_object.__class__.__name__}' object has no attribute 'not_existent_attribute'",
     ):
-        value_object.not_existent_attribute  # type: ignore[attr-defined]  # noqa: B018
+        value_object.not_existent_attribute  # type: ignore[ty:unresolved-attribute]  # noqa: B018
 
 
 @mark.unit_testing
@@ -1036,7 +1036,7 @@ def test_value_object_cannot_modify_value() -> None:
         expected_exception=AttributeError,
         match='Cannot modify attribute "value" of immutable instance',
     ):
-        value_object.value = IntegerMother.create()  # type: ignore[misc]
+        value_object.value = IntegerMother.create()  # type: ignore[ty:invalid-assignment]
 
 
 @mark.unit_testing
@@ -1050,7 +1050,7 @@ def test_value_object_cannot_modify_title() -> None:
         expected_exception=AttributeError,
         match='Cannot modify attribute "title" of immutable instance',
     ):
-        value_object.title = StringMother.create()  # type: ignore[misc]
+        value_object.title = StringMother.create()  # type: ignore[ty:invalid-assignment]
 
 
 @mark.unit_testing
@@ -1408,11 +1408,11 @@ def test_value_object_type_returns_any_when_no_generic_arguments_are_available()
     class NoArgsValueObject(ValueObject[int]):
         pass
 
-    original_bases = NoArgsValueObject.__orig_bases__  # type: ignore[attr-defined]
-    NoArgsValueObject.__orig_bases__ = (_Placeholder,)  # type: ignore[attr-defined]
+    original_bases = NoArgsValueObject.__orig_bases__  # type: ignore[ty:unresolved-attribute]
+    NoArgsValueObject.__orig_bases__ = (_Placeholder,)  # type: ignore[ty:unresolved-attribute]
 
     try:
         assert NoArgsValueObject.type() is Any  # type: ignore[comparison-overlap]
 
     finally:
-        NoArgsValueObject.__orig_bases__ = original_bases  # type: ignore[attr-defined]
+        NoArgsValueObject.__orig_bases__ = original_bases  # type: ignore[ty:unresolved-attribute]

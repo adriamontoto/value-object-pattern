@@ -87,7 +87,7 @@ class NussValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         """
         match = self._IDENTIFICATION_REGEX.fullmatch(string=processed_value)
 
-        province, _, _ = match.groups()  # type: ignore[union-attr]
+        province, _, _ = match.groups()  # type: ignore[ty:unresolved-attribute]
         if int(province) not in get_provincial_codes():
             self._raise_value_is_not_social_security_number(value=value)
 
@@ -104,7 +104,7 @@ class NussValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
             ValueError: If the `value` does not have a valid control letter.
         """
         match = self._IDENTIFICATION_REGEX.fullmatch(string=processed_value)
-        province, sequential, control = match.groups()  # type: ignore[union-attr]
+        province, sequential, control = match.groups()  # type: ignore[ty:unresolved-attribute]
 
         expected = self._calculate_control_value(province=province, sequential=sequential)
         if expected != int(control):

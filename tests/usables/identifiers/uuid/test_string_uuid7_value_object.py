@@ -3,7 +3,10 @@ Test StringUuidV7ValueObject value object.
 """
 
 from object_mother_pattern import StringMother
-from object_mother_pattern.mothers.identifiers import StringUuidMother, StringUuidV7Mother
+from object_mother_pattern.mothers.identifiers import (
+    StringUuidMother,
+    StringUuidV7Mother,
+)
 from pytest import mark, raises as assert_raises
 
 from value_object_pattern.usables.identifiers.uuid import StringUuidV7ValueObject

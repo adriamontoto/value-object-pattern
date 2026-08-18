@@ -4,7 +4,9 @@ Test Spanish identifier utility functions.
 
 from pytest import mark
 
-from value_object_pattern.usables.identifiers.world.europe.spain import utils as spain_utils
+from value_object_pattern.usables.identifiers.world.europe.spain import (
+    utils as spain_utils,
+)
 
 
 @mark.unit_testing
