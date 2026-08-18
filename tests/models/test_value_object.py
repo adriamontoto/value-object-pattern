@@ -10,7 +10,7 @@ else:
     from typing_extensions import override  # pragma: no cover
 
 from copy import copy, deepcopy
-from typing import Any, ClassVar
+from typing import Any, ClassVar, cast
 
 from object_mother_pattern import (
     BooleanMother,
@@ -226,7 +226,7 @@ def test_value_object_can_disable_decorated_method_cache() -> None:
     def _append_dynamic_marker(self: DynamicHooksValueObject, value: str) -> str:
         return value + '-dynamic'
 
-    DynamicHooksValueObject._append_dynamic_marker = _append_dynamic_marker  # type: ignore[attr-defined]
+    cast(Any, DynamicHooksValueObject)._append_dynamic_marker = _append_dynamic_marker
     second = DynamicHooksValueObject(value='second')
 
     assert first.value == 'first-static'
