@@ -3,6 +3,7 @@ from .domain_or_localhost_value_object import DomainOrLocalhostValueObject
 from .domain_value_object import DomainValueObject
 from .email_address_value_object import EmailAddressValueObject
 from .host_value_object import HostValueObject
+from .http_method_value_object import HttpMethodValueObject
 from .ip_address_value_object import IpAddressValueObject
 from .ip_network_value_object import IpNetworkValueObject
 from .ipv4_address_value_object import Ipv4AddressValueObject
@@ -23,6 +24,7 @@ __all__ = (
     'EmailAddressValueObject',
     'HostValueObject',
     'HttpHttpsUrlValueObject',
+    'HttpMethodValueObject',
     'HttpUrlValueObject',
     'HttpsUrlValueObject',
     'IpAddressValueObject',
