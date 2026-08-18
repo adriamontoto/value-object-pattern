@@ -2,6 +2,32 @@
 
 <!-- version list -->
 
+## v1.35.0 (2026-08-18)
+
+### 🐛 Bug Fixes
+
+- Validate Spanish IBAN CCC control digits
+  ([`84cd53b`](https://github.com/adriamontoto/value-object-pattern/commit/84cd53b054343dc6c931655a6dcc272cf33e67fb))
+
+- **build**: Target correct Python environments locally and in CI
+  ([`ead2138`](https://github.com/adriamontoto/value-object-pattern/commit/ead2138a2ca2fa867eb72a6321150ec820b5d634))
+
+### 📦 Build System
+
+- Add lockfile to project
+  ([`564db4e`](https://github.com/adriamontoto/value-object-pattern/commit/564db4e70e565aac119382d15e41d2c86889aa6b))
+
+### ✨ Features
+
+- Implement ip address network value object
+  ([`ec33ebe`](https://github.com/adriamontoto/value-object-pattern/commit/ec33ebef5f4e890d0702b87d92d9763f209dfcd1))
+
+### 🚀 Performance Improvements
+
+- Make value objects cache validations and process decorators
+  ([`9a8cafc`](https://github.com/adriamontoto/value-object-pattern/commit/9a8cafcf24b95e0f89b4894dc129e75ff80b39b9))
+
+
 ## v1.34.0 (2026-07-18)
 
 ### ✨ Features
