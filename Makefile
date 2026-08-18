@@ -98,15 +98,15 @@ install: # Installs the project dependencies, use the GROUP variable to install 
 
 ifeq ($(GROUP), production)
 ifeq ($(CI), true)
-	$(call quiet, UV_PROJECT_ENVIRONMENT="$(shell $(PYTHON_BIN) -c 'import sysconfig; print(sysconfig.get_config_var("prefix"))')" $(UV_BIN) sync --frozen --inexact --no-install-project --no-default-groups --python $(PYTHON_BIN))
+	$(call quiet, $(UV_BIN) export --frozen --no-emit-project --no-default-groups | $(UV_BIN) pip install --system --python $(PYTHON_BIN) --requirements -)
 else
-	$(call quiet, $(UV_BIN) sync --frozen --no-install-project --no-default-groups --python $(PYTHON_VERSION))
+	$(call quiet, UV_PROJECT_ENVIRONMENT="$(PYTHON_VIRTUAL_ENVIRONMENT)" $(UV_BIN) sync --frozen --inexact --no-active --no-install-project --no-default-groups --python $(PYTHON_VERSION))
 endif
 else
 ifeq ($(CI), true)
-	$(call quiet, UV_PROJECT_ENVIRONMENT="$(shell $(PYTHON_BIN) -c 'import sysconfig; print(sysconfig.get_config_var("prefix"))')" $(UV_BIN) sync --frozen --inexact --no-install-project --no-default-groups $(if $(filter all,$(GROUP)),--all-groups,--group $(GROUP)) --python $(PYTHON_BIN))
+	$(call quiet, $(UV_BIN) export --frozen --no-emit-project --no-default-groups $(if $(filter all,$(GROUP)),--all-groups,--group $(GROUP)) | $(UV_BIN) pip install --system --python $(PYTHON_BIN) --requirements -)
 else
-	$(call quiet, $(UV_BIN) sync --frozen --no-install-project --no-default-groups $(if $(filter all,$(GROUP)),--all-groups,--group $(GROUP)) --python $(PYTHON_VERSION))
+	$(call quiet, UV_PROJECT_ENVIRONMENT="$(PYTHON_VIRTUAL_ENVIRONMENT)" $(UV_BIN) sync --frozen --inexact --no-active --no-install-project --no-default-groups $(if $(filter all,$(GROUP)),--all-groups,--group $(GROUP)) --python $(PYTHON_VERSION))
 endif
 endif
 
