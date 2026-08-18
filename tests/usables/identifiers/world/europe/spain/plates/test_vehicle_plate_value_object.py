@@ -4,7 +4,9 @@ Test VehiclePlateValueObject value object.
 
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern.usables.identifiers.world.europe.spain import VehiclePlateValueObject
+from value_object_pattern.usables.identifiers.world.europe.spain import (
+    VehiclePlateValueObject,
+)
 
 
 @mark.unit_testing

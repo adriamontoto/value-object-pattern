@@ -25,7 +25,11 @@ def test_ipv6_network_value_object_hosts() -> None:
     """
     network = Ipv6NetworkValueObject(value='2001:db8::/126')
 
-    assert [address.value for address in network.hosts()] == ['2001:db8::1', '2001:db8::2', '2001:db8::3']
+    assert [address.value for address in network.hosts()] == [
+        '2001:db8::1',
+        '2001:db8::2',
+        '2001:db8::3',
+    ]
 
 
 @mark.unit_testing

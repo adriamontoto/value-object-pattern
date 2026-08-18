@@ -102,7 +102,7 @@ def test_enumeration_value_object_requires_parameterization() -> None:
         match=r'EnumerationValueObject must be parameterized, e\.g\. "class ColorValueObject\(EnumerationValueObject\[ColorEnumeration\]\)".',  # noqa: E501
     ):
 
-        class _InvalidEnumerationValueObject(EnumerationValueObject):  # type: ignore[type-arg]  # pragma: no cover
+        class _InvalidEnumerationValueObject(EnumerationValueObject):  # type: ignore[ty:missing-type-argument]  # pragma: no cover
             pass
 
 
@@ -116,5 +116,5 @@ def test_enumeration_value_object_requires_enum_subclass() -> None:
         match=r"EnumerationValueObject\[\.\.\.\] <<<<class 'int'>>>> must be an Enum subclass\. Got <<<type>>> type\.",
     ):
 
-        class _InvalidTypeEnumerationValueObject(EnumerationValueObject[int]):  # type: ignore[type-var]  # pragma: no cover
+        class _InvalidTypeEnumerationValueObject(EnumerationValueObject[int]):  # type: ignore[ty:invalid-type-arguments]  # pragma: no cover
             pass

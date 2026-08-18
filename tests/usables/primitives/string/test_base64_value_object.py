@@ -6,7 +6,9 @@ from object_mother_pattern import StringMother
 from pytest import mark, raises as assert_raises
 
 from value_object_pattern.usables import Base64StringValueObject
-from value_object_pattern.usables.primitives import Base64StringValueObject as PrimitiveBase64StringValueObject
+from value_object_pattern.usables.primitives import (
+    Base64StringValueObject as PrimitiveBase64StringValueObject,
+)
 from value_object_pattern.usables.primitives.string import (
     Base64StringValueObject as StringBase64StringValueObject,
     StringValueObject,

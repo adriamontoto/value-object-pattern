@@ -37,6 +37,7 @@ def test_digit_string_value_object_invalid_type() -> None:
     Test DigitStringValueObject value object raises TypeError when value is not string.
     """
     with assert_raises(
-        expected_exception=TypeError, match=r'StringValueObject value <<<.*>>> must be a string. Got <<<.*>>> type.'
+        expected_exception=TypeError,
+        match=r'StringValueObject value <<<.*>>> must be a string. Got <<<.*>>> type.',
     ):
         DigitStringValueObject(value=StringMother.invalid_type())

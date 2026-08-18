@@ -149,7 +149,7 @@ def test_base_model_from_primitives_rejects_non_dictionary_primitives() -> None:
         expected_exception=TypeError,
         match=r'Profile primitives <<<.*>>> must be a dictionary of strings. Got <<<list>>> type.',
     ):
-        Profile.from_primitives(primitives=[])  # type: ignore[arg-type]
+        Profile.from_primitives(primitives=[])  # type: ignore[ty:invalid-argument-type]
 
 
 @mark.unit_testing
@@ -161,7 +161,7 @@ def test_base_model_from_primitives_rejects_non_string_keys() -> None:
         expected_exception=TypeError,
         match=r'Profile primitives <<<.*>>> must be a dictionary of strings. Got <<<dict>>> type.',
     ):
-        Profile.from_primitives(primitives={1: 'Ada'})  # type: ignore[dict-item]
+        Profile.from_primitives(primitives={1: 'Ada'})  # type: ignore[ty:invalid-argument-type]
 
 
 @mark.unit_testing

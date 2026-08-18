@@ -44,7 +44,9 @@ def test_phone_code_value_object_invalid_value() -> None:
 
 
 @mark.unit_testing
-def test_phone_code_value_object_without_alpha2_conversion(monkeypatch: MonkeyPatch) -> None:
+def test_phone_code_value_object_without_alpha2_conversion(
+    monkeypatch: MonkeyPatch,
+) -> None:
     """
     Test PhoneCodeValueObject value object raises ValueError when phone code has no alpha-2 conversion.
     """
@@ -63,7 +65,9 @@ def test_phone_code_value_object_without_alpha2_conversion(monkeypatch: MonkeyPa
 
 
 @mark.unit_testing
-def test_phone_code_value_object_without_alpha3_conversion(monkeypatch: MonkeyPatch) -> None:
+def test_phone_code_value_object_without_alpha3_conversion(
+    monkeypatch: MonkeyPatch,
+) -> None:
     """
     Test PhoneCodeValueObject value object raises ValueError when phone code has no alpha-3 conversion.
     """
@@ -82,7 +86,9 @@ def test_phone_code_value_object_without_alpha3_conversion(monkeypatch: MonkeyPa
 
 
 @mark.unit_testing
-def test_phone_code_value_object_without_numeric_conversion(monkeypatch: MonkeyPatch) -> None:
+def test_phone_code_value_object_without_numeric_conversion(
+    monkeypatch: MonkeyPatch,
+) -> None:
     """
     Test PhoneCodeValueObject value object raises ValueError when phone code has no numeric conversion.
     """
@@ -101,7 +107,9 @@ def test_phone_code_value_object_without_numeric_conversion(monkeypatch: MonkeyP
 
 
 @mark.unit_testing
-def test_phone_code_value_object_without_tld_conversion(monkeypatch: MonkeyPatch) -> None:
+def test_phone_code_value_object_without_tld_conversion(
+    monkeypatch: MonkeyPatch,
+) -> None:
     """
     Test PhoneCodeValueObject value object raises ValueError when phone code has no TLD conversion.
     """

@@ -182,7 +182,7 @@ class _DictValueObjectAlias:
             return ' | '.join(_DictValueObjectAlias._format_type_argument(type=allowed) for allowed in get_args(type))
 
         if hasattr(type, '__name__'):
-            return type.__name__  # type: ignore[no-any-return]
+            return type.__name__  # type: ignore[ty:unsound-return-statement]
 
         return str(type).replace('typing.', '')
 
@@ -357,12 +357,12 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
         """
         return len(self._value)
 
-    def __getitem__(self, key: K) -> V:
+    def __getitem__(self, key: Any) -> V:
         """
-        Returns the value for the specified key.
+        Returns the value for the specified key, converting primitive keys when needed.
 
         Args:
-            key (K): The key to get the value for.
+            key (Any): The key or primitive key to get the value for.
 
         Raises:
             KeyError: If the key is not found.
@@ -544,12 +544,12 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
         """
         raise TypeError(f'DictValueObject value <<<{value}>>> must be of type <<<{self._type_label(type=self._value_type)}>>> type. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
 
-    def get(self, *, key: K, default: V | None = None) -> V | None:
+    def get(self, *, key: Any, default: V | None = None) -> V | None:
         """
-        Returns the value for the specified key if key is in dictionary, else default.
+        Returns the value for the specified key or primitive key if it is in the dictionary, else default.
 
         Args:
-            key (K): The key to get the value for.
+            key (Any): The key or primitive key to get the value for.
             default (V | None, optional): The default value to return if the key is not found. Defaults to None.
 
         Returns:
@@ -630,7 +630,7 @@ class DictValueObject(ValueObject[dict[K, V]], Generic[K, V]):  # noqa: UP046
             return 'Any'
 
         if hasattr(type, '__name__'):
-            return type.__name__  # type: ignore[no-any-return]
+            return type.__name__  # type: ignore[ty:unsound-return-statement]
 
         return str(type).replace('typing.', '')
 

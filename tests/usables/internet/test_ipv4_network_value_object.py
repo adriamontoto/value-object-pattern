@@ -25,7 +25,10 @@ def test_ipv4_network_value_object_hosts() -> None:
     """
     network = Ipv4NetworkValueObject(value='192.168.0.0/30')
 
-    assert [address.value for address in network.hosts()] == ['192.168.0.1', '192.168.0.2']
+    assert [address.value for address in network.hosts()] == [
+        '192.168.0.1',
+        '192.168.0.2',
+    ]
 
 
 @mark.unit_testing

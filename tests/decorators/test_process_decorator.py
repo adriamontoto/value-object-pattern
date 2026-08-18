@@ -33,7 +33,7 @@ def test_process_uses_function_name_when_order_is_provided() -> None:
     def ensure_something(value: str) -> None:  # pragma: no cover
         pass
 
-    assert ensure_something._order == str(order)  # type: ignore[attr-defined]
+    assert ensure_something._order == str(order)  # type: ignore[ty:unresolved-attribute]
 
 
 @mark.unit_testing
@@ -46,7 +46,7 @@ def test_process_uses_function_name_when_order_not_provided() -> None:
     def ensure_something(value: str) -> None:  # pragma: no cover
         pass
 
-    assert ensure_something._order == 'ensure_something'  # type: ignore[attr-defined]
+    assert ensure_something._order == 'ensure_something'  # type: ignore[ty:unresolved-attribute]
 
 
 @mark.unit_testing

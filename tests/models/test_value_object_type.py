@@ -17,7 +17,7 @@ from value_object_pattern import ValueObject
 TItem = TypeVar('TItem')
 
 
-class GenericFirstValueObject(Generic[TItem], ValueObject[int]):  # noqa: UP046
+class GenericFirstValueObject(Generic[TItem], ValueObject[int]):  # noqa: PYI059, UP046
     """
     Value object with Generic in original bases before ValueObject.
     """
@@ -53,7 +53,7 @@ def test_value_object_type_skips_non_value_object_orig_base(monkeypatch: MonkeyP
     monkeypatch.setattr(
         OriginSkippingValueObject,
         '__orig_bases__',
-        (NotValueObjectOrigin(), *OriginSkippingValueObject.__orig_bases__),  # type: ignore[attr-defined]
+        (NotValueObjectOrigin(), *OriginSkippingValueObject.__orig_bases__),  # type: ignore[ty:unresolved-attribute]
     )
 
     assert OriginSkippingValueObject.type() is int

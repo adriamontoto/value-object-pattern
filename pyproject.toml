@@ -55,7 +55,7 @@ develop = ['pre-commit>=3.0.0']
 format = ['ruff>=0.11.10']
 lint = [
     'ruff>=0.11.10',
-    'mypy[reports]>=1.0.0',
+    'ty>=0.0.72',
     { include-group = 'test' },
     { include-group = 'types' },
 ]
@@ -184,15 +184,11 @@ known-first-party = ['value_object_pattern']
 combine-as-imports = true
 
 
-[tool.mypy]
-strict = true
-warn_unreachable = true
-enable_error_code = [
-    'redundant-expr',
-    'possibly-undefined',
-    'truthy-bool',
-    'explicit-override',
-]
+[tool.ty.rules]
+missing-override-decorator = 'error'
+missing-type-argument = 'error'
+possibly-unresolved-reference = 'warn'
+unsound-return-statement = 'error'
 
 
 [tool.semantic_release]

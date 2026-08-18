@@ -12,6 +12,7 @@ else:
     from typing_extensions import override  # pragma: no cover
 
 from abc import ABC
+from builtins import type as builtins_type
 from copy import deepcopy
 from typing import Any, Callable, ClassVar, Generic, TypeVar, cast, get_args
 
@@ -321,7 +322,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         ```
         """
         if id(self) in memo:
-            return memo[id(self)]  # type: ignore[no-any-return]
+            return memo[id(self)]  # type: ignore[ty:unsound-return-statement]
 
         clone = self.__class__(
             value=deepcopy(self._value, memo),
@@ -347,7 +348,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         """
         methods = self._get_cached_decorated_methods(attribute_name='_is_process')
         for decorated_method in methods:
-            method: Callable[..., T] = decorated_method.__get__(self, self.__class__)
+            method: Callable[..., T] = decorated_method.__get__(self, self.__class__)  # type: ignore[ty:unresolved-attribute]
             value = method(value=value)
 
         return value
@@ -365,7 +366,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         try:
             methods = self._get_cached_decorated_methods(attribute_name='_is_validation')
             for decorated_method in methods:
-                method: Callable[..., T] = decorated_method.__get__(self, self.__class__)
+                method: Callable[..., T] = decorated_method.__get__(self, self.__class__)  # type: ignore[ty:unresolved-attribute]
                 if getattr(method, '_early_process', False):
                     method(value=value, processed_value=self.early_process(value=value))
                     continue
@@ -412,18 +413,23 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         """
         return callable(getattr(self, '_secret_value_for_display', None))
 
-    def _post_order_dfs_mro(self, cls: type, visited: set[type] | None = None, cut_off: type = object) -> list[type]:
+    def _post_order_dfs_mro(
+        self,
+        cls: builtins_type,
+        visited: set[builtins_type] | None = None,
+        cut_off: builtins_type = object,
+    ) -> list[builtins_type]:
         """
         Computes the Post-Order Depth-First Search (DFS) Method Resolution Order (MRO) of a class.
 
         Args:
-            cls (type): The class to process.
-            visited (set[type] | None, optional): A set of already visited classes (to prevent duplicates). Defaults
-            to None.
-            cut_off (type, optional): The class to stop the search. Defaults to object.
+            cls (builtins_type): The class to process.
+            visited (set[builtins_type] | None, optional): A set of already visited classes (to prevent duplicates).
+            Defaults to None.
+            cut_off (builtins_type, optional): The class to stop the search. Defaults to object.
 
         Returns:
-            list[type]: A list of classes type sorted by post-order DFS MRO.
+            list[builtins_type]: A list of classes type sorted by post-order DFS MRO.
 
         References:
             DFS: https://en.wikipedia.org/wiki/Depth-first_search
@@ -501,7 +507,7 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
             class_index = classes_names.get(class_name, 999)
             order = getattr(method, '_order', method_name)
 
-            return int(class_index), order, method_name
+            return int(class_index), order, method_name  # type: ignore[ty:unsound-return-statement]
 
         classes = self._post_order_dfs_mro(cls=instance.__class__, cut_off=ValueObject)
         classes_names = {cls.__name__: index for index, cls in enumerate(iterable=classes)}
@@ -614,20 +620,20 @@ class ValueObject(ABC, Generic[T]):  # noqa: UP046
         return self._parameter
 
     @classmethod
-    def type(cls) -> type[T]:
+    def type(cls) -> builtins_type[T]:
         """
         Return the wrapped type declared by the `ValueObject[T]` subclass.
 
         Returns:
             type[T]: Declared wrapped type, or `Any` when it cannot be resolved.
         """
-        for base in cls.__orig_bases__:  # type: ignore[attr-defined]
+        for base in cls.__orig_bases__:  # type: ignore[ty:unresolved-attribute]
             if hasattr(base, '__origin__') and base.__origin__ is Generic:
                 continue
 
             if hasattr(base, '__origin__') and issubclass(base.__origin__, ValueObject):
                 args = get_args(base)
                 if args:
-                    return args[0]  # type: ignore[no-any-return]
+                    return args[0]  # type: ignore[ty:unsound-return-statement]
 
-        return Any  # type: ignore[return-value]
+        return Any  # type: ignore[ty:invalid-return-type]

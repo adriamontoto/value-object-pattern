@@ -6,7 +6,9 @@ from typing import Any
 
 from pytest import mark, raises as assert_raises
 
-from value_object_pattern.usables.identifiers.world.europe.spain import PassportValueObject
+from value_object_pattern.usables.identifiers.world.europe.spain import (
+    PassportValueObject,
+)
 
 
 @mark.unit_testing
