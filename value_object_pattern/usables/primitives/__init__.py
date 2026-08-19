@@ -17,6 +17,7 @@ from .integer import (
     PositiveOrZeroIntegerValueObject,
 )
 from .none import NoneValueObject, NotNoneValueObject
+from .number import NumberValueObject, PositiveNumberValueObject, PositiveOrZeroNumberValueObject
 from .string import (
     AlphaStringValueObject,
     AlphanumericStringValueObject,
@@ -68,12 +69,15 @@ __all__ = (
     'NoneValueObject',
     'NotEmptyStringValueObject',
     'NotNoneValueObject',
+    'NumberValueObject',
     'OddIntegerValueObject',
     'PascalCaseStringValueObject',
     'PositiveFloatValueObject',
     'PositiveIntegerValueObject',
+    'PositiveNumberValueObject',
     'PositiveOrZeroFloatValueObject',
     'PositiveOrZeroIntegerValueObject',
+    'PositiveOrZeroNumberValueObject',
     'PrintableStringValueObject',
     'ScreamingSnakeCaseStringValueObject',
     'SnakeCaseStringValueObject',
