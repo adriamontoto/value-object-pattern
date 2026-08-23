@@ -2,6 +2,20 @@
 
 <!-- version list -->
 
+## v1.36.0 (2026-08-23)
+
+### ✨ Features
+
+- Implement http method value object
+  ([`0b8e828`](https://github.com/adriamontoto/value-object-pattern/commit/0b8e8287840b5034956d85ed7b19cce5c6e4b54d))
+
+- Implement http status code value object
+  ([`d7022b2`](https://github.com/adriamontoto/value-object-pattern/commit/d7022b25073a8d9fd6b3ffb49cbf5890d9884dcd))
+
+- Implement number, positive number and positive or zero number value objects
+  ([`ec040db`](https://github.com/adriamontoto/value-object-pattern/commit/ec040db6a6794a8d9479621431a091cfe6e25165))
+
+
 ## v1.35.0 (2026-08-18)
 
 ### 🐛 Bug Fixes
