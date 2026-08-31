@@ -2,6 +2,27 @@
 
 <!-- version list -->
 
+## v1.37.0 (2026-08-31)
+
+### ✨ Features
+
+- Implement duration value object
+  ([`ffa52e6`](https://github.com/adriamontoto/value-object-pattern/commit/ffa52e6f82ec273f2c981af1fee2cc7966b359d1))
+
+- Implement duration value object and its variations, positive, positive or zero, negative and
+  negative or zero durations value objects
+  ([`a7c241e`](https://github.com/adriamontoto/value-object-pattern/commit/a7c241e2f48fec9c57df74e181abc869cdce4ece))
+
+- Implement media type value object
+  ([`b8b7944`](https://github.com/adriamontoto/value-object-pattern/commit/b8b79445e28cee4069e45b7145c7708fb7ba4a3e))
+
+- Implement time value object
+  ([`3487e7d`](https://github.com/adriamontoto/value-object-pattern/commit/3487e7d5e03e461b022264c8069f33c80c780b32))
+
+- Implement ulid identifier
+  ([`b891602`](https://github.com/adriamontoto/value-object-pattern/commit/b891602100d3879e6ac8ffb875aada43a87f6430))
+
+
 ## v1.36.0 (2026-08-23)
 
 ### ✨ Features
