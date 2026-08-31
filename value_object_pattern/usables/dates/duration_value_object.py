@@ -1,5 +1,5 @@
 """
-Provide a non-negative duration value object.
+Provide the unrestricted duration value object.
 """
 
 from datetime import timedelta
@@ -7,16 +7,16 @@ from typing import Any, NoReturn, Self
 
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import ValueObject
-from value_object_pattern.usables import PositiveOrZeroIntegerValueObject
+from value_object_pattern.usables import IntegerValueObject
 
 
 class DurationValueObject(ValueObject[timedelta]):
     """
-    Validate and store an exact, non-negative `datetime.timedelta` value.
+    Validate and store an exact `datetime.timedelta` value.
 
-    Zero is a valid duration. Negative timedeltas are rejected. Named constructors accept whole units and conversion
-    methods return the complete duration in the requested unit, including days instead of only the remainder exposed by
-    `timedelta.seconds`.
+    Positive, zero, and negative durations are accepted. Named constructors accept whole units, and conversion methods
+    return the complete duration in the requested unit, including days instead of only the remainder exposed by
+    `timedelta.seconds`. Use a sign-constrained subclass when the domain requires a positive or negative duration.
 
     Example:
     ```python
@@ -42,7 +42,6 @@ class DurationValueObject(ValueObject[timedelta]):
 
         Raises:
             TypeError: If `seconds` is not an integer.
-            ValueError: If `seconds` is negative.
 
         Returns:
             Self: A duration containing the requested number of seconds.
@@ -56,7 +55,7 @@ class DurationValueObject(ValueObject[timedelta]):
         # >>> datetime.timedelta(seconds=30)
         ```
         """
-        PositiveOrZeroIntegerValueObject(value=seconds, title='DurationValueObject', parameter='seconds')
+        IntegerValueObject(value=seconds, parameter='seconds')
 
         return cls(value=timedelta(seconds=seconds), title=title, parameter=parameter)
 
@@ -72,7 +71,6 @@ class DurationValueObject(ValueObject[timedelta]):
 
         Raises:
             TypeError: If `minutes` is not an integer.
-            ValueError: If `minutes` is negative.
 
         Returns:
             Self: A duration containing the requested number of minutes.
@@ -86,7 +84,7 @@ class DurationValueObject(ValueObject[timedelta]):
         # >>> datetime.timedelta(seconds=300)
         ```
         """
-        PositiveOrZeroIntegerValueObject(value=minutes, title='DurationValueObject', parameter='minutes')
+        IntegerValueObject(value=minutes, parameter='minutes')
 
         return cls(value=timedelta(minutes=minutes), title=title, parameter=parameter)
 
@@ -102,7 +100,6 @@ class DurationValueObject(ValueObject[timedelta]):
 
         Raises:
             TypeError: If `hours` is not an integer.
-            ValueError: If `hours` is negative.
 
         Returns:
             Self: A duration containing the requested number of hours.
@@ -116,7 +113,7 @@ class DurationValueObject(ValueObject[timedelta]):
         # >>> datetime.timedelta(seconds=7200)
         ```
         """
-        PositiveOrZeroIntegerValueObject(value=hours, title='DurationValueObject', parameter='hours')
+        IntegerValueObject(value=hours, parameter='hours')
 
         return cls(value=timedelta(hours=hours), title=title, parameter=parameter)
 
@@ -132,7 +129,6 @@ class DurationValueObject(ValueObject[timedelta]):
 
         Raises:
             TypeError: If `days` is not an integer.
-            ValueError: If `days` is negative.
 
         Returns:
             Self: A duration containing the requested number of days.
@@ -146,7 +142,7 @@ class DurationValueObject(ValueObject[timedelta]):
         # >>> datetime.timedelta(days=1)
         ```
         """
-        PositiveOrZeroIntegerValueObject(value=days, title='DurationValueObject', parameter='days')
+        IntegerValueObject(value=days, parameter='days')
 
         return cls(value=timedelta(days=days), title=title, parameter=parameter)
 
@@ -184,7 +180,7 @@ class DurationValueObject(ValueObject[timedelta]):
         # >>> 1.5
         ```
         """
-        return self.to_seconds() / 60
+        return self.value / timedelta(minutes=1)
 
     def to_hours(self) -> float:
         """
@@ -202,7 +198,7 @@ class DurationValueObject(ValueObject[timedelta]):
         # >>> 1.5
         ```
         """
-        return self.to_seconds() / 3_600
+        return self.value / timedelta(hours=1)
 
     def to_days(self) -> float:
         """
@@ -220,7 +216,7 @@ class DurationValueObject(ValueObject[timedelta]):
         # >>> 1.5
         ```
         """
-        return self.to_seconds() / 86_400
+        return self.value / timedelta(days=1)
 
     @validation(order=0)
     def _ensure_value_is_timedelta(self, value: timedelta) -> None:
@@ -247,29 +243,3 @@ class DurationValueObject(ValueObject[timedelta]):
             TypeError: Always raised with the invalid type.
         """
         raise TypeError(f'DurationValueObject value <<<{value}>>> must be a timedelta. Got <<<{type(value).__name__}>>> type.')  # noqa: E501  # fmt: skip
-
-    @validation(order=1)
-    def _ensure_value_is_non_negative(self, value: timedelta) -> None:
-        """
-        Ensure the duration is zero or greater.
-
-        Args:
-            value (timedelta): The duration to validate.
-
-        Raises:
-            ValueError: If the duration is negative.
-        """
-        if value < timedelta():
-            self._raise_value_is_negative(value=value)
-
-    def _raise_value_is_negative(self, value: timedelta) -> NoReturn:
-        """
-        Raise an error for a negative duration.
-
-        Args:
-            value (timedelta): The negative duration.
-
-        Raises:
-            ValueError: Always raised with the invalid value.
-        """
-        raise ValueError(f'DurationValueObject value <<<{value}>>> must be non-negative.')
