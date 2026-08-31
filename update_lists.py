@@ -2,10 +2,11 @@
 Update the lists used in the Object Mother Pattern package.
 """
 
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
-from re import DOTALL, findall
+from re import DOTALL, findall, fullmatch
 from urllib.request import urlopen
+from xml.etree import ElementTree
 
 
 def write_if_changed(path: str, lines: tuple[str, ...]) -> None:
@@ -76,6 +77,62 @@ def update_tld_domains() -> None:
     write_if_changed(path=path, lines=tld_domains)
 
 
+def update_iso4217_alpha3_codes() -> None:
+    """
+    Retrieve current ISO 4217 alphabetic codes from SIX List One and update the local catalog.
+
+    Raises:
+        RuntimeError: When the source cannot be retrieved, parsed, or validated.
+
+    References:
+        ISO 4217: https://www.iso.org/iso-4217-currency-codes.html
+        SIX List One: https://www.six-group.com/dam/download/financial-information/data-center/iso-currrency/lists/list-one.xml
+    """
+    url = 'https://www.six-group.com/dam/download/financial-information/data-center/iso-currrency/lists/list-one.xml'
+    with urlopen(url=url) as response:
+        content = response.read()
+
+    if b'<!DOCTYPE' in content.upper() or b'<!ENTITY' in content.upper():
+        raise RuntimeError('The official ISO 4217 List One catalog contains unsupported XML declarations.')
+
+    try:
+        root = ElementTree.fromstring(content)  # noqa: S314
+
+    except ElementTree.ParseError as error:
+        raise RuntimeError('Failed to parse the official ISO 4217 List One catalog.') from error
+
+    if root.tag != 'ISO_4217':
+        raise RuntimeError('The official ISO 4217 List One catalog has an unexpected root element.')
+
+    published = root.attrib.get('Pblshd')
+    if published is None or fullmatch(r'\d{4}-\d{2}-\d{2}', published) is None:
+        raise RuntimeError('The official ISO 4217 List One catalog has an invalid publication date.')
+
+    try:
+        date.fromisoformat(published)
+
+    except ValueError as error:
+        raise RuntimeError('The official ISO 4217 List One catalog has an invalid publication date.') from error
+
+    raw_codes = tuple(element.text for element in root.iter('Ccy'))
+    if not raw_codes:
+        raise RuntimeError('The official ISO 4217 List One catalog contains no currency codes.')
+
+    codes: list[str] = []
+    for raw_code in raw_codes:
+        code = raw_code.strip().upper() if raw_code is not None else ''
+        if fullmatch(r'[A-Z]{3}', code) is None:
+            raise RuntimeError('The official ISO 4217 List One catalog contains an invalid currency code.')
+
+        codes.append(code)
+
+    write_if_changed(
+        path='value_object_pattern/usables/money/utils/iso4217_alpha3_codes.txt',
+        lines=tuple(sorted(set(codes))),
+    )
+
+
 if __name__ == '__main__':
     update_aws_cloud_regions()
     update_tld_domains()
+    update_iso4217_alpha3_codes()
