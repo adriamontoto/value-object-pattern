@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.38.0 (2026-08-31)
+
+### ✨ Features
+
+- Implement currency code value object using iso4217 alpha3 codes
+  ([`ac1cabe`](https://github.com/adriamontoto/value-object-pattern/commit/ac1cabee8ddcba287634a8e741e00907044f44fa))
+
+
 ## v1.37.0 (2026-08-31)
 
 ### ✨ Features
