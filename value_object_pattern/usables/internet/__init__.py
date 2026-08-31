@@ -13,6 +13,7 @@ from .ipv6_address_value_object import Ipv6AddressValueObject
 from .ipv6_network_value_object import Ipv6NetworkValueObject
 from .keys import KebabCaseKeyValueObject, SnakeCaseKeyValueObject
 from .mac_address_value_object import MacAddressValueObject
+from .media_type_value_object import MediaTypeValueObject
 from .port_value_object import PortValueObject
 from .slug_value_object import SlugValueObject
 from .uri import HttpHttpsUrlValueObject, HttpUrlValueObject, HttpsUrlValueObject, UrlValueObject
@@ -37,6 +38,7 @@ __all__ = (
     'Ipv6NetworkValueObject',
     'KebabCaseKeyValueObject',
     'MacAddressValueObject',
+    'MediaTypeValueObject',
     'PortValueObject',
     'SlugValueObject',
     'SnakeCaseKeyValueObject',
