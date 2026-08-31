@@ -6,7 +6,7 @@ Provide a value object for HTTP media types.
 from __future__ import annotations
 
 from re import Pattern, compile as re_compile, sub as re_sub
-from typing import NoReturn
+from typing import NoReturn, cast
 
 from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
@@ -74,12 +74,13 @@ class MediaTypeValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         parameters: list[tuple[str, str, str]] = []
         parameter_names: set[str] = set()
         for parameter_match in cls._PARAMETER_REGEX.finditer(media_type_match.group('parameters')):
-            parameter_name = parameter_match.group('name').lower()
+            parameter_name = cast(str, parameter_match.group('name'))
+            serialized_value = cast(str, parameter_match.group('value'))
+            parameter_name = parameter_name.lower()
             if parameter_name in parameter_names:
                 return None
 
             parameter_names.add(parameter_name)
-            serialized_value = parameter_match.group('value')
             parameters.append(
                 (
                     parameter_name,
@@ -88,7 +89,10 @@ class MediaTypeValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
                 ),
             )
 
-        return media_type_match.group('type').lower(), media_type_match.group('subtype').lower(), tuple(parameters)
+        top_level_type = cast(str, media_type_match.group('type'))
+        subtype = cast(str, media_type_match.group('subtype'))
+
+        return top_level_type.lower(), subtype.lower(), tuple(parameters)
 
     @process(order=0)
     def _normalize_media_type(self, value: str) -> str:
@@ -101,9 +105,65 @@ class MediaTypeValueObject(NotEmptyStringValueObject, TrimmedStringValueObject):
         Returns:
             str: The normalized media type.
         """
-        media_type, subtype, parameters = self._parse_media_type(value=value)
+        parsed_media_type = self._parse_media_type(value=value)
+        if parsed_media_type is None:
+            self._raise_value_is_not_media_type(value=value)
+
+        media_type, subtype, parameters = parsed_media_type
 
         return f'{media_type}/{subtype}{"".join(f"; {name}={serialized_value}" for name, _, serialized_value in parameters)}'  # noqa: E501
+
+    def _parsed_media_type(self) -> tuple[str, str, tuple[tuple[str, str, str], ...]]:
+        """
+        Return the parsed components of the stored media type.
+
+        Returns:
+            tuple[str, str, tuple[tuple[str, str, str], ...]]: The normalized type, subtype, and parameters.
+
+        Raises:
+            ValueError: If the immutable stored value is not a valid media type.
+        """
+        parsed_media_type = self._parse_media_type(value=self.value)
+        if parsed_media_type is None:
+            self._raise_value_is_not_media_type(value=self.value)
+
+        return parsed_media_type
+
+    @property
+    def top_level_type(self) -> str:
+        """
+        Return the normalized top-level media type.
+
+        Returns:
+            str: The lowercase top-level type, such as `application` or `text`.
+        """
+        top_level_type, _, _ = self._parsed_media_type()
+
+        return top_level_type
+
+    @property
+    def subtype(self) -> str:
+        """
+        Return the normalized media-type subtype.
+
+        Returns:
+            str: The lowercase subtype, such as `json` or `vnd.example+json`.
+        """
+        _, subtype, _ = self._parsed_media_type()
+
+        return subtype
+
+    @property
+    def parameters(self) -> dict[str, str]:
+        """
+        Return the media-type parameters by name.
+
+        Returns:
+            dict[str, str]: Parameter names mapped to unquoted and unescaped semantic values.
+        """
+        _, _, parameters = self._parsed_media_type()
+
+        return {name: value for name, value, _ in parameters}
 
     @validation(order=1)
     def _ensure_value_is_media_type(self, value: str) -> None:

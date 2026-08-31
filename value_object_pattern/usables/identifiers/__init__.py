@@ -1,3 +1,4 @@
+from .ulid_value_object import UlidValueObject
 from .uuid import (
     StringUuidV1ValueObject,
     StringUuidV3ValueObject,
@@ -26,6 +27,7 @@ __all__ = (
     'StringUuidV7ValueObject',
     'StringUuidV8ValueObject',
     'StringUuidValueObject',
+    'UlidValueObject',
     'UuidV1ValueObject',
     'UuidV3ValueObject',
     'UuidV4ValueObject',
