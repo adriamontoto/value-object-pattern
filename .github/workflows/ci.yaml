@@ -370,14 +370,14 @@ jobs:
           persist-credentials: false
 
       - name: ▶️ CodeQL Initialization
-        uses: github/codeql-action/init@9e907b5e64f6b83e7804b09294d44122997950d6 # v3.29.5
+        uses: github/codeql-action/init@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v3.29.5
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
           queries: +security-extended,security-and-quality
 
       - name: 🔬 CodeQL Analysis
-        uses: github/codeql-action/analyze@9e907b5e64f6b83e7804b09294d44122997950d6 # v3.29.5
+        uses: github/codeql-action/analyze@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v3.29.5
         with:
           category: '/language:${{ matrix.language }}'
 
@@ -483,7 +483,7 @@ jobs:
           egress-policy: audit
 
       - name: ✅ All workflows passed
-        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+        uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # v1.3.0
         with:
           jobs: ${{ toJSON(needs) }}
 
@@ -519,7 +519,7 @@ jobs:
 
       - name: 🔖 Semantic Release
         id: released
-        uses: python-semantic-release/python-semantic-release@39dd2052f2ce8282a5d932c31d58a2ca06d2550e # v10.6.1
+        uses: python-semantic-release/python-semantic-release@9a026e9303981c866c3425723009becb2437c757 # v10.6.2
         with:
           build: false
           push: true
