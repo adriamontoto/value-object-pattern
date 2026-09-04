@@ -145,8 +145,6 @@ class HttpStatusCodeValueObject(IntegerValueObject):
 
         print(HttpStatusCodeValueObject.NOT_FOUND().reason_phrase)
         # >>> Not Found
-        print(HttpStatusCodeValueObject(value=599).reason_phrase)
-        # >>> None
         ```
         """
         return self._REASON_PHRASES.get(self.value)

@@ -1,3 +1,4 @@
+from .bcp47_language_tag_value_object import Bcp47LanguageTagValueObject
 from .country_tld_value_object import CountryTldValueObject
 from .iso3166_alpha2_code_value_object import Iso3166Alpha2CodeValueObject
 from .iso3166_alpha3_code_value_object import Iso3166Alpha3CodeValueObject
@@ -6,6 +7,7 @@ from .phone_code_value_object import PhoneCodeValueObject
 from .vin_value_object import VinValueObject
 
 __all__ = (
+    'Bcp47LanguageTagValueObject',
     'CountryTldValueObject',
     'Iso3166Alpha2CodeValueObject',
     'Iso3166Alpha3CodeValueObject',
