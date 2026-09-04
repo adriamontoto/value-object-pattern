@@ -13,27 +13,33 @@ For deeper category references, use:
 
 ## Core Models
 
-| Model | Purpose |
-| --- | --- |
-| `ValueObject[T]` | Immutable validated wrapper for one value. |
-| `SecretValueObject` | Order-independent display-redaction marker composed with any value-object type. |
-| `EnumerationValueObject[E]` | Enum-backed value object accepting enum members or raw enum values. |
-| `UnionValueObject[T]` | Value object constrained by a union annotation; supports named subclasses and inline construction. |
-| `BaseModel` | Aggregate-like model with primitive conversion and public-state representation. |
-| `ListValueObject[T]` | Typed immutable list wrapper; supports named subclasses and inline construction. |
-| `DictValueObject[K, V]` | Typed immutable dictionary wrapper; supports named subclasses and inline construction. |
+| Model                       | Purpose                                                                                            |
+| --------------------------- | -------------------------------------------------------------------------------------------------- |
+| `ValueObject[T]`            | Immutable validated wrapper for one value.                                                         |
+| `SecretValueObject`         | Order-independent display-redaction marker composed with any value-object type.                    |
+| `EnumerationValueObject[E]` | Enum-backed value object accepting enum members or raw enum values.                                |
+| `UnionValueObject[T]`       | Value object constrained by a union annotation; supports named subclasses and inline construction. |
+| `BaseModel`                 | Aggregate-like model with primitive conversion and public-state representation.                    |
+| `ListValueObject[T]`        | Typed immutable list wrapper; supports named subclasses and inline construction.                   |
+| `DictValueObject[K, V]`     | Typed immutable dictionary wrapper; supports named subclasses and inline construction.             |
+| `SequenceValueObject[T]`    | Typed non-scalar sequence normalized to an immutable tuple.                                        |
+| `TupleValueObject[T]`       | Typed exact-tuple wrapper.                                                                         |
+| `MappingValueObject[K, V]`  | Typed mapping snapshot exposed through a read-only mapping.                                        |
+| `SetValueObject[T]`         | Typed defensive set wrapper with persistent updates and set algebra.                               |
+| `FrozenSetValueObject[T]`   | Typed immutable frozen-set wrapper with persistent updates and set algebra.                        |
 
 ## Primitive Value Objects
 
-| Area | Examples |
-| --- | --- |
-| Strings | `StringValueObject`, `NotEmptyStringValueObject`, `TrimmedStringValueObject` |
-| String formats | lower/upper case, snake case, kebab case, camel case, pascal case, alpha, alphanumeric, digit |
+| Area            | Examples                                                                                                       |
+| --------------- | -------------------------------------------------------------------------------------------------------------- |
+| Strings         | `StringValueObject`, `NotEmptyStringValueObject`, `TrimmedStringValueObject`                                   |
+| String formats  | lower/upper case, snake case, kebab case, camel case, pascal case, alpha, alphanumeric, digit                  |
 | Encoded strings | hexadecimal/Base16, canonical Base32, uppercase Base36, ambiguity-free Base56, Bitcoin Base58, standard Base64 |
-| Integers | integer, positive, positive-or-zero, negative, negative-or-zero, even, odd |
-| Floats | float, positive, positive-or-zero, negative, negative-or-zero |
-| Booleans | boolean, true, false |
-| Bytes and none | bytes, none, not-none |
+| Integers        | integer, positive, positive-or-zero, negative, negative-or-zero, even, odd                                     |
+| Floats          | float, positive, positive-or-zero, negative, negative-or-zero                                                  |
+| Numbers         | finite integer-or-float input normalized to float, with positive and non-negative variants                    |
+| Booleans        | boolean, true, false                                                                                           |
+| Bytes and none  | bytes, none, not-none                                                                                          |
 
 Import examples:
 
@@ -60,15 +66,22 @@ Reusable date/time validators include:
 
 - `DateValueObject`
 - `DatetimeValueObject`
+- `DurationValueObject`
+- `NegativeDurationValueObject`
+- `NegativeOrZeroDurationValueObject`
+- `PositiveDurationValueObject`
+- `PositiveOrZeroDurationValueObject`
 - `StringDateValueObject`
 - `StringDatetimeValueObject`
+- `StringTimeValueObject`
+- `TimeValueObject`
 - `TimezoneValueObject`
 - `StringTimezoneValueObject`
 
 Import examples:
 
 ```python
-from value_object_pattern.usables.dates import DateValueObject, StringTimezoneValueObject
+from value_object_pattern.usables.dates import DateValueObject, PositiveDurationValueObject, StringTimezoneValueObject
 ```
 
 See [Date And Time Value Objects](dates/README.md) for conversion and comparison notes.
@@ -78,14 +91,16 @@ See [Date And Time Value Objects](dates/README.md) for conversion and comparison
 Identifier validators cover:
 
 - UUID objects and UUID strings for supported UUID versions.
-- World identifiers such as ISO 3166 alpha-2, alpha-3, numeric codes, phone codes, country TLDs, and VIN values.
+- Canonical ULID strings.
+- BCP 47 language tags and world identifiers such as ISO 3166 codes, phone codes, country TLDs, and VIN values.
 - Spanish identifiers such as DNI, NIE, NIF, NUSS, passport, phone numbers, and vehicle plates.
 
 Import examples:
 
 ```python
 from value_object_pattern.usables.identifiers.uuid import StringUuidV4ValueObject, UuidV4ValueObject
-from value_object_pattern.usables.identifiers.world import Iso3166Alpha2CodeValueObject
+from value_object_pattern.usables.identifiers import UlidValueObject
+from value_object_pattern.usables.identifiers.world import Bcp47LanguageTagValueObject
 ```
 
 See [Identifier Value Objects](identifiers/README.md) for UUID, world, Spanish, and vehicle-plate validators.
@@ -94,18 +109,26 @@ See [Identifier Value Objects](identifiers/README.md) for UUID, world, Spanish, 
 
 Internet validators cover:
 
-| Area | Examples |
-| --- | --- |
-| URLs and hosts | `UrlValueObject`, `HttpUrlValueObject`, `HttpsUrlValueObject`, `HostValueObject`, `DomainOrLocalhostValueObject`, `DomainValueObject` |
-| Addresses and networks | IPv4, IPv6, IP address, IPv4 network, IPv6 network |
-| Network metadata | MAC address formats, ports, AWS cloud regions, user agents |
-| Keys and slugs | snake-case keys, kebab-case keys, slugs |
-| Contact-like values | email addresses, IMEI values |
+| Area                   | Examples                                                                                                                              |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| URLs and hosts         | `UrlValueObject`, `HttpUrlValueObject`, `HttpsUrlValueObject`, `HostValueObject`, `DomainOrLocalhostValueObject`, `DomainValueObject` |
+| Addresses and networks | IPv4, IPv6, IP address, IP network, IPv4 network, IPv6 network                                                                        |
+| HTTP protocol values   | methods, status codes with reason phrases, and parameterized media types                                                              |
+| Network metadata       | MAC address formats, ports, AWS cloud regions, user agents                                                                            |
+| Keys and slugs         | snake-case keys, kebab-case keys, slugs                                                                                               |
+| Contact-like values    | email addresses, IMEI values                                                                                                          |
 
 Import examples:
 
 ```python
-from value_object_pattern.usables.internet import DomainOrLocalhostValueObject, DomainValueObject, EmailAddressValueObject
+from value_object_pattern.usables.internet import (
+    DomainOrLocalhostValueObject,
+    EmailAddressValueObject,
+    HttpMethodValueObject,
+    HttpStatusCodeValueObject,
+    IpAddressValueObject,
+    MediaTypeValueObject,
+)
 from value_object_pattern.usables.internet.uri import UrlValueObject
 ```
 
@@ -115,6 +138,7 @@ See [Internet Value Objects](internet/README.md) for URL, host, address, key, an
 
 Money validators include:
 
+- `CurrencyCodeValueObject`
 - `IbanValueObject`
 - `CreditCardValueObject`
 - Brand-specific credit card value objects for supported brands.
@@ -122,10 +146,10 @@ Money validators include:
 Import examples:
 
 ```python
-from value_object_pattern.usables.money import CreditCardValueObject, IbanValueObject
+from value_object_pattern.usables.money import CurrencyCodeValueObject, IbanValueObject
 ```
 
-See [Money Value Objects](money/README.md) for IBAN and credit-card validation notes.
+See [Money Value Objects](money/README.md) for currency-code, IBAN, and credit-card validation notes.
 
 ## Catalog Checklist
 

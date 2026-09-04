@@ -13,7 +13,10 @@ Key paths:
 - `value_object_pattern/__init__.py` and package `__init__.py` files: public exports.
 - `value_object_pattern/py.typed`: marker that advertises package typing.
 - `tests/`: pytest suite organized to mirror `value_object_pattern/`.
+- `docs/`: user guides and the reusable value-object catalogs.
+- `skills/value-object-pattern/`: installable Agent Skill that mirrors the public API and usage guidance.
 - `pyproject.toml`: package metadata and tool configuration.
+- `uv.lock`: committed dependency resolution used by frozen installs.
 - `Makefile`: canonical local workflow.
 
 This is a single-package Python project, not a monorepo. It supports Python `>=3.11` and CI tests the configured Python versions.
@@ -56,7 +59,7 @@ There is no database or application server to start.
 - Add or update tests for behavior changes.
 - For public API changes, update exports in `value_object_pattern/__init__.py` or package `__init__.py` files as needed.
 - Keep `value_object_pattern/py.typed` present so package typing remains advertised.
-- This repository currently has no lockfile; avoid introducing dependency lockfile churn unless the task is explicitly about dependency management.
+- Keep `pyproject.toml` and the committed `uv.lock` aligned when dependencies change. Make installs use `--frozen`, so avoid unrelated lockfile churn.
 
 Use this local verification loop for code changes:
 
@@ -105,12 +108,14 @@ Coverage is configured in `pyproject.toml` with branch coverage enabled for `val
 The canonical style is defined in `pyproject.toml`.
 
 - Format with Ruff: `make format`
-- Lint and type-check with Ruff and mypy: `make lint`
+- Lint and type-check with Ruff and ty: `make lint`
 - Ruff line length is `120`.
 - Ruff format uses single quotes and spaces for indentation.
-- Mypy runs in strict mode.
+- Ty runs with the project rules configured in `pyproject.toml`.
 - Imports are sorted by Ruff/isort with `value_object_pattern` as first-party.
 - Public modules and classes use docstrings following the existing PEP 257 style.
+- Always use multiline docstrings with the opening and closing triple quotes on separate lines; do not use one-line
+  docstrings, including in tests.
 - Keep runtime code compatible with Python `>=3.11`.
 - When using `typing.override`, preserve the existing compatibility pattern that imports from `typing` on Python 3.12+ and from `typing_extensions` otherwise.
 
@@ -118,11 +123,17 @@ Architecture conventions:
 
 - New value objects should follow the existing value-object model style and validation flow.
 - `create()` and validators should preserve existing explicit-value behavior where nearby code does so.
-- `UnionValueObject[T]`, `ListValueObject[T]`, and `DictValueObject[K, V]` support both named subclasses and inline
-  construction as `UnionValueObject[T](...)`, `ListValueObject[T](...)`, and `DictValueObject[K, V](...)`.
+- `UnionValueObject[T]` and every public typed collection support both named subclasses and inline construction.
+- `ListValueObject` and `DictValueObject` require exact `list` and `dict` inputs. `TupleValueObject`, `SetValueObject`,
+  and `FrozenSetValueObject` also require their exact outer types. `SequenceValueObject` accepts non-text sequences and
+  normalizes them to tuples; `MappingValueObject` accepts mappings and exposes a read-only snapshot.
+- Collection constructors and persistent update helpers accept primitive or already-converted items. Preserve the
+  shallow defensive-copy boundaries and overridable `_raise_*` hooks when changing collection behavior.
 - Put reusable validation logic under the closest existing validators module.
 - Add public exports only when the value object is intended for package users.
 - Keep static data files under the relevant `utils/` package.
+- Keep the root README concise, put complete user-facing inventories in `docs/catalog/`, and keep usage/conversion
+  behavior in their dedicated guides.
 - When public APIs, import paths, reusable value-object behavior, catalog entries, examples, or documented package-version
   facts change, update the installable Agent Skill under `skills/value-object-pattern/` in the same change.
 

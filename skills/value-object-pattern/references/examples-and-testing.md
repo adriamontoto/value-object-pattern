@@ -13,7 +13,7 @@ class ProductSku(NotEmptyStringValueObject, TrimmedStringValueObject):
     @validation(order=0)
     def _ensure_value_has_sku_prefix(self, value: str) -> None:
         if not value.startswith('sku-'):
-            raise ValueError('ProductSku value must start with "sku-".')
+            raise ValueError('ProductSku value must start with 'sku-'.')
 ```
 
 Use multiple inheritance with reusable bases when each base contributes a reusable validation rule. Add a custom
@@ -38,6 +38,32 @@ class NormalizedEmail(StringValueObject):
 
 Use `@process` only for deterministic transformations. Do not use it for remote lookups, random values, current time, or
 stateful operations.
+
+## Media Type Defaults
+
+Use `MediaTypeValueObject` for validated HTTP media types. Its named constructors cover common JSON, text, form,
+multipart, document, archive, image, audio, and video types:
+
+```python
+from value_object_pattern.usables.internet import MediaTypeValueObject
+
+
+json_type = MediaTypeValueObject.JSON()
+plain_text = MediaTypeValueObject.TEXT_PLAIN()
+upload = MediaTypeValueObject.MULTIPART_FORM_DATA()
+
+assert json_type.value == 'application/json'
+assert plain_text.value == 'text/plain'
+assert upload.value == 'multipart/form-data'
+```
+
+Use direct construction for a valid type that does not have a named default, including parameters:
+
+```python
+utf8_html = MediaTypeValueObject(value='text/html; charset='UTF-8'')
+
+assert utf8_html.parameters == {'charset': 'UTF-8'}
+```
 
 ## Aggregate Example
 
@@ -76,6 +102,56 @@ Outbound boundary:
 ```python
 payload = registration.to_primitives()
 ```
+
+## Collection Example
+
+Use concrete collection wrappers when the outer collection type matters, and protocol wrappers when broader inputs are
+valid. Constructors and update helpers accept primitive items, already-created typed items, or a mixture of both:
+
+```python
+from value_object_pattern.models.collections import (
+    DictValueObject,
+    FrozenSetValueObject,
+    ListValueObject,
+    MappingValueObject,
+    SequenceValueObject,
+    SetValueObject,
+    TupleValueObject,
+)
+from value_object_pattern.usables import PositiveIntegerValueObject
+
+
+class Quantities(ListValueObject[int]):
+    pass
+
+
+class StockBySku(DictValueObject[str, int]):
+    pass
+
+
+three = PositiveIntegerValueObject(value=3)
+converted = ListValueObject[PositiveIntegerValueObject](value=[1, 2, three])
+quantities = Quantities(value=[1, 2]).add(item=3)
+stock = StockBySku(value={'sku-1': 10}).set(key='sku-2', value=5)
+sequence = SequenceValueObject[int](value=range(3))
+tuple_value = TupleValueObject[int](value=(1, 2))
+mapping = MappingValueObject[str, int](value={'sku-1': 10})
+tags = SetValueObject[str](value={'python'}).add(item='typing')
+frozen_tags = FrozenSetValueObject[str](value=frozenset({'python'})).add(item='typing')
+
+assert quantities.to_primitives() == [1, 2, 3]
+assert converted.to_primitives() == [1, 2, 3]
+assert stock.to_primitives() == {'sku-1': 10, 'sku-2': 5}
+assert sequence.value == (0, 1, 2)
+assert tuple_value.value == (1, 2)
+assert dict(mapping.value) == {'sku-1': 10}
+assert tags.value == {'python', 'typing'}
+assert frozen_tags.value == frozenset({'python', 'typing'})
+```
+
+`SequenceValueObject` rejects text and binary scalar sequences, while `TupleValueObject` accepts only tuples.
+`MappingValueObject` returns a read-only snapshot. Collection update helpers return new instances and do not mutate the
+original collection value object.
 
 ## Pytest Patterns
 
@@ -132,7 +208,8 @@ def test_user_registration_from_primitives_builds_value_objects() -> None:
 - `BaseModel.from_primitives()` and `to_primitives()` are tested at API/persistence boundaries.
 - Collections are tested for helper return values and non-mutation of the original instance.
 - Date/datetime helpers receive explicit reference values.
-- `SecretValueObject` composition is tested in both inheritance orders across representative scalar and collection value objects. Display redaction is asserted separately from stored `.value` and raw primitive conversion.
+- `SecretValueObject` composition is tested in both inheritance orders across representative scalar and collection
+  value objects. Display redaction is asserted separately from stored `.value` and raw primitive conversion.
 
 ## Review Prompts For Agents
 

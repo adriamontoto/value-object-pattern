@@ -22,7 +22,9 @@ user = User(name=NotEmptyStringValueObject(value='Ada'))
 assert user.to_primitives() == {'name': 'Ada'}
 ```
 
-Value objects convert through their stored value. A value object composed with `SecretValueObject` redacts `str()` and `repr()` without changing primitive conversion.
+When nested in a model or typed collection, value objects convert through their stored value and enums convert through
+their member value. A value object composed with `SecretValueObject` redacts `str()` and `repr()` without changing
+primitive conversion.
 
 ## From Primitives
 
@@ -47,11 +49,33 @@ assert isinstance(user.age, PositiveIntegerValueObject)
 
 ## Collections
 
-Typed collections can convert primitive items into item value objects. Use a named subclass when the collection has
-domain meaning, or construct an inline list or dictionary for local typed-collection validation:
+Typed collection constructors accept primitive items, already-created typed items, or a mixture of both. Use a named
+subclass when the collection has domain meaning, or construct an inline collection for local typed-collection
+validation. `from_primitives()` remains available when an explicit boundary-conversion name is clearer:
+
+Collection updates are immutable: list positional helpers return new instances, and dictionary `merge()` converts and
+combines multiple typed or primitive entries into a new instance.
+
+| Class                      | Accepted outer input                | `to_primitives()` outer type |
+| -------------------------- | ----------------------------------- | ---------------------------- |
+| `ListValueObject[T]`       | `list`                              | `list`                       |
+| `DictValueObject[K, V]`    | `dict`                              | `dict`                       |
+| `SequenceValueObject[T]`   | Non-text sequence                   | `tuple`                      |
+| `TupleValueObject[T]`      | `tuple`                             | `tuple`                      |
+| `MappingValueObject[K, V]` | Mapping                             | `dict`                       |
+| `SetValueObject[T]`        | `set`                               | `set`                        |
+| `FrozenSetValueObject[T]`  | `frozenset`                         | `frozenset`                  |
 
 ```python
-from value_object_pattern.models.collections import DictValueObject, ListValueObject
+from value_object_pattern.models.collections import (
+    DictValueObject,
+    FrozenSetValueObject,
+    ListValueObject,
+    MappingValueObject,
+    SequenceValueObject,
+    SetValueObject,
+    TupleValueObject,
+)
 from value_object_pattern.usables import PositiveIntegerValueObject
 
 
@@ -59,14 +83,29 @@ class Quantities(ListValueObject[PositiveIntegerValueObject]):
     pass
 
 
-values = Quantities(value=[]).extend_from_primitives(items=[1, 2, 3])
-inline_values = ListValueObject[PositiveIntegerValueObject].from_primitives(value=[1, 2, 3])
-inline_stock = DictValueObject[str, PositiveIntegerValueObject].from_primitives(value={'sku-1': 10})
+three = PositiveIntegerValueObject(value=3)
+values = Quantities(value=[1, 2, three]).add(item=4)
+inline_values = ListValueObject[PositiveIntegerValueObject](value=[1, 2, three])
+inline_stock = DictValueObject[str, PositiveIntegerValueObject](value={'sku-1': 10})
+sequence = SequenceValueObject[PositiveIntegerValueObject](value=[1, 2])
+tuple_value = TupleValueObject[PositiveIntegerValueObject](value=(1, 2))
+mapping = MappingValueObject[str, PositiveIntegerValueObject](value={'sku-1': 10})
+set_value = SetValueObject[PositiveIntegerValueObject](value={1, 2})
+frozen = FrozenSetValueObject[PositiveIntegerValueObject](value=frozenset({1, 2}))
 
-assert values.to_primitives() == [1, 2, 3]
+assert values.to_primitives() == [1, 2, 3, 4]
 assert inline_values.to_primitives() == [1, 2, 3]
 assert inline_stock.to_primitives() == {'sku-1': 10}
+assert sequence.to_primitives() == (1, 2)
+assert tuple_value.to_primitives() == (1, 2)
+assert mapping.to_primitives() == {'sku-1': 10}
+assert set_value.to_primitives() == {1, 2}
+assert frozen.to_primitives() == frozenset({1, 2})
 ```
+
+Mapping and sequence protocol wrappers snapshot their inputs. Concrete list, dictionary, tuple, set, and frozen-set
+wrappers require the matching outer type. All update helpers return a new wrapper, and set operators preserve the
+wrapper class.
 
 ## Unions
 

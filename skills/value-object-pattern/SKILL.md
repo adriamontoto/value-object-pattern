@@ -1,11 +1,12 @@
 ---
 name: value-object-pattern
-description: Use this skill when working in Python projects that use or should use the value-object-pattern package. Use it for domain primitives, value objects, validation wrappers, DDD-style typed values, reusable validators, primitive conversion, BaseModel aggregates, ListValueObject, DictValueObject, EnumerationValueObject, UnionValueObject, or when replacing scattered validation with named immutable objects, even if the user only says "make this field validated" or "avoid primitive obsession."
+description: Use this skill when working in Python projects that use or should use the value-object-pattern package. Use it for domain primitives, value objects, validation wrappers, DDD-style typed values, reusable validators, primitive conversion, BaseModel aggregates, typed collections, dates, times, durations, UUIDs, ULIDs, language tags, internet and HTTP values, currency codes, EnumerationValueObject, UnionValueObject, or when replacing scattered validation with named immutable objects, even if the user only says "make this field validated" or "avoid primitive obsession."
 license: MIT
-compatibility: Designed for Agent Skills-compatible coding agents. Python project guidance is authored from value-object-pattern 1.31.0 and Python 3.11+; verify the consuming project's pinned package version before relying on newer APIs.
+compatibility: Designed for Agent Skills-compatible coding agents and Python 3.11+. Guidance follows the current repository working tree, whose package metadata is 1.37.0; verify the consuming project's pinned version because post-release APIs may not be available there.
 metadata:
   package: value-object-pattern
-  package-version: '1.31.0'
+  package-version: '1.37.0'
+  source-state: working-tree
   source: https://github.com/adriamontoto/value-object-pattern
 ---
 
@@ -19,6 +20,8 @@ immutable, self-validating value objects and reusable validation primitives.
 1. Inspect the consuming project before editing:
    - Check dependency files for `value-object-pattern` and its pinned version.
    - Check existing domain model, validation, and test conventions.
+   - Treat the installed version as authoritative; this skill follows the repository working tree and may describe APIs
+     newer than the consuming project's release.
    - If the package is absent and the task requires it, propose adding `value-object-pattern` instead of inventing a
      local framework.
 2. Decide whether a value object is warranted:
@@ -36,7 +39,7 @@ immutable, self-validating value objects and reusable validation primitives.
 - Read [references/core-api.md](references/core-api.md) when creating custom value objects, enum-backed values, unions,
   or ordered validation/processing hooks.
 - Read [references/conversion-and-modeling.md](references/conversion-and-modeling.md) when modeling aggregates,
-  serializing/deserializing, using `BaseModel`, or working with typed list/dict value objects.
+  serializing/deserializing, using `BaseModel`, or working with typed collection value objects.
 - Read [references/reusable-catalog.md](references/reusable-catalog.md) when choosing built-in validators or imports.
 - Read [references/examples-and-testing.md](references/examples-and-testing.md) when writing examples, tests, or review
   guidance.
@@ -82,7 +85,9 @@ class TenantName(NotEmptyStringValueObject, TrimmedStringValueObject):
 - Hook order is explicit when order matters.
 - Tests assert `.value`, normalization, expected failures, and boundary conversion.
 - `BaseModel.from_primitives()` is backed by constructor annotations.
-- `SecretValueObject` is a non-generic, composition-only display marker that works with every value-object type in either inheritance order. It is not encryption or secure storage; primitive conversion still exposes the raw stored value.
+- `SecretValueObject` is a non-generic, composition-only display marker that works with every value-object type in
+  either inheritance order. It is not encryption or secure storage; primitive conversion still exposes the raw stored
+  value.
 - Public API imports are stable for the consuming project; if in doubt, use documented package paths.
 
 ## Common Mistakes
@@ -97,4 +102,4 @@ class TenantName(NotEmptyStringValueObject, TrimmedStringValueObject):
 
 Follow the repository `AGENTS.md`: inspect before modifying, preserve local style, update nearby tests and exports, and
 run the relevant Make targets. If public value-object APIs, reusable catalog entries, primitive conversion behavior, or
-documented package-version facts change, update this skill and regenerate the `.skill` package.
+documented package-version facts change, update this skill and its routed references in the same change.

@@ -5,15 +5,31 @@ Use this file when creating or reviewing custom value objects.
 ## Imports
 
 ```python
-from value_object_pattern import BaseModel, EnumerationValueObject, UnionValueObject, ValueObject, process, validation
-from value_object_pattern.models.collections import DictValueObject, ListValueObject
+from value_object_pattern import (
+    BaseModel,
+    EnumerationValueObject,
+    SecretValueObject,
+    UnionValueObject,
+    ValueObject,
+    process,
+    validation,
+)
+from value_object_pattern.models.collections import (
+    DictValueObject,
+    FrozenSetValueObject,
+    ListValueObject,
+    MappingValueObject,
+    SequenceValueObject,
+    SetValueObject,
+    TupleValueObject,
+)
 ```
 
 ## ValueObject
 
 `ValueObject[T]` is the base immutable wrapper for exactly one value.
 
-Observed behavior in `value_object_pattern` 1.31.0:
+Observed behavior in the current `value_object_pattern` repository:
 
 - Construct with keyword arguments: `MyValue(value=raw)`.
 - Optional constructor metadata: `title` and `parameter` customize validation error context.
@@ -81,6 +97,20 @@ class LowerTrimmedName(StringValueObject):
 Processing normally runs after validation. If a validator uses `early_process=True`, processing is run before that
 validator and the processed value is cached for storage.
 
+Validation and processing hooks are discovered once per concrete class and cached by default. If a class adds,
+removes, or replaces decorated hooks at runtime, disable that optimization for the class so each construction
+rediscovers its hooks:
+
+```python
+from value_object_pattern import ValueObject
+
+
+class DynamicValueObject(ValueObject[str]):
+    _cache_decorated_methods = False
+```
+
+Prefer the default cache for classes whose hook definitions are static.
+
 ## Choosing A Base Class
 
 - Use `ValueObject[T]` for a new primitive or object-backed domain concept.
@@ -89,9 +119,9 @@ validator and the processed value is cached for storage.
 - Use `EnumerationValueObject[E]` for enum-backed values that should accept enum members or raw enum values.
 - Use `UnionValueObject[T]` when the stored value may be one of several annotated types and conversion should try the
   union candidates in order.
-- Use `ListValueObject[T]` or `DictValueObject[K, V]` when the collection itself has domain meaning. Both also support
-  inline construction as `ListValueObject[T](...)` and `DictValueObject[K, V](...)` for local typed collection
-  validation.
+- Use the typed collection value objects when the collection itself has domain meaning. Concrete list, dictionary,
+  tuple, set, and frozen-set wrappers enforce exact outer types; sequence and mapping wrappers accept their broader
+  standard-library protocols. Every collection class supports named subclasses and inline construction.
 - Use `BaseModel` for aggregate-like models with multiple attributes and primitive conversion.
 
 ## EnumerationValueObject
@@ -146,7 +176,10 @@ error.
 
 ## Display Overrides
 
-Override `_value_for_display()` when a regular value object's `str()` and `repr()` should differ from its stored value. For secret display redaction, compose the non-generic `SecretValueObject` marker with any typed value object. The marker takes precedence over normal display hooks, works in either inheritance order, and preserves raw primitive conversion. Redaction is not encryption.
+Override `_value_for_display()` when a regular value object's `str()` and `repr()` should differ from its stored value.
+For secret display redaction, compose the non-generic `SecretValueObject` marker with any typed value object. The marker
+takes precedence over normal display hooks, works in either inheritance order, and preserves raw primitive conversion.
+Redaction is not encryption.
 
 ```python
 from value_object_pattern import SecretValueObject

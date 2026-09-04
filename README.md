@@ -18,9 +18,6 @@
     <a href="https://pepy.tech/projects/value-object-pattern" target="_blank">
         <img src="https://static.pepy.tech/badge/value-object-pattern/month" alt="Package Downloads">
     </a>
-    <a href="https://deepwiki.com/adriamontoto/value-object-pattern" target="_blank">
-        <img src="https://img.shields.io/badge/DeepWiki-adriamontoto%2Fvalue--object--pattern-blue.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAyCAYAAAAnWDnqAAAAAXNSR0IArs4c6QAAA05JREFUaEPtmUtyEzEQhtWTQyQLHNak2AB7ZnyXZMEjXMGeK/AIi+QuHrMnbChYY7MIh8g01fJoopFb0uhhEqqcbWTp06/uv1saEDv4O3n3dV60RfP947Mm9/SQc0ICFQgzfc4CYZoTPAswgSJCCUJUnAAoRHOAUOcATwbmVLWdGoH//PB8mnKqScAhsD0kYP3j/Yt5LPQe2KvcXmGvRHcDnpxfL2zOYJ1mFwrryWTz0advv1Ut4CJgf5uhDuDj5eUcAUoahrdY/56ebRWeraTjMt/00Sh3UDtjgHtQNHwcRGOC98BJEAEymycmYcWwOprTgcB6VZ5JK5TAJ+fXGLBm3FDAmn6oPPjR4rKCAoJCal2eAiQp2x0vxTPB3ALO2CRkwmDy5WohzBDwSEFKRwPbknEggCPB/imwrycgxX2NzoMCHhPkDwqYMr9tRcP5qNrMZHkVnOjRMWwLCcr8ohBVb1OMjxLwGCvjTikrsBOiA6fNyCrm8V1rP93iVPpwaE+gO0SsWmPiXB+jikdf6SizrT5qKasx5j8ABbHpFTx+vFXp9EnYQmLx02h1QTTrl6eDqxLnGjporxl3NL3agEvXdT0WmEost648sQOYAeJS9Q7bfUVoMGnjo4AZdUMQku50McDcMWcBPvr0SzbTAFDfvJqwLzgxwATnCgnp4wDl6Aa+Ax283gghmj+vj7feE2KBBRMW3FzOpLOADl0Isb5587h/U4gGvkt5v60Z1VLG8BhYjbzRwyQZemwAd6cCR5/XFWLYZRIMpX39AR0tjaGGiGzLVyhse5C9RKC6ai42ppWPKiBagOvaYk8lO7DajerabOZP46Lby5wKjw1HCRx7p9sVMOWGzb/vA1hwiWc6jm3MvQDTogQkiqIhJV0nBQBTU+3okKCFDy9WwferkHjtxib7t3xIUQtHxnIwtx4mpg26/HfwVNVDb4oI9RHmx5WGelRVlrtiw43zboCLaxv46AZeB3IlTkwouebTr1y2NjSpHz68WNFjHvupy3q8TFn3Hos2IAk4Ju5dCo8B3wP7VPr/FGaKiG+T+v+TQqIrOqMTL1VdWV1DdmcbO8KXBz6esmYWYKPwDL5b5FA1a0hwapHiom0r/cKaoqr+27/XcrS5UwSMbQAAAABJRU5ErkJggg==" alt="Project Documentation">
-    </a>
 </p>
 
 The **Value Object Pattern** is a Python 🐍 package for building immutable, self-validating value objects 📦. It helps
@@ -81,10 +78,8 @@ The root README is the entry point. Deeper guides live in this repository and ar
   [`identifiers`](docs/catalog/identifiers/README.md), [`internet`](docs/catalog/internet/README.md), and
   [`money`](docs/catalog/money/README.md).
 - [`docs/conversion/README.md`](docs/conversion/README.md): Primitive conversion and nested model behavior.
-- [`AI Skill`](skills/README.md): Installable skill package that teaches AI agents how to use Value Object Pattern.
-
-This [project's DeepWiki documentation](https://deepwiki.com/adriamontoto/value-object-pattern) is also available for
-generated repository navigation.
+- [`AI Skill`](skills/value-object-pattern/SKILL.md): Installable skill package that teaches AI agents how to use Value
+  Object Pattern.
 
 <p align="right">
     <a href="#readme-top">🔼 Back to top</a>
@@ -233,15 +228,20 @@ low-level operations, and boundary examples.
 
 ## 📦 Core Models
 
-| Model | Purpose |
-| --- | --- |
-| `ValueObject[T]` | Base class for immutable validated single-value wrappers. |
-| `SecretValueObject` | Composition marker that redacts any value object's display in either inheritance order. |
-| `EnumerationValueObject[E]` | Stores enum members while accepting enum members or raw enum values. |
-| `UnionValueObject[T]` | Accepts and converts values that match a union annotation; supports subclass and inline construction. |
-| `BaseModel` | Adds representation, equality, copying, and primitive conversion for aggregate-like models. |
-| `ListValueObject[T]` | Immutable typed list wrapper; supports subclass and inline construction. |
-| `DictValueObject[K, V]` | Immutable typed dictionary wrapper; supports subclass and inline construction. |
+| Model                       | Purpose                                                                                               |
+| --------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `ValueObject[T]`            | Base class for immutable validated single-value wrappers.                                             |
+| `SecretValueObject`         | Composition marker that redacts any value object's display in either inheritance order.               |
+| `EnumerationValueObject[E]` | Stores enum members while accepting enum members or raw enum values.                                  |
+| `UnionValueObject[T]`       | Accepts and converts values that match a union annotation; supports subclass and inline construction. |
+| `BaseModel`                 | Adds representation, equality, copying, and primitive conversion for aggregate-like models.           |
+| `ListValueObject[T]`        | Immutable typed list wrapper; supports subclass and inline construction.                              |
+| `DictValueObject[K, V]`     | Immutable typed dictionary wrapper; supports subclass and inline construction.                        |
+| `SequenceValueObject[T]`    | Accepts non-scalar sequences and normalizes them to immutable tuples.                                 |
+| `TupleValueObject[T]`       | Strict homogeneous tuple wrapper.                                                                     |
+| `MappingValueObject[K, V]`  | Snapshots any mapping and exposes it read-only.                                                       |
+| `SetValueObject[T]`         | Defensive typed set wrapper with immutable updates and set algebra.                                   |
+| `FrozenSetValueObject[T]`   | Typed frozen-set wrapper with immutable updates and set algebra.                                      |
 
 See [`docs/usage/README.md`](docs/usage/README.md) for examples of each model.
 
@@ -281,15 +281,15 @@ Display redaction is not encryption: `.value` and primitive conversion still exp
 
 The package includes reusable validators for common shapes:
 
-| Category | Examples |
-| --- | --- |
-| Primitives | strings, bytes, booleans, integers, floats, `None` / not-`None` |
-| String formats | non-empty, trimmed, alpha, alphanumeric, lower/upper case, snake case, kebab case |
-| Encoded strings | hexadecimal/Base16, Base32, Base36, ambiguity-free Base56, Bitcoin Base58, standard Base64 |
-| Dates | `date`, `datetime`, date strings, datetime strings, timezone objects, timezone names |
-| Identifiers | UUIDs and UUID strings, world codes, Spanish identifiers and vehicle plates |
-| Internet | URLs, hosts, domains, ports, emails, IP addresses, networks, MAC addresses, slugs, keys |
-| Money | IBANs and credit card values |
+| Category        | Examples                                                                                               |
+| --------------- | ------------------------------------------------------------------------------------------------------ |
+| Primitives      | strings, bytes, booleans, integers, floats, finite numbers, `None` / not-`None`                        |
+| String formats  | non-empty, trimmed, alpha, alphanumeric, lower/upper case, snake case, kebab case                      |
+| Encoded strings | hexadecimal/Base16, Base32, Base36, ambiguity-free Base56, Bitcoin Base58, standard Base64             |
+| Dates and time  | dates, datetimes, times, durations, their string forms, and timezones                                  |
+| Identifiers     | UUIDs, ULIDs, BCP 47 language tags, world codes, Spanish identifiers, and vehicle plates               |
+| Internet        | URLs, hosts, IP values, MAC addresses, ports, HTTP methods/statuses/media types, slugs, keys, and IMEI |
+| Money           | ISO 4217 currency codes, IBANs, and credit-card values                                                 |
 
 See [`docs/catalog/README.md`](docs/catalog/README.md) for import paths and category guidance.
 
@@ -301,8 +301,7 @@ See [`docs/catalog/README.md`](docs/catalog/README.md) for import paths and cate
 
 ## 🔁 Primitive Conversion
 
-`BaseModel`, `ListValueObject`, `DictValueObject`, and `UnionValueObject` can convert between primitive data and richer
-types.
+`BaseModel`, typed collection value objects, and `UnionValueObject` can convert between primitive data and richer types.
 
 ```python
 from value_object_pattern import BaseModel
