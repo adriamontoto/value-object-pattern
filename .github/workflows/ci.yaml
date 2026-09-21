@@ -46,7 +46,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           version: 0.11.8
           python-version: ${{ matrix.python-version }}
@@ -105,7 +105,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           version: 0.11.8
           python-version: ${{ matrix.python-version }}
@@ -174,7 +174,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           version: 0.11.8
           python-version: ${{ matrix.python-version }}
@@ -279,7 +279,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           version: 0.11.8
           python-version: ${{ matrix.python-version }}
@@ -331,7 +331,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           version: 0.11.8
           python-version: ${{ matrix.python-version }}
@@ -370,14 +370,14 @@ jobs:
           persist-credentials: false
 
       - name: ▶️ CodeQL Initialization
-        uses: github/codeql-action/init@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v3.29.5
+        uses: github/codeql-action/init@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v3.29.5
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
           queries: +security-extended,security-and-quality
 
       - name: 🔬 CodeQL Analysis
-        uses: github/codeql-action/analyze@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v3.29.5
+        uses: github/codeql-action/analyze@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v3.29.5
         with:
           category: '/language:${{ matrix.language }}'
 
@@ -414,7 +414,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           version: 0.11.8
           python-version: ${{ matrix.python-version }}
@@ -456,7 +456,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           version: 0.11.8
           python-version: ${{ matrix.python-version }}
@@ -572,7 +572,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🛠️ Setup UV
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           version: 0.11.8
           python-version: ${{ matrix.python-version }}
