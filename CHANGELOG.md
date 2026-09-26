@@ -2,6 +2,23 @@
 
 <!-- version list -->
 
+## v1.39.0 (2026-09-26)
+
+### 📦 Build System
+
+- Bump the uv-minor-patch group with 4 updates
+  ([#160](https://github.com/adriamontoto/value-object-pattern/pull/160),
+  [`8b4700c`](https://github.com/adriamontoto/value-object-pattern/commit/8b4700cb90f1b9a2c7d4a67d15025ce641a77603))
+
+- Constrain vulnerable releases
+  ([`5383e51`](https://github.com/adriamontoto/value-object-pattern/commit/5383e51dd805d23d9e5642f5f82bd36342684152))
+
+### ✨ Features
+
+- Implement bcp47 value object
+  ([`5866456`](https://github.com/adriamontoto/value-object-pattern/commit/5866456ade29b63a29dc304d7ea881f20919617b))
+
+
 ## v1.38.0 (2026-08-31)
 
 ### ✨ Features
