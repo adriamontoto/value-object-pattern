@@ -337,7 +337,7 @@ def test_list_value_object_allows_typevar_parameterization() -> None:
     class _GenericListValueObject(ListValueObject[TItem]):  # pragma: no cover
         pass
 
-    assert _GenericListValueObject._type is TItem
+    assert getattr(_GenericListValueObject, '_type') is TItem  # noqa: B009
 
 
 @mark.unit_testing
