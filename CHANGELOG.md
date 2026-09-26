@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.39.1 (2026-09-26)
+
+### 📦 Build System
+
+- Bump the uv-minor-patch group across 1 directory with 3 updates
+  ([#163](https://github.com/adriamontoto/value-object-pattern/pull/163),
+  [`38d389a`](https://github.com/adriamontoto/value-object-pattern/commit/38d389a1edfe352dc76caff17225993f443fdbe9))
+
+
 ## v1.39.0 (2026-09-26)
 
 ### 📦 Build System
