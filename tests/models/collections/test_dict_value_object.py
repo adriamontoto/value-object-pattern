@@ -473,8 +473,8 @@ def test_dict_value_object_allows_typevar_parameterization() -> None:
     class _GenericDictValueObject(DictValueObject[TKey, TValue]):  # pragma: no cover
         pass
 
-    assert _GenericDictValueObject._key_type is TKey
-    assert _GenericDictValueObject._value_type is TValue
+    assert getattr(_GenericDictValueObject, '_key_type') is TKey  # noqa: B009
+    assert getattr(_GenericDictValueObject, '_value_type') is TValue  # noqa: B009
 
 
 @mark.unit_testing
