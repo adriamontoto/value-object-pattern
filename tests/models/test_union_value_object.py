@@ -329,7 +329,7 @@ def test_union_value_object_init_subclass_keeps_typevar_for_generic_unions() -> 
     """
     Test that __init_subclass__ stores TypeVar on generic union subclasses.
     """
-    assert GenericTypedUnionValueObject._type is TGenericUnion  # type: ignore[misc]
+    assert getattr(GenericTypedUnionValueObject, '_type') is TGenericUnion  # noqa: B009
 
 
 @mark.unit_testing

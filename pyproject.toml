@@ -59,7 +59,7 @@ lint = [
     { include-group = 'test' },
     { include-group = 'types' },
 ]
-release = ['build>=1.2.2', 'python-semantic-release>=10.0.2']
+release = ['build>=1.2.2', 'python-semantic-release>=10.7.0']
 test = [
     'pytest>=8.0.0',
     'pytest-randomly>=3.0.0',
@@ -76,6 +76,11 @@ all = [
     { include-group = 'test' },
     { include-group = 'types' },
 ]
+
+
+[tool.uv]
+# Security floors for transitive release-tool dependencies.
+constraint-dependencies = ['click>=8.3.3', 'gitpython>=3.1.60']
 
 
 [tool.pytest.ini_options]
