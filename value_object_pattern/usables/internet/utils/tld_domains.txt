@@ -1,4 +1,4 @@
-# This file was automatically updated using "update_lists.py" on 2026-08-18T03:47:35.251774+00:00
+# This file was automatically updated using "update_lists.py" on 2026-10-10T09:35:39.115594+00:00
 
 aaa
 aarp
@@ -620,7 +620,6 @@ jp
 jpmorgan
 jprs
 juegos
-juniper
 kaufen
 kddi
 ke
