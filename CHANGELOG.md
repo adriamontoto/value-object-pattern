@@ -35,7 +35,6 @@
 - Implement currency code value object using iso4217 alpha3 codes
   ([`ac1cabe`](https://github.com/adriamontoto/value-object-pattern/commit/ac1cabee8ddcba287634a8e741e00907044f44fa))
 
-
 ## v1.37.0 (2026-08-31)
 
 ### ✨ Features
@@ -56,7 +55,6 @@
 - Implement ulid identifier
   ([`b891602`](https://github.com/adriamontoto/value-object-pattern/commit/b891602100d3879e6ac8ffb875aada43a87f6430))
 
-
 ## v1.36.0 (2026-08-23)
 
 ### ✨ Features
@@ -69,7 +67,6 @@
 
 - Implement number, positive number and positive or zero number value objects
   ([`ec040db`](https://github.com/adriamontoto/value-object-pattern/commit/ec040db6a6794a8d9479621431a091cfe6e25165))
-
 
 ## v1.35.0 (2026-08-18)
 
@@ -96,7 +93,6 @@
 - Make value objects cache validations and process decorators
   ([`9a8cafc`](https://github.com/adriamontoto/value-object-pattern/commit/9a8cafcf24b95e0f89b4894dc129e75ff80b39b9))
 
-
 ## v1.34.0 (2026-07-18)
 
 ### ✨ Features
@@ -107,14 +103,12 @@
 - Implement SecretValueObject as a composition marker for display redaction
   ([`614ae27`](https://github.com/adriamontoto/value-object-pattern/commit/614ae27c9a05a2f9c4c67b6a01f65ef44cb681b1))
 
-
 ## v1.33.1 (2026-07-18)
 
 ### 🐛 Bug Fixes
 
 - Delegate URL validation errors to overridable hooks
   ([`e9bbdb4`](https://github.com/adriamontoto/value-object-pattern/commit/e9bbdb4f900e58e45bcbe8d7e96ccd62ac01a7d6))
-
 
 ## v1.33.0 (2026-07-18)
 
@@ -123,14 +117,12 @@
 - Implement DomainOrLocalhostValueObject
   ([`ad82be3`](https://github.com/adriamontoto/value-object-pattern/commit/ad82be32822fa3169bd99c2e19515edbff1fc198))
 
-
 ## v1.32.0 (2026-07-17)
 
 ### ✨ Features
 
 - Implement Base64StringValueObject
   ([`542631b`](https://github.com/adriamontoto/value-object-pattern/commit/542631b25ee6ad333b85ca81fbc9c366fd1b5411))
-
 
 ## v1.31.1 (2026-07-13)
 
@@ -139,14 +131,12 @@
 - What happens when from_primitives receives a not the expected type
   ([`dcd58cf`](https://github.com/adriamontoto/value-object-pattern/commit/dcd58cf85f47e49a27a233ef7ed70764d1066ba9))
 
-
 ## v1.31.0 (2026-06-20)
 
 ### ✨ Features
 
 - Implement inline construction for UnionValueObject, ListValueObject and DictValueObject
   ([`8182691`](https://github.com/adriamontoto/value-object-pattern/commit/8182691af9a16e5cca02f9e318500f550af7a41e))
-
 
 ## v1.30.0 (2026-06-17)
 
@@ -160,14 +150,12 @@
 - Implement value object pattern skill for AI agents
   ([`1dfb2d7`](https://github.com/adriamontoto/value-object-pattern/commit/1dfb2d7164211254f00325ce67f7e02beae66008))
 
-
 ## v1.29.2 (2026-05-21)
 
 ### 🐛 Bug Fixes
 
 - Remove parameter anchor from files()
   ([`694c71f`](https://github.com/adriamontoto/value-object-pattern/commit/694c71f25877a089610798e6b7efde9f60c8ed99))
-
 
 ## v1.29.1 (2026-05-20)
 
@@ -176,7 +164,6 @@
 - Update dependency installation instructions and clean commands in Makefile
   ([`ddfa37b`](https://github.com/adriamontoto/value-object-pattern/commit/ddfa37b1773504413085430d090fa721ff5d53ac))
 
-
 ## v1.29.0 (2026-05-20)
 
 ### ✨ Features
@@ -184,14 +171,12 @@
 - Implement secret string value object with redacted display behavior
   ([`a921396`](https://github.com/adriamontoto/value-object-pattern/commit/a9213967de362294205812a7ab53b06d2e3805f9))
 
-
 ## v1.28.0 (2026-04-29)
 
 ### ✨ Features
 
 - Implement PascalCaseStringValueObject for PascalCase validation
   ([`08f79fd`](https://github.com/adriamontoto/value-object-pattern/commit/08f79fd2fe4a1ff06be4c22d4665ebf8f5fa31b3))
-
 
 ## v1.27.0 (2026-04-10)
 
@@ -202,7 +187,6 @@
 
 - Implement user agent value object
   ([`f9d8ef3`](https://github.com/adriamontoto/value-object-pattern/commit/f9d8ef3bfc8f68ac08dfb0b966ebdaa406333921))
-
 
 ## v1.26.0 (2026-02-24)
 
@@ -219,14 +203,12 @@
 - Implement UnionValueObject for flexible type handling
   ([`e01c15f`](https://github.com/adriamontoto/value-object-pattern/commit/e01c15feb9c5017205e906878f04dd1816cb881b))
 
-
 ## v1.25.0 (2026-02-17)
 
 ### ✨ Features
 
 - Implement KeyValueObject and SlugValueObject implementations
   ([`9304576`](https://github.com/adriamontoto/value-object-pattern/commit/930457684b0e480e2c01775d6cd6b3df6b9af389))
-
 
 ## v1.24.0 (2026-02-17)
 
@@ -235,14 +217,12 @@
 - Implement from_primitives method to DictValueObject
   ([`bb4301a`](https://github.com/adriamontoto/value-object-pattern/commit/bb4301adb1831ae0740f3b47a5c3b0ffdf0d870d))
 
-
 ## v1.23.0 (2026-02-07)
 
 ### ✨ Features
 
 - Implement StrictStringIdentifierValueObject with validation and tests
   ([`1a16507`](https://github.com/adriamontoto/value-object-pattern/commit/1a165079e5f9da5f0be905d143425ee8b7481733))
-
 
 ## v1.22.1 (2025-12-12)
 
@@ -251,14 +231,12 @@
 - To primitives method not working in dict and list value object
   ([`16dc43b`](https://github.com/adriamontoto/value-object-pattern/commit/16dc43b8c000a6436359a8457bb1a4c39e0469b7))
 
-
 ## v1.22.0 (2025-12-10)
 
 ### ✨ Features
 
 - Implement NegativeOrZeroFloatValueObject and PositiveOrZeroFloatValueObject
   ([`297d8d5`](https://github.com/adriamontoto/value-object-pattern/commit/297d8d524ef6b93c61e0e9079293b8a59f89d99f))
-
 
 ## v1.21.0 (2025-12-10)
 
@@ -272,14 +250,12 @@
 - Implement NegativeOrZeroIntegerValueObject and PositiveOrZeroIntegerValueObject
   ([`1b03de8`](https://github.com/adriamontoto/value-object-pattern/commit/1b03de848736741758ea552e644a165e9603bb58))
 
-
 ## v1.20.0 (2025-12-10)
 
 ### ✨ Features
 
 - Implement DictValueObject
   ([`8509f50`](https://github.com/adriamontoto/value-object-pattern/commit/8509f50d3d63d8f40b16786782f5915c9a9f107f))
-
 
 ## v1.19.0 (2025-12-10)
 
@@ -288,14 +264,12 @@
 - List value object can handle union types properly
   ([`33ba09a`](https://github.com/adriamontoto/value-object-pattern/commit/33ba09a78d1f933178257e4c9a87a258a438917e))
 
-
 ## v1.18.0 (2025-12-09)
 
 ### ✨ Features
 
 - Support python 3.14
   ([`e93c052`](https://github.com/adriamontoto/value-object-pattern/commit/e93c052c0ed2a6b0f7a28d55fbb848eafcfa8b4c))
-
 
 ## v1.17.0 (2025-12-09)
 
@@ -304,7 +278,6 @@
 - Implement Uuid1ValueObject, Uuid3ValueObject, Uuid5ValueObject, Uuid6ValueObject, Uuid7ValueObject
   Uuid8ValueObject and its tests
   ([`e790a07`](https://github.com/adriamontoto/value-object-pattern/commit/e790a077dd80127c3df8ab99884895e02fff41bf))
-
 
 ## v1.16.0 (2025-11-13)
 
@@ -318,14 +291,12 @@
 - Implement methods for adding, extending, and deleting items in ListValueObject
   ([`8ef1028`](https://github.com/adriamontoto/value-object-pattern/commit/8ef1028b581620c149ba0b5127eab82ea67bcb21))
 
-
 ## v1.15.1 (2025-09-25)
 
 ### 🐛 Bug Fixes
 
 - Remove uppercase conversion in StringTimezoneValueObject because timezones are case-sensitive
   ([`d0db365`](https://github.com/adriamontoto/value-object-pattern/commit/d0db365c85732468b68cafcfd488e9c989463d9d))
-
 
 ## v1.15.0 (2025-09-23)
 
@@ -339,14 +310,12 @@
 - Implement __copy__ and __deepcopy__ methods in ValueObject and BaseModel
   ([`e5e5af6`](https://github.com/adriamontoto/value-object-pattern/commit/e5e5af6ca46f58b2c17723727180b2871609d0fa))
 
-
 ## v1.14.1 (2025-09-09)
 
 ### 🐛 Bug Fixes
 
 - Implement custom type hints to classproperty decorator
   ([`ad93afe`](https://github.com/adriamontoto/value-object-pattern/commit/ad93afee3168ea2c07371fe89639154e9332e10a))
-
 
 ## v1.12.0 (2025-08-25)
 
@@ -355,14 +324,12 @@
 - Implement type method to ValueObject for retrieving value object primitive type
   ([`8d072cb`](https://github.com/adriamontoto/value-object-pattern/commit/8d072cbc7a4925f1cf47d4ab0cb17a73de32b234))
 
-
 ## v1.11.0 (2025-08-20)
 
 ### ✨ Features
 
 - Implement EmailAddressValueObject for validating email addresses
   ([`7282c17`](https://github.com/adriamontoto/value-object-pattern/commit/7282c17c78e8b52c2228ec303e87d42dee98fdbd))
-
 
 ## v1.10.0 (2025-08-20)
 
@@ -371,7 +338,6 @@
 - Implement IpAddressValueObject that is a mix of IPv4 and IPv6
   ([`e183c6c`](https://github.com/adriamontoto/value-object-pattern/commit/e183c6c7fdc2048506cdced58800168db31a07ac))
 
-
 ## v1.9.0 (2025-08-20)
 
 ### ✨ Features
@@ -379,14 +345,12 @@
 - Implement date and datetime value objects improvement
   ([`97dcdf6`](https://github.com/adriamontoto/value-object-pattern/commit/97dcdf69d774175b33fb47aeffa9a4247ae48d55))
 
-
 ## v1.8.0 (2025-08-11)
 
 ### ✨ Features
 
 - **nuss**: Implement province code validation
   ([`721785d`](https://github.com/adriamontoto/value-object-pattern/commit/721785d2569f7bef9cbe1637eb5d1bc1333e909b))
-
 
 ## v1.7.0 (2025-08-11)
 
@@ -400,7 +364,6 @@
 - Implement validation regex and its methods
   ([`c348745`](https://github.com/adriamontoto/value-object-pattern/commit/c348745b8172d9e2b6db737a04137cf0e4a444f6))
 
-
 ## v1.6.0 (2025-08-07)
 
 ### ✨ Features
@@ -411,14 +374,12 @@
 - **domain**: Enhance validation methods to utilize processed values and improve error handling
   ([`203434e`](https://github.com/adriamontoto/value-object-pattern/commit/203434ed7a55fa88ea9e46fa89e5281eb0bb30a3))
 
-
 ## v1.5.0 (2025-08-07)
 
 ### ✨ Features
 
 - **iban**: Add regex method for accessing identification regex pattern
   ([`543a755`](https://github.com/adriamontoto/value-object-pattern/commit/543a7551044c2cb9c646b1d710e2c4820bd5a492))
-
 
 ## v1.4.0 (2025-08-07)
 
@@ -428,14 +389,12 @@
   normalization
   ([`d0dac62`](https://github.com/adriamontoto/value-object-pattern/commit/d0dac62ec610a4c4befb17dee1d67d9c865b82e8))
 
-
 ## v1.3.0 (2025-08-07)
 
 ### ✨ Features
 
 - Allow value object to set internal attributes, for better performance
   ([`1828fd0`](https://github.com/adriamontoto/value-object-pattern/commit/1828fd0f32d88e4be2dc155ae1d55577ff1a4a67))
-
 
 ## v1.2.0 (2025-08-07)
 
@@ -458,14 +417,12 @@
 - **internet**: Implement function to retrieve top level domains from IANA
   ([`06b2403`](https://github.com/adriamontoto/value-object-pattern/commit/06b2403ce1842f15203fa67781387dc0f63560e9))
 
-
 ## v1.1.0 (2025-08-06)
 
 ### ✨ Features
 
 - **money**: Implement CreditCardValueObject accepting Visa, Mastercard, Amex and Discovery cards
   ([`e3a5a02`](https://github.com/adriamontoto/value-object-pattern/commit/e3a5a02d30c12b4e52b628250fef7e3df6275556))
-
 
 ## v1.0.0 (2025-08-06)
 
@@ -477,7 +434,6 @@
 - **identifiers**: Improve importing of identifiers module by making a better hierarchy structure
   ([`302947e`](https://github.com/adriamontoto/value-object-pattern/commit/302947ea11c3fd35654a898cf92e06500bb84485))
 
-
 ## v0.23.0 (2025-08-06)
 
 ### ✨ Features
@@ -485,7 +441,6 @@
 - **identifiers**: Implement CountryTldValueObject, Iso3166Alpha3CodeValueObject,
   Iso3166NumericCodeValueObject and PhoneCodeValueObject and its conversions
   ([`0129f5b`](https://github.com/adriamontoto/value-object-pattern/commit/0129f5bbe4171c7a1ca60f42a225746acc871016))
-
 
 ## v0.22.0 (2025-08-06)
 
@@ -499,7 +454,6 @@
 - **identifiers**: Implement NussValueObject
   ([`07cbaf8`](https://github.com/adriamontoto/value-object-pattern/commit/07cbaf831053773b62bf0da599c0b669dc14903d))
 
-
 ## v0.21.0 (2025-08-06)
 
 ### ✨ Features
@@ -507,14 +461,12 @@
 - Implement all spain plate value objects
   ([`f992d1f`](https://github.com/adriamontoto/value-object-pattern/commit/f992d1fed3dfe13762c6eaa3ccb6f13821f148e2))
 
-
 ## v0.20.1 (2025-08-05)
 
 ### 🐛 Bug Fixes
 
 - Change open function to importlib.resources.files because other projects can not access the file
   ([`008ea32`](https://github.com/adriamontoto/value-object-pattern/commit/008ea32bbee304813fd22eeee8fc33eb53d9a0ce))
-
 
 ## v0.20.0 (2025-08-05)
 
@@ -547,14 +499,12 @@
 - **plates**: Implement OrdinaryPlateValueObject
   ([`8a87d66`](https://github.com/adriamontoto/value-object-pattern/commit/8a87d66f0813355824f5de601baa7606caead8ca))
 
-
 ## v0.19.0 (2025-08-05)
 
 ### ✨ Features
 
 - **internet**: Implement ImeiValueObject
   ([`81be1c4`](https://github.com/adriamontoto/value-object-pattern/commit/81be1c4ca0c778d9bb734d85fd46c3ece22cc7e7))
-
 
 ## v0.18.0 (2025-08-05)
 
@@ -563,14 +513,12 @@
 - **identifiers**: Implement PhoneNumberValueObject
   ([`6945733`](https://github.com/adriamontoto/value-object-pattern/commit/694573329c4429b77066776b437d22cffcda3ed7))
 
-
 ## v0.17.0 (2025-08-04)
 
 ### ✨ Features
 
 - **internet**: Implement methods for system, user, and ephemeral port ranges in PortValueObject
   ([`e7c4aaf`](https://github.com/adriamontoto/value-object-pattern/commit/e7c4aaf61b5f3d91366dab5dd53477f381a59f6c))
-
 
 ## v0.16.0 (2025-08-04)
 
@@ -579,14 +527,12 @@
 - **identifiers**: Implement IbanValueObject
   ([`78ef23d`](https://github.com/adriamontoto/value-object-pattern/commit/78ef23d6851186be6933cf93dd5efff415897fc5))
 
-
 ## v0.15.0 (2025-08-04)
 
 ### ✨ Features
 
 - **identifiers**: Implement VinValueObject
   ([`1ec705d`](https://github.com/adriamontoto/value-object-pattern/commit/1ec705de43123372daaa799c821b79cbf35814d0))
-
 
 ## v0.14.0 (2025-08-04)
 
@@ -598,14 +544,12 @@
 - **identifiers**: Implement Iso3166Alpha2CodeValueObject
   ([`497316c`](https://github.com/adriamontoto/value-object-pattern/commit/497316cfacb15107a90b8f29f8582a1a804a3923))
 
-
 ## v0.13.0 (2025-08-04)
 
 ### ✨ Features
 
 - Implement PassportValueObject
   ([`8896bb6`](https://github.com/adriamontoto/value-object-pattern/commit/8896bb69c265be62ddf756b17f80619ff6ea5bfc))
-
 
 ## v0.12.0 (2025-08-04)
 
@@ -614,14 +558,12 @@
 - Implement NieValueObject
   ([`d02b3ed`](https://github.com/adriamontoto/value-object-pattern/commit/d02b3ed4960da9210fae9ae1da55d956b86405c4))
 
-
 ## v0.11.0 (2025-08-03)
 
 ### ✨ Features
 
 - Implement UuidV4ValueObject and StringUuidV4ValueObject
   ([`9699563`](https://github.com/adriamontoto/value-object-pattern/commit/969956397a0e0233b881aa1e8505cf65542305f9))
-
 
 ## v0.10.0 (2025-07-20)
 
@@ -635,14 +577,12 @@
 - Remove unused collection value objects and introduce ListValueObject
   ([`6483727`](https://github.com/adriamontoto/value-object-pattern/commit/64837273f2828142c934a11016cc758b1b920a9f))
 
-
 ## v0.9.3 (2025-07-05)
 
 ### 🐛 Bug Fixes
 
 - Check if the provided primitive parameters are constructor BaseModel parameters
   ([`4908540`](https://github.com/adriamontoto/value-object-pattern/commit/490854067782aea88dbf1c207279ecdac3e047ac))
-
 
 ## v0.9.2 (2025-07-05)
 
@@ -651,14 +591,12 @@
 - Allow BaseModel and ValueObject or their methods to create primitives dictionary
   ([`71bdec5`](https://github.com/adriamontoto/value-object-pattern/commit/71bdec53f3d057e1263d2e8368f8ba6c283aae57))
 
-
 ## v0.9.1 (2025-07-05)
 
 ### 🐛 Bug Fixes
 
 - Raise TypeError if BaseModel.from_primitives parameter is not a dictionary of strings
   ([`b28a112`](https://github.com/adriamontoto/value-object-pattern/commit/b28a112535aebfc8c708981f0e0dcb4d95cab293))
-
 
 ## v0.9.0 (2025-07-03)
 
@@ -667,14 +605,12 @@
 - Ensure enumeration value object can raise custom exceptions
   ([`888e61e`](https://github.com/adriamontoto/value-object-pattern/commit/888e61e4d5601f754429b26076b721962206fb25))
 
-
 ## v0.8.0 (2025-07-03)
 
 ### ✨ Features
 
 - Add support for collections value object
   ([`d7e6acd`](https://github.com/adriamontoto/value-object-pattern/commit/d7e6acd53f1b119dcb72543321c6c895dfddf455))
-
 
 ## v0.7.5 (2025-07-02)
 
@@ -683,14 +619,12 @@
 - When raising enumeration value object errors add enumeration name
   ([`92f087d`](https://github.com/adriamontoto/value-object-pattern/commit/92f087d84c540d0a3f804b4a65f8f71c7048f6f7))
 
-
 ## v0.7.4 (2025-07-02)
 
 ### 🐛 Bug Fixes
 
 - Use enum.value when executing to primitives method
   ([`cbf77fe`](https://github.com/adriamontoto/value-object-pattern/commit/cbf77fe54e9b8d3e79d906ad525bd3ee206e24dd))
-
 
 ## v0.7.3 (2025-07-01)
 
@@ -699,14 +633,12 @@
 - Make enumeration value object to accept the enumeration and enumeration value, not the key
   ([`7975cee`](https://github.com/adriamontoto/value-object-pattern/commit/7975ceecec5e6cfe726dcf9de7879cbd70728ce8))
 
-
 ## v0.7.2 (2025-06-30)
 
 ### 🐛 Bug Fixes
 
 - When the primitive value is an enum convert to the enum key
   ([`8b4316f`](https://github.com/adriamontoto/value-object-pattern/commit/8b4316f158e6d015f279ad183187259f199e215a))
-
 
 ## v0.7.1 (2025-06-28)
 
@@ -717,7 +649,6 @@
 
 - Fix equal method tests
   ([`1ee662b`](https://github.com/adriamontoto/value-object-pattern/commit/1ee662b5b194cdd26b3589fe5db77ff71073cc67))
-
 
 ## v0.7.0 (2025-06-28)
 
@@ -731,14 +662,12 @@
 - Implement base model
   ([`77b6316`](https://github.com/adriamontoto/value-object-pattern/commit/77b6316a8f3eb4d3937a24c96672ef680a86d844))
 
-
 ## v0.6.2 (2025-06-22)
 
 ### 🐛 Bug Fixes
 
 - Change the way enumeration type is tested
   ([`9b400cf`](https://github.com/adriamontoto/value-object-pattern/commit/9b400cfc15719e70393eeccbd921daf1e463a8bb))
-
 
 ## v0.6.1 (2025-06-22)
 
@@ -747,7 +676,6 @@
 - Bmp object mother pattern package v3.0.0
   ([`ab8ef08`](https://github.com/adriamontoto/value-object-pattern/commit/ab8ef0841bf7c1217bcf827adfa7e0e7126da8ef))
 
-
 ## v0.6.0 (2025-06-21)
 
 ### ✨ Features
@@ -755,14 +683,12 @@
 - Implement none and not none value object
   ([`56df6be`](https://github.com/adriamontoto/value-object-pattern/commit/56df6be41b18b5d5bf79237ab8e0ac30fcd65de2))
 
-
 ## v0.5.0 (2025-06-21)
 
 ### ✨ Features
 
 - Implement timezone value object
   ([`0f8cf72`](https://github.com/adriamontoto/value-object-pattern/commit/0f8cf72f096aa681e269854ad65384de0ace2f12))
-
 
 ## v0.4.0 (2025-06-21)
 
@@ -776,14 +702,12 @@
 - Implement parameter attribute to change exception text
   ([`93fe71b`](https://github.com/adriamontoto/value-object-pattern/commit/93fe71bb1946ea2b1917f14506d9ad7c27c55fbf))
 
-
 ## v0.3.0 (2025-06-15)
 
 ### ✨ Features
 
 - Implement enumeration value object
   ([`cf2b52e`](https://github.com/adriamontoto/value-object-pattern/commit/cf2b52ef9b42efddb9d7c18c27886a1554d339ad))
-
 
 ## v0.2.0 (2025-06-14)
 
@@ -794,7 +718,6 @@
 
 - **primitives**: Implement a function to raise exceptions
   ([`ade1a0b`](https://github.com/adriamontoto/value-object-pattern/commit/ade1a0b151f491b2133f50047a66fe3eb46a873d))
-
 
 ## v0.1.0 (2025-06-13)
 
