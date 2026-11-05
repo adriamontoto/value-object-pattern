@@ -15,6 +15,7 @@ from .keys import KebabCaseKeyValueObject, SnakeCaseKeyValueObject
 from .mac_address_value_object import MacAddressValueObject
 from .media_type_value_object import MediaTypeValueObject
 from .port_value_object import PortValueObject
+from .semantic_version_value_object import SemanticVersionValueObject
 from .slug_value_object import SlugValueObject
 from .uri import HttpHttpsUrlValueObject, HttpUrlValueObject, HttpsUrlValueObject, UrlValueObject
 from .user_agent_value_object import UserAgentValueObject
@@ -40,6 +41,7 @@ __all__ = (
     'MacAddressValueObject',
     'MediaTypeValueObject',
     'PortValueObject',
+    'SemanticVersionValueObject',
     'SlugValueObject',
     'SnakeCaseKeyValueObject',
     'UrlValueObject',
