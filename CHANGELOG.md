@@ -2,6 +2,33 @@
 
 <!-- version list -->
 
+## v1.40.0 (2026-11-05)
+
+### 📦 Build System
+
+- Harden uv execution
+  ([`1012c3a`](https://github.com/adriamontoto/value-object-pattern/commit/1012c3af157117c01e856e7e34e651ec24a7d682))
+
+### 🧹 Chores
+
+- Update content lists ([#168](https://github.com/adriamontoto/value-object-pattern/pull/168),
+  [`2d2dbc0`](https://github.com/adriamontoto/value-object-pattern/commit/2d2dbc086503d17b76bfbdb2cf316fcf4f40fd88))
+
+### 🤖 Continuous Integration
+
+- Update those commit types that create a new version
+  ([`cf108eb`](https://github.com/adriamontoto/value-object-pattern/commit/cf108eb94431cd67e145891609443885751ed193))
+
+### 📚 Documentation
+
+- **ci**: Correct generated changelog release spacing
+  ([`59a83cc`](https://github.com/adriamontoto/value-object-pattern/commit/59a83cc4c08a45ee7a5d3d492dd9332b613f3aa5))
+
+### ✨ Features
+
+- Implement semantic version value object
+  ([`a0179df`](https://github.com/adriamontoto/value-object-pattern/commit/a0179dfdda811df2ec23bb20af1219b0f19bdad9))
+
 ## v1.39.1 (2026-09-26)
 
 ### 📦 Build System
