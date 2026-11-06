@@ -2,6 +2,18 @@
 
 <!-- version list -->
 
+## v1.40.1 (2026-11-06)
+
+### 🐛 Bug Fixes
+
+- Declare typing-extensions for Python 3.11
+  ([`aacc623`](https://github.com/adriamontoto/value-object-pattern/commit/aacc62388f9aa56211256c20596a96292acd3c5c))
+
+### 📦 Build System
+
+- Bump to python3.15
+  ([`a7d9168`](https://github.com/adriamontoto/value-object-pattern/commit/a7d9168958562129804d908b1ee1f7a332598a07))
+
 ## v1.40.0 (2026-11-05)
 
 ### 📦 Build System
