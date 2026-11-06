@@ -1324,6 +1324,7 @@ name = "value-object-pattern"
 source = { editable = "." }
 dependencies = [
     { name = "python-dateutil" },
+    { name = "typing-extensions", marker = "python_full_version < '3.12'" },
 ]
 
 [package.dev-dependencies]
@@ -1376,7 +1377,10 @@ types = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "python-dateutil", specifier = ">=2.9.0" }]
+requires-dist = [
+    { name = "python-dateutil", specifier = ">=2.9.0" },
+    { name = "typing-extensions", marker = "python_full_version < '3.12'", specifier = ">=4.4.0" },
+]
 
 [package.metadata.requires-dev]
 all = [

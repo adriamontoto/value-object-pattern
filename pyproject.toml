@@ -41,7 +41,10 @@ keywords = [
     'domain-driven-design',
 ]
 requires-python = '>=3.11'
-dependencies = ['python-dateutil>=2.9.0']
+dependencies = [
+    'python-dateutil>=2.9.0',
+    'typing-extensions>=4.4.0; python_version < "3.12"',
+]
 dynamic = ['version']
 
 [project.urls]
