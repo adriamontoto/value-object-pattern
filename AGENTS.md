@@ -34,11 +34,11 @@ Run commands from the repository root.
 The Makefile defaults to:
 
 - `UV_BIN=uv`
-- `PYTHON_VERSION=3.14`
-- `PYTHON_VERSIONS=3.11,3.12,3.13,3.14`
-- `PYTHON_VIRTUAL_ENVIRONMENT=.venv$(PYTHON_VERSION)`, so the default environment is `.venv3.14`
+- `PYTHON_VERSION=3.15`
+- `PYTHON_VERSIONS=3.11,3.12,3.13,3.14,3.15`
+- `PYTHON_VIRTUAL_ENVIRONMENT=.venv$(PYTHON_VERSION)`, so the default environment is `.venv3.15`
 
-If Python 3.14 is unavailable locally, pass a supported version explicitly, for example:
+If Python 3.15 is unavailable locally, pass a supported version explicitly, for example:
 
 ```bash
 make setup PYTHON_VERSION=3.13 PYTHON_VIRTUAL_ENVIRONMENT=.venv3.13
@@ -47,7 +47,7 @@ make setup PYTHON_VERSION=3.13 PYTHON_VIRTUAL_ENVIRONMENT=.venv3.13
 After setup, activate the environment when useful:
 
 ```bash
-source .venv3.14/bin/activate
+source .venv3.15/bin/activate
 ```
 
 There is no database or application server to start.
@@ -87,11 +87,11 @@ For documentation-only changes, run the smallest relevant check and state what w
 - Run all configured Python versions: `make test-all`
 - Run coverage: `make coverage`
 - Run all-version coverage: `make coverage-all`
-- Run tests directly after setup: `.venv3.14/bin/python3.14 -m pytest --config-file pyproject.toml`
-- Run a focused direct test: `.venv3.14/bin/python3.14 -m pytest tests/usables/primitives/string/test_string_value_object.py --config-file pyproject.toml`
-- Run a focused test expression: `.venv3.14/bin/python3.14 -m pytest -k "StringValueObject" --config-file pyproject.toml`
+- Run tests directly after setup: `.venv3.15/bin/python3.15 -m pytest --config-file pyproject.toml`
+- Run a focused direct test: `.venv3.15/bin/python3.15 -m pytest tests/usables/primitives/string/test_string_value_object.py --config-file pyproject.toml`
+- Run a focused test expression: `.venv3.15/bin/python3.15 -m pytest -k "StringValueObject" --config-file pyproject.toml`
 
-If setup used a different `PYTHON_VERSION`, adjust the `.venv3.14/bin/python3.14` path or activate the environment and use `python -m pytest ...`.
+If setup used a different `PYTHON_VERSION`, adjust the `.venv3.15/bin/python3.15` path or activate the environment and use `python -m pytest ...`.
 
 Test conventions:
 
