@@ -2,6 +2,13 @@
 
 <!-- version list -->
 
+## v1.41.0 (2026-11-07)
+
+### ✨ Features
+
+- Remove python-dateutil dependency
+  ([`1b161e6`](https://github.com/adriamontoto/value-object-pattern/commit/1b161e6fb0999c53dc047bb8cd5fb972492198e4))
+
 ## v1.40.1 (2026-11-06)
 
 ### 🐛 Bug Fixes
