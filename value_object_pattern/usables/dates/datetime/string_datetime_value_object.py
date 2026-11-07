@@ -3,14 +3,13 @@ StringDatetimeValueObject value object.
 """
 
 from datetime import UTC, datetime
+from re import fullmatch
 from typing import NoReturn
-
-from dateutil.parser import ParserError, parse
-from dateutil.relativedelta import relativedelta
 
 from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
+from .._calendar import calculate_age
 from .datetime_value_object import DatetimeValueObject
 
 
@@ -32,6 +31,14 @@ class StringDatetimeValueObject(NotEmptyStringValueObject, TrimmedStringValueObj
 
     _internal_datetime_object: datetime
 
+    STRING_DATETIME_ISO_DATETIME_PATTERN = (
+        r'[0-9]{4}(?:-[0-9]{2}-[0-9]{2}|[0-9]{4}|-W[0-9]{2}(?:-[1-7])?|W[0-9]{2}[1-7]?)'
+        r'(?:[Tt ](?:[01][0-9]|2[0-3])'
+        r'(?:(?P<time_separator>:?)[0-5][0-9](?:(?P=time_separator)[0-5][0-9](?:[.,][0-9]+)?)?)?'
+        r'(?:Z|[+-](?:[01][0-9]|2[0-3])'
+        r'(?:(?P<offset_separator>:?)[0-5][0-9](?:(?P=offset_separator)[0-5][0-9](?:[.,][0-9]+)?)?)?)?)?'
+    )
+
     @process(order=0)
     def _ensure_value_is_normalized(self, value: str) -> str:
         """
@@ -48,7 +55,7 @@ class StringDatetimeValueObject(NotEmptyStringValueObject, TrimmedStringValueObj
     @validation(order=0)
     def _ensure_value_is_date(self, value: str) -> None:
         """
-        Ensures the value object value is a datetime.
+        Ensure the value is an ISO datetime accepted by the standard library.
 
         Args:
             value (str): Value.
@@ -56,10 +63,13 @@ class StringDatetimeValueObject(NotEmptyStringValueObject, TrimmedStringValueObj
         Raises:
             ValueError: If the value is not a datetime.
         """
-        try:
-            self._internal_datetime_object = parse(timestr=value).astimezone(tz=UTC)
+        if fullmatch(pattern=self.STRING_DATETIME_ISO_DATETIME_PATTERN, string=value) is None:
+            self._raise_value_is_not_valid_datetime(value=value)
 
-        except ParserError:
+        try:
+            self._internal_datetime_object = datetime.fromisoformat(value).astimezone(tz=UTC)
+
+        except ValueError:
             self._raise_value_is_not_valid_datetime(value=value)
 
     def _raise_value_is_not_valid_datetime(self, value: str) -> NoReturn:
@@ -268,4 +278,4 @@ class StringDatetimeValueObject(NotEmptyStringValueObject, TrimmedStringValueObj
                 end_datetime=reference_datetime,
             )
 
-        return relativedelta(dt1=reference_datetime, dt2=self._internal_datetime_object).years
+        return calculate_age(value=self._internal_datetime_object, reference=reference_datetime)

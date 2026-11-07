@@ -5,12 +5,10 @@ StringDateValueObject value object.
 from datetime import date
 from typing import NoReturn
 
-from dateutil.parser import ParserError, parse
-from dateutil.relativedelta import relativedelta
-
 from value_object_pattern.decorators import process, validation
 from value_object_pattern.usables import NotEmptyStringValueObject, TrimmedStringValueObject
 
+from .._calendar import calculate_age
 from .date_value_object import DateValueObject
 
 
@@ -48,7 +46,7 @@ class StringDateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
     @validation(order=0)
     def _ensure_value_is_date(self, value: str) -> None:
         """
-        Ensures the value object value is a date.
+        Ensure the value is an ISO date accepted by the standard library.
 
         Args:
             value (str): Value.
@@ -57,9 +55,9 @@ class StringDateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
             ValueError: If the value is not a date.
         """
         try:
-            self._internal_date_object = parse(timestr=value).date()
+            self._internal_date_object = date.fromisoformat(value)
 
-        except ParserError:
+        except ValueError:
             self._raise_value_is_not_valid_date(value=value)
 
     def _raise_value_is_not_valid_date(self, value: str) -> NoReturn:
@@ -229,4 +227,4 @@ class StringDateValueObject(NotEmptyStringValueObject, TrimmedStringValueObject)
                 end_date=reference_date,
             )
 
-        return relativedelta(dt1=reference_date, dt2=self._internal_date_object).years
+        return calculate_age(value=self._internal_date_object, reference=reference_date)

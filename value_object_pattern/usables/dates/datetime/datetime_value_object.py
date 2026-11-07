@@ -5,10 +5,10 @@ DatetimeValueObject value object.
 from datetime import datetime
 from typing import Any, NoReturn
 
-from dateutil.relativedelta import relativedelta
-
 from value_object_pattern.decorators import validation
 from value_object_pattern.models import ValueObject
+
+from .._calendar import calculate_age
 
 
 class DatetimeValueObject(ValueObject[datetime]):
@@ -243,4 +243,4 @@ class DatetimeValueObject(ValueObject[datetime]):
         if self.value > reference_datetime:
             self._raise_start_datetime_is_later_than_end_datetime(start_datetime=self.value, end_datetime=reference_datetime)  # noqa: E501  # fmt: skip
 
-        return relativedelta(dt1=reference_datetime, dt2=self.value).years
+        return calculate_age(value=self.value, reference=reference_datetime)

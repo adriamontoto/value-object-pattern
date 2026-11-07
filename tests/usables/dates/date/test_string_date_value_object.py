@@ -14,10 +14,106 @@ def test_string_date_value_object_happy_path() -> None:
     """
     Test StringDateValueObject value object happy path.
     """
-    date_value = StringDateValueObject(value='May 20, 2000')
+    date_value = StringDateValueObject(value='2000-05-20')
 
     assert type(date_value.value) is str
     assert date_value.value == '2000-05-20'
+
+
+@mark.unit_testing
+def test_string_date_value_object_rejects_surrounding_whitespace() -> None:
+    """
+    Preserve the inherited requirement for already-trimmed input.
+    """
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'StringDateValueObject value <<<  2000-05-20  >>> contains leading or trailing whitespaces\. Only trimmed values are allowed\.',  # noqa: E501
+    ):
+        StringDateValueObject(value='  2000-05-20  ')
+
+
+@mark.unit_testing
+def test_string_date_value_object_normalizes_basic_iso_date() -> None:
+    """
+    Normalize a compact ISO date accepted by the standard library.
+    """
+    assert StringDateValueObject(value='20000520').value == '2000-05-20'
+
+
+@mark.unit_testing
+def test_string_date_value_object_normalizes_iso_week_date() -> None:
+    """
+    Normalize an ISO week date to its calendar representation.
+    """
+    assert StringDateValueObject(value='2000-W20-6').value == '2000-05-20'
+
+
+@mark.unit_testing
+def test_string_date_value_object_rejects_human_readable_date() -> None:
+    """
+    Reject the previously accepted human-readable date format explicitly.
+    """
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'StringDateValueObject value <<<May 20, 2000>>> is not a valid date\.',
+    ):
+        StringDateValueObject(value='May 20, 2000')
+
+
+@mark.unit_testing
+def test_string_date_value_object_rejects_ambiguous_date() -> None:
+    """
+    Reject slash-separated dates rather than guessing their component order.
+    """
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'StringDateValueObject value <<<05/06/2000>>> is not a valid date\.',
+    ):
+        StringDateValueObject(value='05/06/2000')
+
+
+@mark.unit_testing
+def test_string_date_value_object_rejects_incomplete_date() -> None:
+    """
+    Reject an incomplete date rather than supplying the current day.
+    """
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'StringDateValueObject value <<<2000-05>>> is not a valid date\.',
+    ):
+        StringDateValueObject(value='2000-05')
+
+
+@mark.unit_testing
+def test_string_date_value_object_rejects_datetime_input() -> None:
+    """
+    Reject a datetime instead of silently discarding its time component.
+    """
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'StringDateValueObject value <<<2000-05-20T08:30:00>>> is not a valid date\.',
+    ):
+        StringDateValueObject(value='2000-05-20T08:30:00')
+
+
+@mark.unit_testing
+def test_string_date_value_object_rejects_non_leap_century_day() -> None:
+    """
+    Reject February 29 in a century that is not a leap year.
+    """
+    with assert_raises(
+        expected_exception=ValueError,
+        match=r'StringDateValueObject value <<<1900-02-29>>> is not a valid date\.',
+    ):
+        StringDateValueObject(value='1900-02-29')
+
+
+@mark.unit_testing
+def test_string_date_value_object_calculate_age_on_leap_day_anniversary() -> None:
+    """
+    Count the February 28 anniversary of a leap-day birthday in a non-leap year.
+    """
+    assert StringDateValueObject(value='2000-02-29').calculate_age(reference_date=date(2001, 2, 28)) == 1
 
 
 @mark.unit_testing

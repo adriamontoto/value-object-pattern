@@ -41,10 +41,7 @@ keywords = [
     'domain-driven-design',
 ]
 requires-python = '>=3.11'
-dependencies = [
-    'python-dateutil>=2.9.0',
-    'typing-extensions>=4.4.0; python_version < "3.12"',
-]
+dependencies = ['typing-extensions>=4.4.0; python_version < "3.12"']
 dynamic = ['version']
 
 [project.urls]
@@ -70,7 +67,7 @@ test = [
     'object-mother-pattern>=3.16.0',
     { include-group = 'coverage' },
 ]
-types = ['types-python-dateutil>=2.9.0.20241206']
+types = []
 all = [
     { include-group = 'coverage' },
     { include-group = 'develop' },
