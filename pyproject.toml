@@ -82,7 +82,7 @@ all = [
 [tool.uv]
 exclude-newer = '7 days'
 # TODO: Remove this cutoff and constraint once virtualenv 21.14.13 is older than the cooldown.
-exclude-newer-package = { virtualenv = '2026-10-23T00:00:00Z' }
+exclude-newer-package = { virtualenv = '2026-10-23T00:00:00Z', object-mother-pattern = false }
 constraint-dependencies = ['virtualenv==21.14.13']
 index-strategy = 'first-index'
 prerelease = 'if-necessary'
@@ -98,6 +98,7 @@ no-binary-package = ['value-object-pattern', 'pyyaml']
 
 [tool.uv.pip]
 exclude-newer = '7 days'
+exclude-newer-package = { object-mother-pattern = false }
 generate-hashes = true
 verify-hashes = true
 require-hashes = true
