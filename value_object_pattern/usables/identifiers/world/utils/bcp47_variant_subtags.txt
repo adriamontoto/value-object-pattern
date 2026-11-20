@@ -1,11 +1,13 @@
-# This file was automatically updated using "update_lists.py" on 2026-09-04T07:35:53.444803+00:00
+# This file was automatically updated using "update_lists.py" on 2026-11-19T11:18:31.496983+00:00
 
 1606nict
 1694acad
 1901
 1959acad
 1994
+1995
 1996
+2026
 abl1943
 akhmimic
 akuapem
