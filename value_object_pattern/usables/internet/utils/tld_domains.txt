@@ -1,4 +1,4 @@
-# This file was automatically updated using "update_lists.py" on 2026-10-30T09:45:19.813233+00:00
+# This file was automatically updated using "update_lists.py" on 2026-11-21T10:46:49.690481+00:00
 
 aaa
 aarp
@@ -1260,7 +1260,6 @@ wtc
 wtf
 xbox
 xerox
-xihuan
 xin
 xn--11b4c3d
 xn--1ck2e1b
